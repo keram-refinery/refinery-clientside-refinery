@@ -109,7 +109,7 @@
          *
          * @param {jQuery} item
          *
-         * @return {undefined}
+         * @return {Object} self
          */
         update: function (item) {
             var that = this,
@@ -151,12 +151,32 @@
                         list.nestedSortable('enable');
                     });
             }
+
+            return that;
+        },
+
+        /**
+         *
+         * @expose
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
+         *
+         * @return {Object} self
+         */
+        destroy: function (removeGlobalReference) {
+            this.holder.nestedSortable('destroy');
+            this.set = null;
+
+            refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+
+            return this;
         },
 
         init: function (holder) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
                 holder.nestedSortable(this.options.nested_sortable);
+                refinery.Object.attach(this.uid, holder);
                 this.set = holder.nestedSortable('toArray');
                 this.html = holder.html();
                 this.holder = holder;
@@ -204,7 +224,7 @@
             }
         },
 
-        objectPrototype: refinery.n('admin.SortableList', {
+        objectPrototype: refinery('admin.SortableList', {
 
             /**
              * @expose

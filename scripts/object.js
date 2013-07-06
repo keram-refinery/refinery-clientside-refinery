@@ -256,11 +256,14 @@ refinery.Object.prototype = {
      * @param {boolean=} removeGlobalReference if is true instance will be removed
      *                   from refinery.Object.instances
      *
-     * @todo remove pubsub subscriptions
-     * @return {undefined}
+     * @return {Object} self
      */
     destroy: function (removeGlobalReference) {
-        this.holder.unbind();
+        if (this.holder) {
+            this.holder.unbind();
+            refinery.Object.unbind(this.holder);
+        }
+
         this.holder = null;
         this.state = null;
 
@@ -270,6 +273,8 @@ refinery.Object.prototype = {
 
         this.trigger('destroy');
         this.events = {};
+
+        return this;
     },
 
     /**

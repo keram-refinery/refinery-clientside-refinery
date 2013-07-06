@@ -8,7 +8,7 @@
      * @param {Object=} options
      */
     refinery.Object.create({
-        objectPrototype: refinery.n('admin.Picker', null, true),
+        objectPrototype: refinery('admin.Picker', null, true),
 
         name: 'ResourcePicker',
 
@@ -17,11 +17,10 @@
          *
          * @param {{id: string, url: string, html: string}} resource
          *
-         * @return {undefined}
+         * @return {Object} self
          */
         insert: function (resource) {
             if (resource) {
-
                 this.elm_current_record_id.val(resource.id);
 
                 this.elm_record_holder.html($('<a/>', {
@@ -34,6 +33,8 @@
                 this.dialog.close();
                 this.trigger('insert');
             }
+
+            return this;
         }
 
     });

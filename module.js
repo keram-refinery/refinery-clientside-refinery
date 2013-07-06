@@ -1,4 +1,4 @@
-/*jslint maxlen: 140 */
+/*jslint maxlen: 140, unused: false */
 
 var dir = __dirname,
     scripts_dir = dir + '/scripts',
@@ -23,7 +23,7 @@ var dir = __dirname,
             },
             'styles' : {
                 'files': [styles_dir + '/{,*/}*.css', styles_dir + '/{,*/}*.css.scss'],
-                'tasks': ['copy:refinery_styles']
+                'tasks': ['assetUrl:refinery_styles', 'copy:refinery_styles']
             }
         }],
         'closureCompiler': [{
@@ -65,7 +65,7 @@ var dir = __dirname,
                     'scripts/admin/pickers/picker.js',
                     'scripts/admin/*/*.js'
                 ],
-                'dest': '.tmp/assets/javascripts/refinery/admin/admin.min.js'
+                'dest': '.tmp/assets/javascripts/refinery/refinery-admin.min.js'
             }
         }],
         'concat': [{
@@ -85,9 +85,10 @@ var dir = __dirname,
                     'scripts/admin/pickers/picker.js',
                     'scripts/admin/*/*.js'
                 ],
-                'dest': '.tmp/assets/javascripts/refinery/admin/admin.all.js'
+                'dest': '.tmp/assets/javascripts/refinery/refinery-admin.all.js'
             }
         }],
+
         'copy': [{
             'js': {
                 'files': [{
@@ -105,8 +106,8 @@ var dir = __dirname,
                 'files': [{
                     'expand': true,
                     'dot': true,
-                    'cwd': styles_dir + '/',
-                    'dest': build_dir + '/stylesheets/refinery/',
+                    'cwd': dir + '/.tmp/assets/stylesheets/',
+                    'dest': build_dir + '/stylesheets/',
                     'src': [
                         '**'
                     ]
@@ -117,7 +118,7 @@ var dir = __dirname,
                 'files': [{
                     'expand': true,
                     'dot': true,
-                    'cwd': scripts_dir + '/i18n/',
+                    'cwd': dir + '/i18n/',
                     'dest': build_dir + '/javascripts/refinery/i18n/',
                     'src': [
                         '**'

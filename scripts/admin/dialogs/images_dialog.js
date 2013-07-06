@@ -9,7 +9,7 @@
      */
     refinery.Object.create({
 
-            objectPrototype: refinery.n('admin.Dialog', {
+            objectPrototype: refinery('admin.Dialog', {
                 title: t('refinery.admin.images_dialog_title'),
                 url: '/refinery/dialogs/images'
             }, true),
@@ -30,21 +30,22 @@
             /**
              * Handle image linked from library
              *
-             * @return {Object}
+             * @return {?{title: string, size: string, geometry: string, type: string}}
              */
             library_tab: function (tab) {
                 var img = tab.find('.ui-selected .image img'),
-                    size_elm = tab.find('.image-dialog-size.selected a'),
+                    size_elm = tab.find('.image-dialog-size.ui-selected a'),
                     resize = tab.find('input:checkbox').is(':checked'),
                     obj = null;
 
                 if (img.length > 0) {
                     obj = img.data();
                     obj.type = 'library';
+                    obj.size = 'original';
 
-                    if (size_elm.length > 0) {
-                        obj.size = resize ? size_elm.data('size') : 'original';
-                        obj.geometry = size_elm.data('geometry');
+                    if (size_elm.length > 0 && resize) {
+                        obj['size'] = size_elm.data('size');
+                        obj['geometry'] = size_elm.data('geometry');
                     }
                 }
 
@@ -54,7 +55,7 @@
             /**
              * Handle image linked by url
              *
-             * @return {Object}
+             * @return {?{original: string, type: string}}
              */
             url_tab: function (tab) {
                 var url_input = tab.find('input.text:valid'),
@@ -63,6 +64,7 @@
 
                 if (url) {
                     obj = {
+                        'size': 'original',
                         'original': url,
                         'type': 'external'
                     };
@@ -83,9 +85,7 @@
             /**
              * Propagate selected image wth attributes to dialog observers
              *
-             * @expose
-             *
-             * @return {undefined}
+             * @return {Object} self
              */
             insert: function () {
                 var tab = this.holder.find('div[aria-expanded="true"]'),
@@ -107,6 +107,8 @@
                 if (obj) {
                     this.trigger('insert', obj);
                 }
+
+                return this;
             }
         });
 

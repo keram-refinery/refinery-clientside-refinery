@@ -50,10 +50,11 @@
          *
          * @expose
          *
-         * @return {undefined}
+         * @return {Object} self
          */
         open: function () {
             this.dialog.open();
+            return this;
         },
 
         /**
@@ -61,10 +62,11 @@
          *
          * @expose
          *
-         * @return {undefined}
+         * @return {Object} self
          */
         close: function () {
             this.dialog.close();
+            return this;
         },
 
         /**
@@ -73,10 +75,11 @@
          * @param {{id: (string|number)}} record
          * @expose
          *
-         * @return {undefined}
+         * @return {Object} self
          */
         insert: function (record) {
             console.log(record);
+            return this;
         },
 
         /**
@@ -89,7 +92,7 @@
          */
         bind_events: function () {
             var that = this,
-                holder = this.holder;
+                holder = that.holder;
 
             that.dialog.on('insert', function (record) {
                 that.insert(record);
@@ -116,11 +119,12 @@
          * @param {!jQuery} holder
          * @param {!refinery.Object} dialog
          *
-         * @return {refinery.Object}
+         * @return {refinery.Object} self
          */
         init: function (holder, dialog) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
+                refinery.Object.attach(this.uid, holder);
                 this.holder = holder;
                 this.elm_current_record_id = holder.find('.current-record-id');
                 this.elm_record_holder = holder.find('.record-holder');

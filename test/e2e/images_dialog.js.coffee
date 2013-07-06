@@ -3,6 +3,9 @@ describe 'Admin Images Dialog', ->
   before ->
     @container = $('#container')
 
+  after ->
+    @container.empty()
+
   describe 'Class', ->
     after ->
 
@@ -107,7 +110,7 @@ describe 'Admin Images Dialog', ->
       describe 'success', ->
 
         before ->
-          @ajaxStub.returns(@okResponse());
+          @ajaxStub.returns(@okResponse())
           @dd.open()
 
         after ->

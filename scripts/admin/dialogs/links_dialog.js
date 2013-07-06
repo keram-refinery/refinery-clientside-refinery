@@ -8,7 +8,7 @@
      * @param {Object=} options
      */
     refinery.Object.create({
-            objectPrototype: refinery.n('admin.Dialog', {
+            objectPrototype: refinery('admin.Dialog', {
                 title: t('refinery.admin.links_dialog_title'),
                 url: '/refinery/dialogs/links'
             }, true),
@@ -24,20 +24,22 @@
              *
              * @param {!jQuery} tab
              *
-             * @return {?{title: ?, url: string}}
+             * @return {?{title: string, url: string}}
              */
             email_tab: function (tab) {
                 var email_input = tab.find('#email_address_text:valid'),
                     subject_input = tab.find('#email_default_subject_text'),
                     body_input = tab.find('#email_default_body_text'),
-                    recipient = email_input.val(),
-                    subject = subject_input.val(),
-                    body = body_input.val(),
-                    hex_recipient = '',
+                    recipient = /** @type {string} */(email_input.val()),
+                    subject = /** @type {string} */(subject_input.val()),
+                    body = /** @type {string} */(body_input.val()),
                     modifier = '?',
                     additional = '',
                     result = null,
                     i;
+
+                subject = encodeURIComponent(subject);
+                body = encodeURIComponent(body);
 
                 if (recipient) {
                     if (subject.length > 0) {
@@ -50,11 +52,12 @@
                         modifier = '&';
                     }
 
-                    for (i = 0; i < recipient.length; i++) {
-                        hex_recipient += '%' + recipient.charCodeAt(i).toString(16);
-                    }
+                    result = {
+                        type: 'email',
+                        title: recipient,
+                        url: 'mailto:' + encodeURIComponent(recipient) + additional
+                    };
 
-                    result = { title: recipient, url: 'mailto:' + hex_recipient + additional };
                     email_input.val('');
                     subject_input.val('');
                     body_input.val('');
@@ -79,6 +82,7 @@
 
                 if (url) {
                     result = {
+                        type: 'website',
                         title: url.replace(/^https?:\/\//, ''),
                         url: url,
                         blank: blank
@@ -94,7 +98,7 @@
             /**
              * Process insert action by tab type
              *
-             * @return {undefined}
+             * @return {Object} self
              */
             insert: function () {
                 var holder = this.holder,
@@ -104,6 +108,7 @@
                 switch (tab.attr('id')) {
                 case 'links-dialog-pages':
                     obj = tab.find('.ui-selected').data('link');
+                    obj.type = 'page';
 
                     break;
                 case 'links-dialog-website':
@@ -121,6 +126,8 @@
                 if (obj) {
                     this.trigger('insert', obj);
                 }
+
+                return this;
             }
 
         });

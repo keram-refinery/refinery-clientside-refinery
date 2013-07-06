@@ -8,7 +8,7 @@
      * @param {Object=} options
      */
     refinery.Object.create({
-        objectPrototype: refinery.n('admin.Dialog', {
+        objectPrototype: refinery('admin.Dialog', {
             title: t('refinery.admin.resources_dialog_title'),
             url: '/refinery/dialogs/resources'
         }, true),
@@ -20,11 +20,9 @@
         },
 
         /**
-         * Propagate selected image wth attributes to dialog observers
+         * Propagate selected file wth attributes to dialog observers
          *
-         * @expose
-         *
-         * @return {undefined}
+         * @return {Object} self
          */
         insert: function () {
             var li = this.holder.find('.ui-selected'),
@@ -34,8 +32,11 @@
                 obj.id = li.attr('id').replace('dialog-resource-', '');
                 obj.url = li.data('url');
                 obj.html = li.html();
+                obj.type = 'library';
                 this.trigger('insert', obj);
             }
+
+            return this;
         }
     });
 

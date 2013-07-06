@@ -40,9 +40,9 @@
 
                 if (list.hasClass('records')) {
                     if (list.hasClass('tree')) {
-                        refinery.n('admin.SortableTree', options).init(list);
+                        refinery('admin.SortableTree', options).init(list);
                     } else {
-                        refinery.n('admin.SortableList', options).init(list);
+                        refinery('admin.SortableList', options).init(list);
                     }
                 } else {
                     list.sortable(options);
@@ -171,6 +171,14 @@
             });
         },
 
+        init_toggle_hide: function () {
+            this.holder.on('click', '.toggle-hide', function () {
+                var elm = $(this);
+                $(elm.attr('href')).toggleClass('js-hide');
+                elm.toggleClass('toggle-on');
+            });
+        },
+
         initialize_elements: function () {
             var that = this,
                 holder = that.holder,
@@ -181,11 +189,13 @@
             that.init_tabs();
             that.init_checkboxes();
             that.init_collapsible_lists();
+            that.init_toggle_hide();
+
             that.init_deletable_records();
 
             for (fnc in ui) {
                 if (ui.hasOwnProperty(fnc) && typeof ui[fnc] === 'function') {
-                    ui[fnc](holder);
+                    ui[fnc](holder, that);
                 }
             }
         },
@@ -202,15 +212,19 @@
         reload: function (holder) {
             var holders = this.holder.find('.refinery-instance');
 
-            holders.each(function () {
-                var instances = holder.data('refinery-instances'),
-                    uid, instance;
+            try {
+                holders.each(function () {
+                    var instances = $(this).data('refinery-instances'),
+                        instance;
 
-                for (uid in instances) {
-                    instance = instances[uid];
-                    instance.destroy(true);
-                }
-            });
+                    for (var i = instances.length - 1; i >= 0; i--) {
+                        instance = refinery.Object.instances.get(instances[i]);
+                        instance.destroy(true);
+                    }
+                });
+            } catch (e) {
+                console.log(e);
+            }
 
             this.holder.off();
             this.state = new this.State();
@@ -222,6 +236,7 @@
 
             if (that.is('initialisable')) {
                 that.is('initialising', true);
+                refinery.Object.attach(that.uid, holder);
                 that.holder = holder;
                 that.bind_events();
                 that.initialize_elements();

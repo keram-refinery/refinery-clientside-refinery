@@ -1,0 +1,44 @@
+<div class="field">
+    <ul class="nojs-hide" id="page-parts-controls">
+  <li>
+    <a title="Reorder content sections" id="reorder-page-part" href="#" class="icon-small reorder-icon">Reorder</a>
+    <a title="I'm done reordering the content sections" id="reorder-page-part-done" href="#" class="hide icon-small success-icon">Reorder Done</a>
+  </li>
+    <li>
+      <a title="Add content section" id="add-page-part" href="/refinery/page_parts/new" class="icon-small add-icon">Add</a>
+    </li>
+    <li>
+      <a title="Delete content section" id="delete-page-part" href="/refinery/page_parts" class="icon-small delete-icon">Delete</a>
+    </li>
+</ul>
+
+<div class="clearfix ui-tabs" id="page-tabs">
+  <ul class="nojs-hide ui-tabs-nav" id="page-parts">
+      <li class="ui-state-active">
+        <a href="#page_part_body">Body</a>
+      </li>
+      <li class="">
+        <a href="#page_part_side_body">Side Body</a>
+      </li>
+  </ul>
+  <div id="page-part-editors">
+
+      <div id="page_part_body" class="page-part">
+  <label for="page_parts_attributes_0_body" class="js-hide">Body</label>
+  <input type="hidden" value="Body" name="page[parts_attributes][0][title]" id="page_parts_attributes_0_title" class="part-title">
+  <textarea name="page[parts_attributes][0][body]" id="page_parts_attributes_0_body"  class="replace-with-editor"></textarea>
+  <input type="hidden" value="0" name="page[parts_attributes][0][position]" id="page_parts_attributes_0_position" class="part-position">
+</div>
+
+
+      <div id="page_part_side_body" class="page-part">
+  <label for="page_parts_attributes_1_body" class="js-hide">Side Body</label>
+  <input type="hidden" value="Side Body" name="page[parts_attributes][1][title]" id="page_parts_attributes_1_title" class="part-title">
+  <textarea name="page[parts_attributes][1][body]" id="page_parts_attributes_1_body"  class="replace-with-editor"></textarea>
+  <input type="hidden" value="1" name="page[parts_attributes][1][position]" id="page_parts_attributes_1_position" class="part-position">
+</div>
+
+  </div>
+</div>
+
+</div>

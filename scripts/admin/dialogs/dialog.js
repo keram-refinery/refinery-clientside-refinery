@@ -88,28 +88,49 @@
                 return DialogState;
             }()),
 
-            /** @expose */
+            /**
+             *
+             * @expose
+             *
+             * @return {Object} self
+             */
             close: function () {
                 if (this.is('closable')) {
                     this.holder.dialog('close');
                 }
+
+                return this;
             },
 
-            /** @expose */
+            /**
+             *
+             * @expose
+             *
+             * @return {Object} self
+             */
             open: function () {
                 if (this.is('openable')) {
                     this.is('opening', true);
                     this.holder.dialog('open');
                 }
+
+                return this;
             },
 
-            /** @expose */
+            /**
+             *
+             * @expose
+             *
+             * @return {Object} self
+             */
             submit: function () {
                 var form = this.holder.find('form');
 
                 if (form.length > 0) {
                     this.submit_form(form);
                 }
+
+                return this;
             },
 
 
@@ -163,13 +184,15 @@
              *
              * @expose
              *
-             * @return {undefined}
+             * @return {Object} self
              */
             insert: function () {
                 var li = this.holder.find('.ui-selected');
                 if (li.length > 0) {
                     this.trigger('insert', li.data());
                 }
+
+                return this;
             },
 
             /**
@@ -266,9 +289,9 @@
              * Load dialog content
              *
              * @expose
-             * @todo this is ugly, refactor!
+             * @todo this is (still) ugly, refactor!
              *
-             * @return {undefined}
+             * @return {Object} self
              */
             load: function () {
                 var that = this,
@@ -324,6 +347,8 @@
 
                     }
                 }
+
+                return this;
             },
 
             bind_events: function () {
@@ -350,13 +375,20 @@
             /**
              *
              * @expose
+             * @param {boolean=} removeGlobalReference if is true instance will be removed
+             *                   from refinery.Object.instances
              *
-             * @return {undefined}
+             * @return {Object} self
              */
-            destroy: function () {
-                this.ui.destroy();
-                this.ui = null;
-                refinery.Object.prototype.destroy.call(this);
+            destroy: function (removeGlobalReference) {
+                if (this.ui) {
+                    this.ui.destroy();
+                    this.ui = null;
+                }
+
+                refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+
+                return this;
             },
 
             /**
@@ -375,7 +407,9 @@
                         'class': 'loading'
                     });
 
-                    this.ui = refinery.n('admin.UserInterface');
+                    refinery.Object.attach(this.uid, this.holder);
+
+                    this.ui = refinery('admin.UserInterface');
                     this.holder.dialog(this.options);
 
                     this.bind_events();

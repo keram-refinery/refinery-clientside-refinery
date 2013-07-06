@@ -77,12 +77,12 @@
                 form = that.holder;
 
             form.find('.image-picker').each(function () {
-                var picker = refinery.n('admin.ImagePicker');
+                var picker = refinery('admin.ImagePicker');
                 picker.init($(this));
             });
 
             form.find('.resource-picker').each(function () {
-                var picker = refinery.n('admin.ResourcePicker');
+                var picker = refinery('admin.ResourcePicker');
                 picker.init($(this));
             });
 
@@ -148,40 +148,30 @@
             }
         },
 
-        destroy: function () {
-            this.page_parts = null;
-            refinery.Object.prototype.destroy.call(this);
-        },
-
         /**
          * initialisation
          *
          * @param {!jQuery} holder
          *
-         * @return {Object}
+         * @return {Object} self
          */
         init: function (holder) {
-            var that = this,
-                page_parts_elm;
+            var that = this;
 
-            if (this.is('initialisable')) {
+            if (that.is('initialisable')) {
                 that.is('initialising', true);
+                refinery.Object.attach(that.uid, holder);
                 that.holder = holder;
                 that.init_pickers();
                 that.init_inputs();
                 that.initial_values = holder.serialize();
                 that.init_fly_form_actions();
-                page_parts_elm = holder.find('#page-parts');
 
-                if (page_parts_elm.length > 0) {
-                    this.page_parts = refinery.n('admin.FormPageParts').init(page_parts_elm.parent());
-                }
-
-                this.is({'initialised': true, 'initialising': false});
-                this.trigger('init');
+                that.is({'initialised': true, 'initialising': false});
+                that.trigger('init');
             }
 
-            return this;
+            return that;
         }
     });
 
@@ -194,7 +184,7 @@
      */
     refinery.admin.ui.form = function (holder) {
         holder.find('form').each(function () {
-            refinery.n('admin.Form').init($(this));
+            refinery('admin.Form').init($(this));
         });
     };
 

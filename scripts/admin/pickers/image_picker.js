@@ -8,7 +8,7 @@
      * @param {Object=} options
      */
     refinery.Object.create({
-        objectPrototype: refinery.n('admin.Picker', null, true),
+        objectPrototype: refinery('admin.Picker', null, true),
 
         name: 'ImagePicker',
 
@@ -17,7 +17,7 @@
          *
          * @param {{id: string, size: string, medium: string}} img
          *
-         * @return {undefined}
+         * @return {Object} self
          */
         insert: function (img) {
             if (img) {
@@ -34,6 +34,8 @@
                 this.dialog.close();
                 this.trigger('insert');
             }
+
+            return this;
         }
     });
 

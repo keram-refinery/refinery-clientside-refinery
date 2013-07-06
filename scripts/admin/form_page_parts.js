@@ -29,14 +29,18 @@
          */
         delete_part: function (delete_url) {
             var that = this,
-                tabId = this.holder.tabs('option', 'active'),
+                holder = that.holder,
+                tab_id = holder.tabs('option', 'active'),
                 part_title = that.page_parts.find('.ui-state-active a').text(),
-                input_page_parts_attributes_id = $('#page_parts_attributes_' + tabId + '_id');
+                input_page_parts_attributes_id = $('#page_parts_attributes_' + tab_id + '_id');
 
             if (confirm(t('refinery.admin.form_page_parts_remove', { 'title': part_title }))) {
-                that.holder.find('.ui-tabs-nav li:eq(' + tabId + ')').remove();
-                that.holder.find('.ui-tabs-panel:eq(' + tabId + ')').remove();
-                that.holder.tabs('refresh');
+                holder.find('.ui-tabs-nav li:eq(' + tab_id + ')').remove();
+                holder.find('.ui-tabs-panel:eq(' + tab_id + ')').remove();
+                holder.find('.ui-tabs-nav li a').each(function (i) {
+                    holder.find($(this).attr('href') + ' .part-position').val(i);
+                });
+                holder.tabs('refresh');
 
                 if (input_page_parts_attributes_id.length > 0) {
                     $.ajax({
@@ -45,6 +49,7 @@
                         dataType: 'JSON',
                         success: function () {
                             input_page_parts_attributes_id.remove();
+                            that.trigger('part:delete');
                         }
                     });
                 }
@@ -63,31 +68,36 @@
             var that = this,
                 part_title = $.trim(/** @type {string} */(input_title.val())),
                 page_part_editors = $('#page-part-editors'),
-                part_index = $('#new-page-part-index').val(),
+                part_index = that.holder.find('.ui-tabs-nav li').length,
                 tab_title = '#page_part_' + part_title.toLowerCase().replace(/\s/g, '_'),
-                tab_tpl;
+                tab_tpl,
+                process_response;
+
+            process_response = function (response) {
+                if (response.html) {
+                    tab_tpl = '<li><a href="' + tab_title + '">' + part_title + '</a></li>';
+
+                    page_part_editors.append(response.html);
+                    that.page_parts.append(tab_tpl);
+                    that.holder.tabs('refresh');
+                    that.holder.tabs('option', 'active', part_index);
+                    that.dialog_holder.dialog('close');
+                    input_title.val('');
+                    that.trigger('part:add');
+                } else {
+                    refinery.flash('error', t('refinery.xhr_error'));
+                }
+            };
 
             if (part_title.length > 0) {
                 if ($(tab_title).length === 0) {
-                    tab_tpl = '<li><a href="' + tab_title + '">' + part_title + '</a></li>';
-
-                    $.get(add_url, { title: part_title, part_index: part_index }, 'JSON')
+                    $.getJSON(add_url, { 'title': part_title, 'part_index': part_index })
                         .fail(function () {
                             refinery.flash('error', t('refinery.xhr_error'));
                         })
                         .done(function (response) {
-                            if (response.html) {
-                                page_part_editors.append(response.html);
-                                that.page_parts.append(tab_tpl);
-                                that.holder.tabs('refresh');
-                                that.holder.tabs('option', 'active', part_index);
-                                that.dialog_holder.dialog('close');
-                                input_title.val('');
-                            } else {
-                                alert(t('refinery.xhr_error'));
-                            }
+                            process_response(response);
                         });
-
                 } else {
                     alert(t('refinery.admin.form_page_parts_part_exist'));
                 }
@@ -106,13 +116,13 @@
          */
         bind_add_delete_part_events_to_buttons: function (add_page_part_btn, delete_page_part_btn) {
             var that = this,
-                dialog_holder = this.dialog_holder,
-                input_title = $('#new-page-part-title');
+                dialog_holder = that.dialog_holder,
+                input_title = dialog_holder.find('#new-page-part-title');
 
-            add_page_part_btn.click(function (e) {
+            add_page_part_btn.on('click', function (e) {
                 e.preventDefault();
 
-                that.dialog_holder.dialog({
+                dialog_holder.dialog({
                     title: t('refinery.admin.form_page_parts_add_part_dialog_title'),
                     modal: true,
                     resizable: false,
@@ -124,7 +134,7 @@
                 dialog_holder.removeClass('hide');
             });
 
-            delete_page_part_btn.click(function (e) {
+            delete_page_part_btn.on('click', function (e) {
                 e.preventDefault();
                 that.delete_part(delete_page_part_btn.attr('href'));
             });
@@ -160,7 +170,21 @@
                 delete_page_part_btn = $('#delete-page-part');
 
             if (add_page_part_btn.length > 0 && delete_page_part_btn.length > 0) {
-                that.dialog_holder = $('#new-page-part-dialog');
+                that.dialog_holder = $('<div/>', {
+                    html: '<div class="field">' +
+                          '  <input class="larger widest" placeholder="' +
+                            t('refinery.admin.label_title') +
+                          '" id="new-page-part-title">' +
+                          '  <input type="hidden" id="new-page-part-index">' +
+                          '</div>' +
+                          '<div class="form-actions clearfix">' +
+                          '  <div class="form-actions-left">' +
+                          '    <input type="submit" value="' +
+                            t('refinery.admin.button_create') +
+                          '" class="button submit-button">' +
+                          '  </div>' +
+                          '</div>'
+                });
 
                 that.bind_add_delete_part_events_to_buttons(add_page_part_btn,
                     delete_page_part_btn);
@@ -173,6 +197,7 @@
          * @return {undefined}
          */
         start_reordering_page_parts: function () {
+            this.holder.tabs('disable');
             this.page_parts.addClass('reordering');
             this.reorder_page_part_btn.addClass('hide');
             this.reorder_page_part_done_btn.removeClass('hide');
@@ -191,6 +216,7 @@
             this.reorder_page_part_btn.removeClass('hide');
             this.page_parts.sortable('disable');
             this.fade_elements.fadeTo(500, 1);
+            this.holder.tabs('enable');
         },
 
         /**
@@ -205,8 +231,8 @@
                 items: 'li',
                 enabled: false,
                 stop: function () {
-                    that.page_parts.find('li[data-index]').each(function (i) {
-                        $('#page_parts_attributes_' + $(this).data('index') + '_position').val(i + 1);
+                    that.holder.find('.ui-tabs-nav li a').each(function (i) {
+                        that.holder.find($(this).attr('href') + ' .part-position').val(i);
                     });
                 }
             }).sortable('disable');
@@ -228,18 +254,35 @@
 
         /**
          *
-         * @expose
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
          *
-         * @return {undefined}
+         * @return {Object} self
          */
-        destroy: function () {
-            this.page_parts.unbind();
-            this.page_parts = null;
-            this.reorder_page_part_done_btn = null;
-            this.reorder_page_part_btn = null;
-            this.dialog_holder = null;
-            this.fade_elements = null;
-            refinery.Object.prototype.destroy.call(this);
+        destroy: function (removeGlobalReference) {
+            if (this.is('initialised')) {
+                this.page_parts = null;
+                this.holder.parent()
+                    .find('#reorder-page-part, #reorder-page-part-done, #add-page-part, #delete-page-part')
+                    .off();
+                this.reorder_page_part_done_btn = null;
+                this.reorder_page_part_btn = null;
+
+                if (this.dialog_holder) {
+                    if (this.dialog_holder.hasClass('ui-dialog')) {
+                        this.dialog_holder.dialog('destroy');
+                    }
+
+                    this.dialog_holder.off();
+                    this.dialog_holder.remove();
+                    this.dialog_holder = null;
+                }
+
+                this.fade_elements = null;
+            }
+            refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+
+            return this;
         },
 
         /**
@@ -256,6 +299,8 @@
                 this.page_parts = holder.find('#page-parts');
                 this.init_add_remove_part();
                 this.init_reorder_parts();
+
+                refinery.Object.attach(this.uid, holder);
                 this.is({'initialised': true, 'initialising': false});
                 this.trigger('init');
             }
@@ -263,5 +308,26 @@
             return this;
         }
     });
+
+    /**
+     * Form initialization
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @param  {Object} ui
+     * @return {undefined}
+     */
+    refinery.admin.ui.formPageParts = function (holder, ui) {
+        holder.find('#page-tabs').each(function () {
+            var page_parts = refinery('admin.FormPageParts').init($(this));
+
+            page_parts.on('part:add', function () {
+                ui.reload(holder);
+            });
+            page_parts.on('part:delete', function () {
+                ui.reload(holder);
+            });
+        });
+    };
 
 }());
