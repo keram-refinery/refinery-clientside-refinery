@@ -26,13 +26,17 @@
          */
         insert: function () {
             var li = this.holder.find('.ui-selected'),
-                obj = {};
+                /** @type {?file_dialog_object} */
+                obj = null;
 
             if (li.length > 0) {
-                obj.id = li.attr('id').replace('dialog-resource-', '');
-                obj.url = li.data('url');
-                obj.html = li.html();
-                obj.type = 'library';
+                obj = {
+                    id: li.attr('id').replace('dialog-resource-', ''),
+                    url: li.data('url'),
+                    html: li.html(),
+                    type: 'library'
+                };
+
                 this.trigger('insert', obj);
             }
 

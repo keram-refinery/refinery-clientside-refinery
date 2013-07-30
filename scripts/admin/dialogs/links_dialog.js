@@ -24,7 +24,7 @@
              *
              * @param {!jQuery} tab
              *
-             * @return {?{title: string, url: string}}
+             * @return {?link_dialog_object}
              */
             email_tab: function (tab) {
                 var email_input = tab.find('#email_address_text:valid'),
@@ -35,6 +35,7 @@
                     body = /** @type {string} */(body_input.val()),
                     modifier = '?',
                     additional = '',
+                    /** @type {?link_dialog_object} */
                     result = null,
                     i;
 
@@ -71,13 +72,14 @@
              *
              * @param {!jQuery} tab
              *
-             * @return {?{title: string, url: string, blank: boolean}}
+             * @return {?link_dialog_object}
              */
             website_tab: function (tab) {
                 var url_input = tab.find('#web_address_text:valid'),
                     blank_input = tab.find('#web_address_target_blank'),
                     url = /** @type {string} */(url_input.val()),
                     blank = /** @type {boolean} */(blank_input.prop('checked')),
+                    /** @type {?link_dialog_object} */
                     result = null;
 
                 if (url) {
@@ -103,6 +105,7 @@
             insert: function () {
                 var holder = this.holder,
                     tab = holder.find('div[aria-expanded="true"]'),
+                    /** @type {?link_dialog_object} */
                     obj = null;
 
                 switch (tab.attr('id')) {

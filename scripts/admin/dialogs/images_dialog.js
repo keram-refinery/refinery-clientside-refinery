@@ -30,12 +30,13 @@
             /**
              * Handle image linked from library
              *
-             * @return {?{title: string, size: string, geometry: string, type: string}}
+             * @return {?images_dialog_object}
              */
             library_tab: function (tab) {
                 var img = tab.find('.ui-selected .image img'),
                     size_elm = tab.find('.image-dialog-size.ui-selected a'),
                     resize = tab.find('input:checkbox').is(':checked'),
+                    /** @type {?images_dialog_object} */
                     obj = null;
 
                 if (img.length > 0) {
@@ -44,8 +45,8 @@
                     obj.size = 'original';
 
                     if (size_elm.length > 0 && resize) {
-                        obj['size'] = size_elm.data('size');
-                        obj['geometry'] = size_elm.data('geometry');
+                        obj.size = size_elm.data('size');
+                        obj.geometry = size_elm.data('geometry');
                     }
                 }
 
@@ -55,11 +56,12 @@
             /**
              * Handle image linked by url
              *
-             * @return {?{original: string, type: string}}
+             * @return {?images_dialog_object}
              */
             url_tab: function (tab) {
                 var url_input = tab.find('input.text:valid'),
                     url = url_input.val(),
+                    /** @type {?images_dialog_object} */
                     obj = null;
 
                 if (url) {
