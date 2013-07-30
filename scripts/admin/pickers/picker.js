@@ -124,8 +124,7 @@
         init: function (holder, dialog) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
-                refinery.Object.attach(this.uid, holder);
-                this.holder = holder;
+                this.attach_holder(holder);
                 this.elm_current_record_id = holder.find('.current-record-id');
                 this.elm_record_holder = holder.find('.record-holder');
                 this.elm_no_picked_record = holder.find('.no-picked-record-selected');

@@ -160,8 +160,7 @@
 
             if (that.is('initialisable')) {
                 that.is('initialising', true);
-                refinery.Object.attach(that.uid, holder);
-                that.holder = holder;
+                that.attach_holder(holder);
                 that.init_pickers();
                 that.init_inputs();
                 that.initial_values = holder.serialize();

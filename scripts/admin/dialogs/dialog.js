@@ -382,11 +382,11 @@
              */
             destroy: function (removeGlobalReference) {
                 if (this.ui) {
-                    this.ui.destroy();
+                    this.ui.destroy(true);
                     this.ui = null;
                 }
 
-                refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+                this._destroy(removeGlobalReference);;
 
                 return this;
             },
@@ -407,7 +407,7 @@
                         'class': 'loading'
                     });
 
-                    refinery.Object.attach(this.uid, this.holder);
+                    this.attach_holder(this.holder);
 
                     this.ui = refinery('admin.UserInterface');
                     this.holder.dialog(this.options);

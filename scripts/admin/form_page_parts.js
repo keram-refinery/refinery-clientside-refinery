@@ -295,12 +295,10 @@
         init: function (holder) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
-                this.holder = holder;
+                this.attach_holder(holder);
                 this.page_parts = holder.find('#page-parts');
                 this.init_add_remove_part();
                 this.init_reorder_parts();
-
-                refinery.Object.attach(this.uid, holder);
                 this.is({'initialised': true, 'initialising': false});
                 this.trigger('init');
             }

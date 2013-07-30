@@ -167,7 +167,7 @@
             this.holder.nestedSortable('destroy');
             this.set = null;
 
-            refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+            this._destroy(removeGlobalReference);
 
             return this;
         },
@@ -176,10 +176,9 @@
             if (this.is('initialisable')) {
                 this.is('initialising', true);
                 holder.nestedSortable(this.options.nested_sortable);
-                refinery.Object.attach(this.uid, holder);
+                this.attach_holder(holder);
                 this.set = holder.nestedSortable('toArray');
                 this.html = holder.html();
-                this.holder = holder;
                 this.is({'initialised': true, 'initialising': false});
                 this.trigger('init');
             }

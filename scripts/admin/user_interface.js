@@ -236,8 +236,7 @@
 
             if (that.is('initialisable')) {
                 that.is('initialising', true);
-                refinery.Object.attach(that.uid, holder);
-                that.holder = holder;
+                that.attach_holder(holder);
                 that.bind_events();
                 that.initialize_elements();
                 that.is({'initialised': true, 'initialising': false});
