@@ -215,7 +215,7 @@ describe 'Admin Images Dialog', ->
         describe 'insert success', ->
 
           before ->
-            @return_obj = { 'original': "http://sme.sk/a", 'type': "external" }
+            @return_obj = { 'size': 'original', 'original': "http://sme.sk/a", 'type': "external" }
             @dd.holder.find('input.text').val @return_obj.original
             @eventSpy = sinon.spy()
             @dd.on 'insert', @eventSpy
@@ -272,7 +272,16 @@ describe 'Admin Images Dialog', ->
         describe 'insert success', ->
 
           before ->
-            @return_obj = {"grid":"/refinery/test/fixtures/img.png","id":1,"large":"/refinery/test/fixtures/img.png","medium":"/refinery/test/fixtures/img.png","original":"/refinery/test/fixtures/img.png","small":"/refinery/test/fixtures/img.png","type":"library"}
+            @return_obj =
+              "grid":"/refinery/test/fixtures/img.png"
+              "id":1
+              "large":"/refinery/test/fixtures/img.png"
+              "medium":"/refinery/test/fixtures/img.png"
+              "original":"/refinery/test/fixtures/img.png"
+              "size": "original"
+              "small":"/refinery/test/fixtures/img.png"
+              "type":"library"
+
             @eventSpy = sinon.spy()
             @dd.on 'insert', @eventSpy
 
