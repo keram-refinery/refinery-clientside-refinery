@@ -1,8 +1,3 @@
-refinery.admin.ImagesDialog.prototype.options.url = '/refinery/test/fixtures/images_dialog.json'
-refinery.admin.ResourcesDialog.prototype.options.url = '/refinery/test/fixtures/resources_dialog.json'
-refinery.admin.LinksDialog.prototype.options.url = '/refinery/test/fixtures/links_dialog.json'
-
-
 describe 'PageParts', ->
 
   before (done) ->
@@ -20,134 +15,50 @@ describe 'PageParts', ->
   after ->
     @container.empty()
 
-  describe 'add part', ->
-    before (done) ->
-      @getJSONstub = sinon.stub($, 'getJSON')
-
-      @errorResponse = () ->
-        d = $.Deferred()
-        d.reject({}, 404, 'something went wrong')
-        d.promise()
-
-      @okResponse = () ->
-        d = $.Deferred()
-        d.resolve(
-          {"html":["\u003Cdiv class=\"page-part\" id=\"page_part_lorem\"\u003E\n  \u003Clabel class=\"js-hide\" for=\"page_parts_attributes_2_body\"\u003Elorem\u003C/label\u003E\n  \u003Cinput class=\"part-title\" id=\"page_parts_attributes_2_title\" name=\"page[parts_attributes][2][title]\" type=\"hidden\" value=\"lorem\" /\u003E\n  \u003Ctextarea class=\"replace-with-editor\" id=\"page_parts_attributes_2_body\" name=\"page[parts_attributes][2][body]\" \u003E\n\u003C/textarea\u003E\n  \u003Cinput class=\"part-position\" id=\"page_parts_attributes_2_position\" name=\"page[parts_attributes][2][position]\" type=\"hidden\" value=\"2\" /\u003E\n\u003C/div\u003E\n"]},
-          'success',
-          {
-            getResponseHeader: (args) ->
-              false
-          }
-        )
-        done()
-        d.promise()
-
-      @getJSONstub.returns(@okResponse())
-      $('#add-page-part').click()
-      $('#new-page-part-title').val('lorem')
-      $('.ui-dialog .submit-button').click()
-
-    after ->
-      $.getJSON.restore()
-
-
-    it 'add tab to navigation', ->
-      expect( $('#page-parts').html() ).to.have.string('lorem')
-
-    it 'tab is selected', ->
-      expect( $('#page-parts .ui-state-active').html() ).to.have.string('lorem')
-
-    it 'add panel for body part', ->
-      expect( $('#page_part_lorem').length ).to.be.equal(1)
-
-  describe 'add multiple parts', ->
+  describe 'activate part', ->
     before ->
-      @getJSONstub = sinon.stub($, 'getJSON')
-
-      @i = 1
-
-      @okResponse = (html) ->
-        d = $.Deferred()
-        d.resolve(
-          {"html":[html]},
-          'success',
-          {
-            getResponseHeader: (args) ->
-              false
-          }
-        )
-        d.promise()
-
-      @i = 1
-      while @i <= 5
-        part = 'lorem' + @i
-        html = "\u003Cdiv class=\"page-part\" id=\"page_part_" + part + "\"\u003E\n  \u003Clabel class=\"js-hide\" for=\"page_parts_attributes_" + @i + "_body\"\u003E" + part + "\u003C/label\u003E\n  \u003Cinput class=\"part-title\" id=\"page_parts_attributes_" + @i + "_title\" name=\"page[parts_attributes][" + @i + "][title]\" type=\"hidden\" value=\"" + part + "\" /\u003E\n  \u003Ctextarea class=\"replace-with-editor\" id=\"page_parts_attributes_" + @i + "_body\" name=\"page[parts_attributes][" + @i + "][body]\" \u003E\n\u003C/textarea\u003E\n  \u003Cinput class=\"part-position\" id=\"page_parts_attributes_" + @i + "_position\" name=\"page[parts_attributes][" + @i + "][position]\" type=\"hidden\" value=\"" + @i + "\" /\u003E\n\u003C/div\u003E\n"
-        @getJSONstub.returns(@okResponse(html))
-        $('#add-page-part').click()
-        $('#new-page-part-title').val(part)
-        $('.ui-dialog .submit-button').click()
-        @i++
+      $('#page-parts-options').click()
+      $('.ui-dialog li label').first().click()
+      $('.ui-dialog .ui-dialog-buttonset button').click()
 
     after ->
-      $.getJSON.restore()
+      $('#page-parts-options').click()
+      $('.ui-dialog li label').first().click()
+      $('.ui-dialog .ui-dialog-buttonset button').click()
 
-      sinon.stub(window, 'confirm').returns(true)
-      j = 1
-      while j < @i
-        $('a[href="#page_part_lorem' + j + '"]').click()
-        $('#delete-page-part').click()
-        j++
+    it 'show perex tab', ->
+      expect( $('.ui-tabs-nav a[href="#page_part_perex"]').is(':visible') ).to.be.true
 
-      window.confirm.restore()
-
-    it 'add tabs to navigation', ->
-      j = 1
-      while j < @i
-        expect( $('#page-parts').text() ).to.have.string('lorem' + j)
-        j++
-
-    it 'add panels for body part', ->
-      j = 1
-      while j < @i
-        expect( $('#page_part_lorem' + j).length ).to.be.equal(1)
-        j++
-
-
-  describe 'delete part', ->
+  describe 'deactivate part', ->
     before ->
-      sinon.stub(window, 'confirm').returns(true)
-      $('a[href="#page_part_lorem"]').click()
-      $('#delete-page-part').click()
+      $('#page-parts-options').click()
+      $('.ui-dialog li label').get(1).click()
+      $('.ui-dialog .ui-dialog-buttonset button').click()
 
     after ->
-      window.confirm.restore()
+      $('#page-parts-options').click()
+      $('.ui-dialog li label').get(1).click()
+      $('.ui-dialog .ui-dialog-buttonset button').click()
 
-    it 'update parts position', ->
-      $('input.part-position').each( (i) ->
-        expect( $(this).val() * 1 ).to.be.equal(i)
+    it 'hide body tab', ->
+      expect( $('.ui-tabs-nav a[href="#page_part_body"]').is(':visible') ).to.be.false
+
+    it 'activate another tab', ->
+      expect( $('.ui-tabs-nav .ui-tabs-active').is(':visible') ).to.be.true
+
+  describe 'reorder parts', ->
+    before ->
+      $('#page-parts-options').click()
+      body_li = $($('.ui-dialog li').get(1)).detach()
+      $('.ui-dialog .records').append(body_li)
+      $('.ui-dialog .ui-dialog-buttonset button').click()
+
+    after ->
+      $('#page-parts-options').click()
+      $('.ui-dialog li label').get(1).click()
+      $('.ui-dialog .ui-dialog-buttonset button').click()
+
+    it 'move body tab to end of list', ->
+      expect( $('.ui-tabs-nav a').last().attr('href') ).to.be.eq(
+        $('.ui-tabs-nav a[href="#page_part_body"]').attr('href')
       )
-# todo
-# don't know emulate drag'n drop for sortable tabs
-#  describe 'resort parts', ->
-#    before ->
-#      @li1 = $('#page-parts').find("li:eq(1)")
-#      a = @li1.find('a')
-#      @positionBefore = $(a.attr('href')).find('input.part-position').val()
-#      $('#reorder-page-part').click()
-#      a.click()
-#      @li1.draggable({ cancel: '' })
-#      @li1.simulate( 'drag',
-#        dx: -200,
-#        dy: 0
-#      )
-#      $('#reorder-page-part-done').click()
-#      @li1.draggable('destroy')
-#      @positionAfter = $(a.attr('href')).find('input.part-position').val()
-#
-#    after ->
-#
-#    it 'update parts position', ->
-#      $('input.part-position').each( (i) ->
-#        expect( $(this).val() * 1 ).to.be.equal(i)
-#      )
-#
