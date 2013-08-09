@@ -79,8 +79,8 @@
                         panel.addClass('js-hide');
                     }
 
-                    panel.find('input.active').prop('checked', active);
-                    panel.find('input.position').val(j);
+                    panel.find('input.part-active').prop('checked', active);
+                    panel.find('input.part-position').val(j);
                     list[list.length] = tab;
                 });
 
