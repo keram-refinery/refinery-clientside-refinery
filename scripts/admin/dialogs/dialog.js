@@ -386,7 +386,7 @@
                     this.ui = null;
                 }
 
-                this._destroy(removeGlobalReference);;
+                this._destroy(removeGlobalReference);
 
                 return this;
             },

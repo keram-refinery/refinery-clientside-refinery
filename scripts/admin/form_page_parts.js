@@ -23,7 +23,7 @@
 
             content = '<ul class="records">';
 
-            this.nav.find('a').each(function (i) {
+            this.nav.find('a').each(function () {
                 var a = $(this),
                     active = !a.parent().hasClass('js-hide');
 
@@ -178,10 +178,9 @@
      *
      * @expose
      * @param  {jQuery} holder
-     * @param  {Object} ui
      * @return {undefined}
      */
-    refinery.admin.ui.formPageParts = function (holder, ui) {
+    refinery.admin.ui.formPageParts = function (holder) {
         holder.find('#page-parts').each(function () {
             refinery('admin.FormPageParts').init($(this));
         });
