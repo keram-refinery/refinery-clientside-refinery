@@ -36,6 +36,7 @@ var dir = __dirname,
                         'externs': ['externs/jquery-1.9.js', 'externs/custom.js'],
                         'language_in': 'ECMASCRIPT5_STRICT',
                         'summary_detail_level': 3,
+                        //'formatting': 'PRETTY_PRINT',
                         'output_wrapper': '"(function(window, $){%output%}(window, jQuery));"'
                     }
                 },
@@ -55,6 +56,7 @@ var dir = __dirname,
                         'warning_level': 'verbose',
                         'externs': ['externs/jquery-1.9.js', 'externs/custom.js', 'externs/refinery.js'],
                         'language_in': 'ECMASCRIPT5_STRICT',
+                        //'formatting': 'PRETTY_PRINT',
                         'summary_detail_level': 3,
                         'output_wrapper': '"(function(window, $, refinery){%output%}(window, jQuery, window.refinery));"'
                     }

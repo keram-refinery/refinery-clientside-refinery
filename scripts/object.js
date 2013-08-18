@@ -236,7 +236,7 @@ refinery.Object.prototype = {
     trigger: function (eventName, args) {
         var events = this.events, a, i;
 
-        args = (args && !(args instanceof Array)) ? [args] : args;
+        args = (typeof args !== 'undefined' && !(args instanceof Array)) ? [args] : args;
 
         if (events && events[eventName]) {
             for (a = events[eventName], i = a.length - 1; i >= 0; i--) {

@@ -308,7 +308,7 @@
                             holder.html($(url).html());
                             that.is({'loaded': true, 'loading': false});
                             that.after_load();
-                            that.trigger('load');
+                            that.trigger('load', true);
                         });
                     } else {
                         params = {
@@ -324,6 +324,11 @@
                                 'class': 'flash error',
                                 'html': t('refinery.admin.dialog_content_load_fail')
                             }));
+
+                            /**
+                             * Propagate that load finished unsuccessfully
+                             */
+                            that.trigger('load', false);
                         });
 
                         xhr.always(function () {
@@ -341,7 +346,11 @@
                                 that.ui.init(ui_holder);
                                 that.is('loaded', true);
                                 that.after_load();
-                                that.trigger('load');
+
+                                /**
+                                 * Propagate that load finished unsuccessfully
+                                 */
+                                that.trigger('load', true);
                             }
                         });
 
@@ -386,6 +395,10 @@
                     this.ui = null;
                 }
 
+                if (this.holder && this.holder.parent().hasClass('ui-dialog')) {
+                    this.holder.dialog('destroy');
+                }
+
                 this._destroy(removeGlobalReference);
 
                 return this;
@@ -400,18 +413,19 @@
              * @return {refinery.Object} self
              */
             init: function () {
+                var holder;
+
                 if (this.is('initialisable')) {
                     this.is('initialising', true);
-                    this.holder = $('<div/>', {
+                    holder = $('<div/>', {
                         'id': 'dialog-' + this.id,
                         'class': 'loading'
                     });
 
-                    this.attach_holder(this.holder);
+                    holder.dialog(this.options);
+                    this.attach_holder(holder);
 
                     this.ui = refinery('admin.UserInterface');
-                    this.holder.dialog(this.options);
-
                     this.bind_events();
                     this.init_buttons();
                     this.init_paginate();
