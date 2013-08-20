@@ -33,13 +33,13 @@
              * @return {?images_dialog_object}
              */
             library_tab: function (tab) {
-                var img = tab.find('.ui-selected .image img'),
+                var img = tab.find('.ui-selected'),
                     /** @type {?images_dialog_object} */
                     obj = null;
 
                 if (img.length > 0) {
                     obj = {
-                        id: img.closest('li').attr('id').replace('image-', '') * 1,
+                        id: img.attr('id').match(/[0-9]+$/)[0],
                         type: 'library'
                     }
                 }

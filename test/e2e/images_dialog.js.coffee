@@ -218,7 +218,7 @@ describe 'Admin Images Dialog', ->
 
           before ->
             @return_obj = return_obj =
-              "id": 1
+              "id": "1"
               "type": "library"
 
           after ->
