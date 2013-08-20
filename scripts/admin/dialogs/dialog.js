@@ -300,6 +300,10 @@
                     locale_input = $('#frontend_locale'),
                     params, tmp, xhr;
 
+                if (!url) {
+                    throw new Error('Url isn\'t defined. (' + that.uid + ')');
+                }
+
                 if (that.is('loadable')) {
                     that.is('loading', true);
 
@@ -348,7 +352,7 @@
                                 that.after_load();
 
                                 /**
-                                 * Propagate that load finished unsuccessfully
+                                 * Propagate that load finished successfully
                                  */
                                 that.trigger('load', true);
                             }
@@ -362,7 +366,7 @@
 
             bind_events: function () {
                 var that = this;
-                //that.on('submit', that.close);
+
                 that.on('insert', that.close);
                 that.on('open', that.load);
 
@@ -374,7 +378,7 @@
                 that.holder.on('dialogbeforeclose', function () {
                     // this is here because dialog can be closed via ESC or X button
                     // and in that case is not running through that.close
-                    // @todo maybe purge own close, open methods
+                    // @todo maybe purge own close - open methods
                     that.is('closing', true);
                     that.state.toggle('closing', 'closed', 'opened');
                     that.trigger('close');
