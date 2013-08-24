@@ -6,6 +6,7 @@
      * @constructor
      * @extends {refinery.Object}
      * @param {Object=} options
+     * @return {refinery.admin.UserInterface}
      */
     refinery.Object.create({
 
@@ -24,6 +25,18 @@
                     ).removeClass('hide');
                 }
             });
+
+            this.holder.on('click', '.checkboxes-cmd', function (e) {
+                e.preventDefault();
+                var a = $(this),
+                    parent = a.parent(),
+                    checkboxes = parent.find('input:checkbox'),
+                    checked = a.hasClass('all');
+
+                checkboxes.prop('checked', checked);
+                parent.find('.checkboxes-cmd').toggleClass('hide');
+            });
+
         },
 
         init_collapsible_lists: function () {
@@ -113,7 +126,7 @@
                 elm.tabs({
                     'active': (index > -1 ? index : 0),
                     'activate': function (event, ui) {
-                        ui.newPanel.find('input.text, textarea').focus();
+                        ui.newPanel.find('input.text, textarea').first().focus();
                     }
                 });
             });
@@ -137,8 +150,13 @@
             holder.on('ajax:success', function (event, response, status, xhr) {
                 if (response && typeof response === 'object') {
                     event.preventDefault();
-                    refinery.xhr.success(response, status, xhr, $(event.target), true);
-                    that.reload(holder);
+
+                    if (response.redirect_to) {
+                        Turbolinks.visit(response.redirect_to);
+                    } else {
+                        refinery.xhr.success(response, status, xhr, $(event.target), true);
+                        that.reload();
+                    }
                 }
             });
 
@@ -146,29 +164,7 @@
                 refinery.xhr.error(xhr, status);
             });
 
-            holder.on('click', '.checkboxes-cmd', function (e) {
-                e.preventDefault();
-                var a = $(this),
-                    parent = a.parent(),
-                    checkboxes = parent.find('input:checkbox'),
-                    checked = a.hasClass('all');
-
-                checkboxes.prop('checked', checked);
-                parent.find('.checkboxes-cmd').toggleClass('hide');
-            });
-
-            holder.on('click', '.ui-selectable li', function (e) {
-                var elm = $(this);
-
-                e.preventDefault();
-                if (!elm.parent().hasClass('ui-selectable-multiple')) {
-                    elm.siblings().removeClass('ui-selected');
-                }
-
-                elm.toggleClass('ui-selected');
-
-                return false;
-            });
+            holder.find('.ui-selectable').selectable({ 'filter': 'li' });
         },
 
         init_toggle_hide: function () {
@@ -205,30 +201,62 @@
          * This is important when ajax replace current content of holder so, some objects
          * may not longer exist and we need remove all references to them.
          *
-         * @param {!jQuery} holder
+         * @param {jQuery} holder
          *
          * @return {Object} self
          */
         reload: function (holder) {
-            var holders = this.holder.find('.refinery-instance');
-
-            try {
-                holders.each(function () {
-                    var instances = $(this).data('refinery-instances'),
-                        instance;
-
-                    for (var i = instances.length - 1; i >= 0; i--) {
-                        instance = refinery.Object.instances.get(instances[i]);
-                        instance.destroy(true);
-                    }
-                });
-            } catch (e) {
-                console.log(e);
-            }
-
-            this.holder.off();
+            holder = holder || this.holder;
+            this.destroy(false);
             this.state = new this.State();
             return this.init(holder);
+        },
+
+        /**
+         * Destroy self and also all refinery, jquery ui instances under holder
+         *
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
+         *
+         * @return {Object} self
+         */
+        destroy: function (removeGlobalReference) {
+            var holder = this.holder,
+                holders;
+
+            if (holder) {
+                holders = holder.find('.refinery-instance');
+
+                try {
+                    holders.each(function () {
+                        var instances = $(this).data('refinery-instances'),
+                            instance;
+
+                        for (var i = instances.length - 1; i >= 0; i--) {
+                            instance = refinery.Object.instances.get(instances[i]);
+                            instance.destroy(true);
+                        }
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
+
+                // we can't do this because destroying jquery ui instances a
+                // also removes classes on objects which we use
+                //
+                // try {
+                //     holder.find('.collapsible-list').accordion('destroy');
+                //     holder.find('.ui-tabs').tabs('destroy');
+                //     holder.find('.ui-selectable').selectable('destroy');
+                //     holder.find('.sortable-list').not('.records').sortable('destroy');
+                // } catch (e) {
+                //     console.log(e);
+                // }
+            }
+
+            this._destroy(removeGlobalReference);
+
+            return this;
         },
 
         init: function (holder) {

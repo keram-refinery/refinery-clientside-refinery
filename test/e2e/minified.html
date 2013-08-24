@@ -27,10 +27,13 @@
     <!-- include components files here... -->
     <script src="/components/jquery/jquery.js"></script>
     <script src="/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+    <script src="/refinery/components/jquery.iframe-transport.js"></script>
     <script src="/components/jquery.simulate.js"></script>
     <!-- <script src="/components/jquery.simulate.drag-sortable.js/jquery.simulate.drag-sortable.js"></script>-->
     <script src="/components/i18n.js"></script>
 
+    <!-- include test helpers... -->
+    <script src="/refinery/test/helpers.js"></script>
 
     <script src="/refinery/i18n/refinery-en.js"></script>
     <script src="/refinery/i18n/refinery-admin-en.js"></script>
@@ -45,7 +48,7 @@
 
     <script>
     mocha
-    .globals([ 'LiveReload', 'constructor', 'top', 'confirm', 'alert', 'applyDrag'])
+    .globals([ 'LiveReload', 'constructor', '0', 'top', 'confirm', 'alert', 'applyDrag'])
     .run()
     </script>
 </body>

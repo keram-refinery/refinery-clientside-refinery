@@ -49,7 +49,6 @@
                         } else {
                             Turbolinks.visit(url);
                         }
-
                     }
                 });
             };
@@ -99,21 +98,53 @@
             });
         },
 
+        init_upload: function () {
+            var that = this,
+                form = that.holder,
+                file_inputs = form.find('input[type="file"]');
+
+            if (file_inputs.length > 0) {
+                form.on('submit', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    $.ajax(this.action, {
+                            'data': form.serializeArray(),
+                            'files': file_inputs,
+                            'iframe': true,
+                            'processData': false
+                        }).done(
+                        /**
+                         * @param {json_response} response
+                         * @param {string} status
+                         * @param {jQuery.jqXHR} xhr
+                         * @return {undefined}
+                         */
+                        function (response, status, xhr) {
+                            form.trigger('ajax:success', [response, status, xhr]);
+                        });
+                });
+            }
+        },
+
         init_inputs: function () {
             var that = this,
                 form = that.holder,
                 submit_btn = form.find('.form-actions .submit-button'),
-                submit_btn_val = submit_btn.val();
+                submit_btn_val;
 
-            form.on('change', 'input, select, textarea', function () {
-                if (that.initial_values !== form.serialize() &&
-                    submit_btn_val[submit_btn_val.length] !== '!'
-                ) {
-                    submit_btn.val(submit_btn_val + ' !');
-                } else {
-                    submit_btn.val(submit_btn_val.replace(/ !$/, ''));
-                }
-            });
+            if (submit_btn.length > 0) {
+                submit_btn_val = submit_btn.val();
+                form.on('change', 'input, select, textarea', function () {
+                    if (that.initial_values !== form.serialize() &&
+                        submit_btn_val[submit_btn_val.length] !== '!'
+                    ) {
+                        submit_btn.val(submit_btn_val + ' !');
+                    } else {
+                        submit_btn.val(submit_btn_val.replace(/ !$/, ''));
+                    }
+                });
+            }
         },
 
         fly_form_actions: function (left_buttons, holder, $window) {
@@ -163,6 +194,7 @@
                 that.attach_holder(holder);
                 that.init_pickers();
                 that.init_inputs();
+                that.init_upload();
                 that.initial_values = holder.serialize();
                 that.init_fly_form_actions();
 

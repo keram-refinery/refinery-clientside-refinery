@@ -23,58 +23,90 @@
              * @return {undefined}
              */
             after_load: function () {
-                this.holder.find('.records li').first().addClass('ui-selected');
-                this.holder.find('input.text:visible').focus();
+                var that = this,
+                    holder = that.holder;
+
+                holder.on('selectableselected', '.ui-selectable', function (event, ui) {
+                    that.library_tab($(ui.selected));
+                });
+
+                holder.on('submit', '#external-image-area form', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    that.url_tab($(this));
+                });
+
+                holder.on('ajax:success', function (xhr, response) {
+                    that.upload_tab(response.image);
+                });
             },
 
             /**
              * Handle image linked from library
              *
-             * @return {?images_dialog_object}
+             * @param {jQuery} li
+             * @return {Object} self
              */
-            library_tab: function (tab) {
-                var img = tab.find('.ui-selected'),
-                    /** @type {?images_dialog_object} */
-                    obj = null;
+            library_tab: function (li) {
+                var /** @typedef {{id: string}} */ obj;
 
-                if (img.length > 0) {
+                if (li.length > 0) {
                     obj = {
-                        id: img.attr('id').match(/[0-9]+$/)[0],
-                        type: 'library'
-                    }
+                        id: li.attr('id').match(/[0-9]+$/)[0]
+                    };
+
+                    li.removeClass('ui-selected');
+                    this.trigger('insert', obj);
                 }
 
-                return obj;
+                return this;
             },
 
             /**
              * Handle image linked by url
              *
-             * @return {?images_dialog_object}
+             * @param {jQuery} form
+             * @return {Object} self
              */
-            url_tab: function (tab) {
-                var url_input = tab.find('input.text:valid'),
-                    url = url_input.val(),
-                    /** @type {?images_dialog_object} */
-                    obj = null;
+            url_tab: function (form) {
+                var url_input = form.find('input[type="url"]:valid'),
+                    alt_input = form.find('input[type="text"]:valid'),
+                    url = /** @type {string} */(url_input.val()),
+                    alt = /** @type {string} */(alt_input.val()),
+                    /** @typedef {{alt: string, url: string}} */
+                    obj;
 
                 if (url) {
                     obj = {
                         url: url,
-                        type: 'external'
+                        alt: alt
                     };
+
+                    url_input.val('');
+                    alt_input.val('');
+                    this.trigger('insert', obj);
                 }
 
-                return obj;
+                return this;
             },
 
             /**
-             * Handle upload
+             * Handle uploaded image
              *
-             * @return {undefined}
+             * @param {Object} image
+             * @return {Object} self
              */
-            upload_tab: function () {
+            upload_tab: function (image) {
+                var that = this,
+                    holder = that.holder;
 
+                if (image) {
+                    that.trigger('insert', image);
+                    holder.find('li.ui-selected').removeClass('ui-selected');
+                    holder.find('.ui-tabs').tabs({ 'active': 0 });
+                }
+
+                return that;
             },
 
             /**
@@ -83,26 +115,6 @@
              * @return {Object} self
              */
             insert: function () {
-                var tab = this.holder.find('div[aria-expanded="true"]'),
-                    obj = null;
-
-                switch (tab.attr('id')) {
-                case 'existing-image-area':
-                    obj = this.library_tab(tab);
-
-                    break;
-                case 'external-image-area':
-                    obj = this.url_tab(tab);
-
-                    break;
-                default:
-                    break;
-                }
-
-                if (obj) {
-                    this.trigger('insert', obj);
-                }
-
                 return this;
             }
         });

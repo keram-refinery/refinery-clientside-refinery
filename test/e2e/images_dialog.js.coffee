@@ -6,7 +6,7 @@ describe 'Admin Images Dialog', ->
     @container = $('#container')
 
   after ->
-    @container.empty()
+    # @container.empty()
 
   describe 'Class', ->
     after ->
@@ -30,235 +30,240 @@ describe 'Admin Images Dialog', ->
       expect( @dialog ).to.be.an.instanceof refinery.admin.Dialog
 
 
-    describe 'initialised', ->
+  describe 'initialised', ->
 
-      before ->
-        @dialog.init(@container)
+    before ->
+      @dialog = new refinery.admin.ImagesDialog
+      @dialog.init(@container)
 
-      it 'is initialised', ->
-        expect( @dialog.is('initialised') ).to.be.true
-        expect( @dialog.is('initialisable') ).to.be.false
+    after ->
+      @dialog.destroy(true)
 
-      it 'is openable', ->
-        expect( @dialog.is('openable') ).to.be.true
+    it 'is initialised', ->
+      expect( @dialog.is('initialised') ).to.be.true
+      expect( @dialog.is('initialisable') ).to.be.false
+
+    it 'is openable', ->
+      expect( @dialog.is('openable') ).to.be.true
+
+  describe 'open', ->
+
+    before ->
+      @dialog = new refinery.admin.ImagesDialog
+      @dialog.init(@container)
+      @dialog.open()
+
+    after ->
+      @dialog.destroy(true)
+
+    it 'is opened', ->
+      expect( @dialog.is('opened') ).to.be.true
+      expect( @dialog.is('openable') ).to.be.false
+
+    it 'is not closed', ->
+      expect( @dialog.is('closed') ).to.be.false
+      expect( @dialog.is('closable') ).to.be.true
+
+    it 'has title Images', ->
+      expect( $('.ui-dialog-title').text() ).to.be.equal 'Images'
 
 
-    describe 'open', ->
+  describe 'load', ->
+    context 'fail', ->
 
-      before ->
+      before (done) ->
+        @dialog = new refinery.admin.ImagesDialog({
+          url: '/some/nonexistant/url'
+        }).init(@container)
+
+        @dialog.on 'load', (loaded) ->
+          done()
+
         @dialog.open()
 
       after ->
-        @dialog.close()
+        @dialog.destroy(true)
 
-      it 'is opened', ->
-        expect( @dialog.is('opened') ).to.be.true
-        expect( @dialog.is('openable') ).to.be.false
+      it 'contain info about load fail', ->
+        expect( @dialog.holder.text() ).to.have.string 'Dialog content load fail'
 
-      it 'is not closed', ->
-        expect( @dialog.is('closed') ).to.be.false
-        expect( @dialog.is('closable') ).to.be.true
-
-      it 'has title Images', ->
-        expect( $('.ui-dialog-title').text() ).to.be.equal 'Images'
+      it 'is not loaded', ->
+        expect( @dialog.is('loaded') ).to.be.false
 
 
-    describe 'load', ->
-
-      before ->
-
-      after ->
-
-      describe 'fail', ->
-
-        before (done) ->
-          @dd = new refinery.admin.ImagesDialog({
-            url: '/some/nonexistant/url'
-          }).init(@container)
-
-          @dd.on 'load', (loaded) ->
-            done()
-
-          @dd.open()
-
-        after ->
-          @dd.close()
-          @dd.destroy(true)
-
-        it 'contain info about load fail', ->
-          expect( @dd.holder.text() ).to.have.string 'Dialog content load fail'
-
-        it 'is not loaded', ->
-          expect( @dd.is('loaded') ).to.be.false
-
-
-      describe 'success', ->
-
-        before (done) ->
-          @dd = new refinery.admin.ImagesDialog({
-            url: '/refinery/test/fixtures/empty_images_dialog.json'
-          }).init(@container)
-
-          @dd.on 'load', (loaded) ->
-            done()
-
-          @dd.open()
-
-        after ->
-          @dd.close()
-          @dd.destroy(true)
-
-        it 'is loaded', ->
-          expect( @dd.is('loaded') ).to.be.true
-
-        it 'has no info about loading fail', ->
-          expect( @dd.holder.text() ).to.have.not.string 'Dialog content load fail'
-
-        it 'contain images', ->
-          expect( @dd.holder.text() ).to.have.string 'Library'
-          expect( @dd.holder.text() ).to.have.string 'There are no images yet.'
-
-
-    describe 'tabs', ->
+    context 'success', ->
 
       before (done) ->
-        @dd = new refinery.admin.ImagesDialog().init(@container)
-        @dd.on 'load', (loaded) ->
+        @dialog = new refinery.admin.ImagesDialog({
+          url: '/refinery/test/fixtures/empty_images_dialog.json'
+        }).init(@container)
+
+        @dialog.on 'load', (loaded) ->
           done()
 
-        @dd.open()
+        @dialog.open()
 
       after ->
-        @dd.close()
-        @dd.destroy(true)
+        @dialog.destroy(true)
 
-      it 'has tab Library', ->
-        expect( @dd.holder.text() ).to.have.string 'Library'
+      it 'is loaded', ->
+        expect( @dialog.is('loaded') ).to.be.true
 
-      it 'has tab Url', ->
-        expect( @dd.holder.text() ).to.have.string 'Url'
+      it 'has no info about loading fail', ->
+        expect( @dialog.holder.text() ).to.have.not.string 'Dialog content load fail'
 
-
-      describe 'Url tab', ->
-
-        before ->
-          @dd.holder.find('.ui-tabs').tabs({ active: 1 })
-
-        after ->
-
-        it 'is active', ->
-          expect( @dd.holder.find('.ui-tabs-nav .ui-state-active').text() ).to.have.string 'Url'
+      it 'contain images', ->
+        expect( @dialog.holder.text() ).to.have.string 'Library'
+        expect( @dialog.holder.text() ).to.have.string 'There are no images yet.'
 
 
-        describe 'insert success', ->
+  describe 'tabs', ->
 
-          before ->
-            @return_obj = { 'url': "http://sme.sk/a", 'type': "external" }
-            @dd.holder.find('input.text').val @return_obj.url
-            @insertSpy = insertSpy = sinon.spy()
-            @dd.on 'insert', (img) ->
-              insertSpy(img)
+    before (done) ->
+      @dialog = new refinery.admin.ImagesDialog().init(@container)
+      @dialog.on 'load', (loaded) ->
+        done()
 
-            @dd.holder.find('.button.insert-button:visible').click()
+      @dialog.open()
 
-          after ->
-            @dd.holder.find('input.text').val('')
+    after ->
+      @dialog.destroy(true)
 
-          it 'return img object', (done) ->
-            expect( @insertSpy.called, 'Event did not fire in 1000ms.' ).to.be.true
-            expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
-            expect( @insertSpy.calledWith( @return_obj ), 'Retturned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
-            done()
+    it 'has tab Library', ->
+      expect( @dialog.holder.text() ).to.have.string 'Library'
 
+    it 'has tab Url', ->
+      expect( @dialog.holder.text() ).to.have.string 'Url'
 
-        describe 'insert fail', ->
-
-          before ->
-            @insertSpy = sinon.spy()
-            @dd.on 'insert', @insertSpy
-
-          after ->
-            @dd.holder.find('input.text').val('')
-
-          it 'not fire insert event when url is empty', (done) ->
-            @dd.holder.find('input.text').val('')
-
-            @dd.holder.find('.button.insert-button:visible').click()
-
-            expect( @insertSpy.called, 'Event was fired.' ).to.be.false
-            done()
-
-          it 'not fire insert event when url input has invalid value', (done) ->
-            @dd.holder.find('input.text').val('something invalid')
-            @dd.holder.find('.button.insert-button:visible').click()
-
-            expect( @insertSpy.called, 'Event was fired.' ).to.be.false
-            done()
+    it 'has tab Upload', ->
+      expect( @dialog.holder.text() ).to.have.string 'Upload'
 
 
-      describe 'Library tab', ->
+    describe 'Url tab', ->
+
+      before ->
+        @dialog.open()
+        @dialog.holder.find('.ui-tabs').tabs({ active: 1 })
+
+      after ->
+
+      it 'is active', ->
+        expect( @dialog.holder.find('.ui-tabs-nav .ui-state-active').text() ).to.have.string 'Url'
+
+
+      describe 'insert success', ->
 
         before ->
-          @dd.open()
-          @dd.holder.find('.ui-tabs').tabs({ active: 0 })
-
-        after ->
-
-        beforeEach ->
+          @return_obj = { 'url': "http://sme.sk/a", 'alt': '' }
+          @dialog.holder.find('input[type="url"]').val @return_obj.url
           @insertSpy = insertSpy = sinon.spy()
-
-          @dd.on 'insert', (img) ->
+          @dialog.on 'insert', (img) ->
             insertSpy(img)
 
-        it 'is active', ->
-          expect( @dd.holder.find('.ui-tabs-nav .ui-state-active').text() ).to.have.string 'Library'
+          @dialog.holder.find('input[type="submit"]:visible').click()
+
+        after ->
+          @dialog.holder.find('input.text').val('')
+
+        it 'return img object', (done) ->
+          expect( @insertSpy.called, 'Event did not fire in 1000ms.' ).to.be.true
+          expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
+          expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
+          done()
 
 
-        describe 'insert success', ->
+      describe 'insert fail', ->
 
-          before ->
-            @return_obj = return_obj =
-              "id": "1"
-              "type": "library"
+        before ->
+          @insertSpy = sinon.spy()
+          @dialog.on 'insert', @insertSpy
 
-          after ->
+        after ->
+          @dialog.holder.find('input.text').val('')
 
-          it 'return img object', (done) ->
-            @dd.holder.find('.button.insert-button:visible').click()
+        it 'not fire insert event when url is empty', (done) ->
+          @dialog.holder.find('input.text').val('')
 
-            expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
-            expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
-            expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
-            done()
+          @dialog.holder.find('.button.insert-button:visible').click()
 
+          expect( @insertSpy.called, 'Event was fired.' ).to.be.false
+          done()
 
-        describe 'insert fail', ->
+        it 'not fire insert event when url input has invalid value', (done) ->
+          @dialog.holder.find('input.text').val('something invalid')
+          @dialog.holder.find('.button.insert-button:visible').click()
 
-          before ->
-            @dd.open()
-
-          after ->
-            @dd.close()
-
-          it 'not fire insert event when image is not selected', (done) ->
-            @dd.holder.find('#image-1').click()
-            @dd.holder.find('.button.insert-button:visible').click()
-
-            expect( @insertSpy.called, 'Event insert was fired.' ).to.be.false
-            done()
+          expect( @insertSpy.called, 'Event was fired.' ).to.be.false
+          done()
 
 
-        describe 'pagination', ->
+    describe 'Library tab', ->
 
-          before ->
-            @dd.open()
+      before ->
+        @dialog.open()
+        @dialog.holder.find('.ui-tabs').tabs({ active: 0 })
 
-          after ->
-            @dd.close()
+      after ->
 
-          # todo
-          it 'not fire insert event when image is not selected', (done) ->
-            @dd.holder.find('.pagination a').first().click()
-#            #expect( @insertSpy.called, 'Event insert was fired.' ).to.be.false
-            done()
+      beforeEach ->
+        @insertSpy = insertSpy = sinon.spy()
 
+        @dialog.on 'insert', (img) ->
+          insertSpy(img)
+
+      it 'is active', ->
+        expect( @dialog.holder.find('.ui-tabs-nav .ui-state-active').text() ).to.have.string 'Library'
+
+
+      describe 'insert success', ->
+
+        before ->
+          @return_obj = return_obj =
+            "id": "1"
+
+        after ->
+
+        it 'return img object', (done) ->
+          uiSelect( @dialog.holder.find('.ui-selectable .ui-selectee').first() )
+
+          expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
+          expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
+          expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
+          done()
+
+    describe 'Upload tab', ->
+
+      before ->
+        @dialog.open()
+        @dialog.holder.find('.ui-tabs').tabs({ active: 2 })
+
+      after ->
+
+      beforeEach ->
+        @insertSpy = insertSpy = sinon.spy()
+
+        @dialog.on 'insert', (img) ->
+          insertSpy(img)
+
+      it 'is active', ->
+        expect( @dialog.holder.find('.ui-tabs-nav .ui-state-active').text() ).to.have.string 'Upload'
+
+
+      describe 'insert success', ->
+
+        before ->
+          @server = sinon.fakeServer.create()
+          @return_obj = return_obj =
+            "id": "1"
+
+          $('#new_image').submit()
+
+        after ->
+          @server.restore()
+
+        # todo
+        # it 'return img object', (done) ->
+        #   # expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
+        #   # expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
+        #   # expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
+        #   done()

@@ -77,7 +77,6 @@
                     '_submittable': function () {
                         return (this.get('initialised') && !this.get('submitting'));
                     },
-                    /** @expose */
                     '_insertable': function () {
                         return (this.get('initialised') && !this.get('inserting'));
                     }
@@ -160,7 +159,7 @@
             submit_form: function (form) {
                 var that = this;
 
-                if (that.is('submittable')) {
+                if (that.is('submittable') && form.attr('action')) {
                     that.is('submitting', true);
 
                     $.ajax({
@@ -201,15 +200,16 @@
              * @return {undefined}
              */
             init_buttons: function () {
-                var that = this;
+                var that = this,
+                    holder = that.holder;
 
-                that.holder.on('click', '.cancel-button, .close-button', function (e) {
+                holder.on('click', '.cancel-button, .close-button', function (e) {
                     e.preventDefault();
                     that.close();
                     return false;
                 });
 
-                that.holder.on('click', '.submit-button', function (e) {
+                holder.on('click', '.submit-button', function (e) {
                     if ($(this).closest('form').length === 0) {
                         e.preventDefault();
                         that.submit_button();
@@ -217,13 +217,14 @@
                     }
                 });
 
-                that.holder.on('submit', 'form', function (e) {
+                holder.on('submit', 'form', function (e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     that.submit_form($(this));
                     return false;
                 });
 
-                that.holder.on('click', '.insert-button', function (e) {
+                holder.on('click', '.insert-button', function (e) {
                     e.preventDefault();
                     that.insert();
                     return false;
@@ -298,7 +299,7 @@
                     holder = that.holder,
                     url = that.options.url,
                     locale_input = $('#frontend_locale'),
-                    params, tmp, xhr;
+                    params, xhr;
 
                 if (!url) {
                     throw new Error('Url isn\'t defined. (' + that.uid + ')');
@@ -322,7 +323,7 @@
 
                         xhr = $.ajax(url, params);
 
-                        xhr.fail(function (xhr, status) {
+                        xhr.fail(function () {
                             // todo xhr, status
                             holder.html($('<div/>', {
                                 'class': 'flash error',

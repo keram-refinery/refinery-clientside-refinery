@@ -4,7 +4,7 @@ describe 'Admin Image Dialog', ->
     @container = $('#container')
 
   after ->
-    @container.empty()
+    # @container.empty()
 
   describe 'Class', ->
     after ->
@@ -28,94 +28,91 @@ describe 'Admin Image Dialog', ->
       expect( @dialog ).to.be.an.instanceof refinery.admin.Dialog
 
 
-    describe 'initialised', ->
+  describe 'initialised', ->
 
-      before ->
-        @dialog.init()
+    before ->
+      @dialog = new refinery.admin.ImageDialog url: '/refinery/test/fixtures/image_dialog.json'
+      @dialog.init()
 
-      it 'is initialised', ->
-        expect( @dialog.is('initialised') ).to.be.true
-        expect( @dialog.is('initialisable') ).to.be.false
+    after ->
+      @dialog.destroy(true)
 
-      it 'is openable', ->
-        expect( @dialog.is('openable') ).to.be.true
+    it 'is initialised', ->
+      expect( @dialog.is('initialised') ).to.be.true
+      expect( @dialog.is('initialisable') ).to.be.false
 
-    describe 'open', ->
+    it 'is openable', ->
+      expect( @dialog.is('openable') ).to.be.true
 
-      before ->
-        @dialog.init().open()
+  describe 'open', ->
+
+    before ->
+      @dialog = new refinery.admin.ImageDialog url: '/refinery/test/fixtures/image_dialog.json'
+      @dialog.init().open()
+
+    after ->
+      @dialog.destroy(true)
+
+    it 'is opened', ->
+      expect( @dialog.is('opened') ).to.be.true
+      expect( @dialog.is('openable') ).to.be.false
+
+    it 'is not closed', ->
+      expect( @dialog.is('closed') ).to.be.false
+      expect( @dialog.is('closable') ).to.be.true
+
+    it 'has title Image', ->
+      expect( $('.ui-dialog-title').text() ).to.be.equal 'Image'
+
+  describe 'load', ->
+    context 'fail', ->
+
+      before (done) ->
+        @dialog = new refinery.admin.ImageDialog({
+          url: '/some/nonexistant/url'
+        }).init()
+
+        @dialog.on 'load', (loaded) ->
+          done()
+
+        @dialog.open()
 
       after ->
-        # @dialog.close()
+        @dialog.destroy(true)
 
-      it 'is opened', ->
-        expect( @dialog.is('opened') ).to.be.true
-        expect( @dialog.is('openable') ).to.be.false
+      it 'contain info about load fail', ->
+        expect( @dialog.holder.text() ).to.have.string 'Dialog content load fail'
 
-      it 'is not closed', ->
-        expect( @dialog.is('closed') ).to.be.false
-        expect( @dialog.is('closable') ).to.be.true
-
-      it 'has title Image', ->
-        expect( $('.ui-dialog-title').text() ).to.be.equal 'Image'
+      it 'is not loaded', ->
+        expect( @dialog.is('loaded') ).to.be.false
 
 
-    describe 'load', ->
+    context 'success', ->
+      before (done) ->
+        @dialog = new refinery.admin.ImageDialog({
+          url: '/refinery/test/fixtures/image_dialog.json'
+        }).init()
 
-      before ->
+        @dialog.on 'load', (loaded) ->
+          done()
+
+        @dialog.open()
 
       after ->
+        @dialog.destroy(true)
 
-      describe 'fail', ->
+      it 'is loaded', ->
+        expect( @dialog.is('loaded') ).to.be.true
 
-        before (done) ->
-          @dd = new refinery.admin.ImageDialog({
-            url: '/some/nonexistant/url'
-          }).init()
+      it 'has no info about loading fail', ->
+        expect( @dialog.holder.text() ).to.have.not.string 'Dialog content load fail'
 
-          @dd.on 'load', (loaded) ->
-            done()
+      it 'contain image', ->
+        expect( @dialog.holder.find('#image-preview').length ).to.be.equal(1)
+        expect( @dialog.holder.find('#image-alt').length ).to.be.equal(1)
 
-          @dd.open()
-
-        after ->
-          @dd.close()
-          @dd.destroy(true)
-
-        it 'contain info about load fail', ->
-          expect( @dd.holder.text() ).to.have.string 'Dialog content load fail'
-
-        it 'is not loaded', ->
-          expect( @dd.is('loaded') ).to.be.false
-
-
-      describe 'success', ->
-
-        before (done) ->
-          @dd = new refinery.admin.ImageDialog({
-            url: '/refinery/test/fixtures/image_dialog.json'
-          }).init()
-
-          @dd.on 'load', (loaded) ->
-            done()
-
-          @dd.open()
-
-        after ->
-          @dd.close()
-          @dd.destroy(true)
-
-        it 'is loaded', ->
-          expect( @dd.is('loaded') ).to.be.true
-
-        it 'has no info about loading fail', ->
-          expect( @dd.holder.text() ).to.have.not.string 'Dialog content load fail'
-
-        it 'contain image', ->
-          expect( @dd.holder.find('#image-preview').length ).to.be.equal(1)
-          expect( @dd.holder.find('#image-alt').length ).to.be.equal(1)
-
-    describe 'insert default', ->
+  describe 'insert', ->
+    context 'default', ->
 
       before (done) ->
         @return_obj = return_obj =
@@ -130,23 +127,23 @@ describe 'Admin Image Dialog', ->
             "large":"/refinery/test/fixtures/500x350.jpg",
             "grid":"/refinery/test/fixtures/500x350.jpg"
 
-        @dd = dd = new refinery.admin.ImageDialog({
+        @dialog = dialog = new refinery.admin.ImageDialog({
           url: '/refinery/test/fixtures/image_dialog.json'
         }).init()
 
-        @dd.on 'load', (loaded) ->
-          dd.holder.find('.button.insert-button:visible').click()
+        @dialog.on 'load', (loaded) ->
+          dialog.holder.find('.button.insert-button:visible').click()
           done()
 
         @insertSpy = insertSpy = sinon.spy()
-        @dd.on 'insert', (img) ->
+        @dialog.on 'insert', (img) ->
           insertSpy(img)
 
-        @dd.open()
+        @dialog.open()
 
       after ->
-        @dd.close()
-        @dd.destroy(true)
+        @dialog.close()
+        @dialog.destroy(true)
 
       it 'fires insert event', ->
         expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
@@ -156,7 +153,7 @@ describe 'Admin Image Dialog', ->
         expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
         expect( @return_obj.size ).to.be.equal('medium')
 
-    describe 'insert original', ->
+    context 'original', ->
 
       before (done) ->
         @return_obj = return_obj =
@@ -171,29 +168,28 @@ describe 'Admin Image Dialog', ->
             "large":"/refinery/test/fixtures/500x350.jpg",
             "grid":"/refinery/test/fixtures/500x350.jpg"
 
-        @dd = dd = new refinery.admin.ImageDialog({
+        @dialog = dialog = new refinery.admin.ImageDialog({
           url: '/refinery/test/fixtures/image_dialog.json'
         }).init()
 
-        @dd.on 'load', (loaded) ->
-          dd.holder.find('a[href="#original"]').click()
-          dd.holder.find('.button.insert-button:visible').click()
-          done()
-
         @insertSpy = insertSpy = sinon.spy()
-        @dd.on 'insert', (img) ->
+        @dialog.on 'insert', (img) ->
           insertSpy(img)
 
-        @dd.open()
+        @dialog.on 'load', (loaded) ->
+          uiSelect( dialog.holder.find('a[href="#original"]').parent() )
+          dialog.holder.find('.insert-button:visible').click()
+          done()
+
+        @dialog.open()
 
       after ->
-        @dd.close()
-        @dd.destroy(true)
+        @dialog.destroy(true)
 
       it 'fires insert event', ->
         expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
         expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
 
-      it 'returns image with default medium size selected', ->
+      it 'returns image with original size selected', ->
         expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true
         expect( @return_obj.size ).to.be.equal('original')

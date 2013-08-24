@@ -58,7 +58,7 @@ var dir = __dirname,
                         'language_in': 'ECMASCRIPT5_STRICT',
                         //'formatting': 'PRETTY_PRINT',
                         'summary_detail_level': 3,
-                        'output_wrapper': '"(function(window, $, refinery){%output%}(window, jQuery, window.refinery));"'
+                        'output_wrapper': '"(function(window, $){%output%}(window, jQuery));"'
                     }
                 },
                 'src': [
@@ -125,6 +125,13 @@ var dir = __dirname,
                     'src': [
                         '**'
                     ]
+                }]
+            }
+        }, {
+            'jquery.iframe-transport': {
+                'files': [{
+                    'dest': build_dir + '/javascripts/vendor/jquery.iframe-transport.js',
+                    'src': dir + '/components/jquery.iframe-transport.js'
                 }]
             }
         }]

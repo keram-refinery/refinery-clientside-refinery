@@ -133,17 +133,19 @@
          * @return {Object} self
          */
         destroy: function (removeGlobalReference) {
+            var dialog_holder = this.dialog_holder;
+
             if (this.is('initialised')) {
                 this.nav = null;
 
-                if (this.dialog_holder) {
-                    if (this.dialog_holder.hasClass('ui-dialog')) {
-                        this.dialog_holder.dialog('destroy');
+                if (dialog_holder) {
+                    if (dialog_holder.parent().hasClass('ui-dialog')) {
+                        dialog_holder.dialog('destroy');
                     }
 
-                    this.dialog_holder.off();
-                    this.dialog_holder.remove();
-                    this.dialog_holder = null;
+                    dialog_holder.off();
+                    dialog_holder.remove();
+                    dialog_holder = null;
                 }
             }
 
