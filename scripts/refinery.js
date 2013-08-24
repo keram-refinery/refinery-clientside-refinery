@@ -383,9 +383,9 @@ refinery.spinner = {
      * @return {undefined}
      */
     on: function () {
-        var body = $('body');
-        body.addClass('loading');
-        body.prop('aria-busy', true);
+        $('body')
+        .addClass('loading')
+        .prop('aria-busy', true);
     },
 
     /**
@@ -395,9 +395,9 @@ refinery.spinner = {
      * @return {undefined}
      */
     off: function () {
-        var body = $('body');
-        body.removeClass('loading');
-        body.prop('aria-busy', false);
+        $('body')
+        .removeClass('loading')
+        .prop('aria-busy', false);
     }
 };
 
