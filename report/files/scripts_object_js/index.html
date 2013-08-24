@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>scripts/object.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
+      <p class="stat">67.92</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
+      <p class="stat">509</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="span6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="span6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
+      <p class="stat">70.34</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
+      <p class="stat">1.90</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">/*jslint sub: true, plusplus: true */
+/*global $, refinery */
+
+(function (refinery) {
+
+    &#039;use strict&#039;;
+
+    /**
+     * Refinery Object
+     *
+     * @constructor
+     * @expose
+     *
+     * @param {Object=} options
+     * @param {boolean=} is_prototype
+     */
+    refinery.Object = function (options, is_prototype) {
+        this.id = refinery.Object.guid++;
+        this.options = $.extend({}, this.options, options);
+
+        /**
+         * Unique Object Instance ID consist from his name and id
+         *
+         * @expose
+         *
+         * @type {string}
+         */
+        this.uid = this.name + this.id;
+
+        // initialize state object only if
+        // we are not using this object prototype
+        if (!is_prototype) {
+            this.state = new this.State();
+            refinery.Object.instances.add(this);
+        }
+    };
+
+    refinery.Object.prototype = {
+
+        /**
+         * Id
+         *
+         * @expose
+         * @private
+         * @type {number}
+         */
+        id: 0,
+
+        /**
+         * Name
+         *
+         * @expose
+         * @type {string}
+         */
+        name: &#039;Object&#039;,
+
+        /**
+         * Version
+         *
+         * @expose
+         * @type {string}
+         */
+        version: &#039;0.1&#039;,
+
+        /**
+         * Module
+         *
+         * @expose
+         * @type {string}
+         */
+        module: &#039;refinery&#039;,
+
+        /**
+         * Options
+         *
+         * @expose
+         * @type {?Object}
+         */
+        options: null,
+
+        /**
+         * Events
+         *
+         * @expose
+         * @type {?Object}
+         */
+        events: null,
+
+        /**
+         * jQuery wrapper around DOM element
+         *
+         * @expose
+         * @type {?jQuery}
+         */
+        holder: null,
+
+        /**
+         * Fullname
+         *
+         * @expose
+         * @public
+         *
+         * @type {string}
+         */
+        fullname: &#039;refinery.Object&#039;,
+
+        /**
+         * State class instatiable via Object constructor
+         * @expose
+         */
+        State: refinery.ObjectState,
+
+        /**
+         * State instance
+         *
+         * @expose
+         *
+         * @type {?refinery.ObjectState}
+         */
+        state: null,
+
+        /**
+         * Check or set object state
+         *
+         * @expose
+         * @param {string|Object} action
+         * @param {boolean=} state
+         *
+         * @return {boolean|undefined}
+         */
+        is: function (action, state) {
+            if (!this.state) {
+                return;
+            }
+
+            if (typeof state === &#039;undefined&#039; &amp;&amp; typeof action !== &#039;object&#039;) {
+                return this.state.is(action);
+            }
+
+            this.state.set(action, state);
+        },
+
+        /**
+         * Register Callback on event
+         * If callback return false none of other callback after that
+         * will be executed
+         *
+         * @public
+         * @expose
+         * @param {string} eventName
+         * @param {Function} callback
+         *
+         * @return {Object} this
+         */
+        on: function (eventName, callback) {
+            var events = this.events || {};
+
+            events[eventName] = events[eventName] || [];
+            events[eventName].push(callback);
+            this.events = events;
+
+            return this;
+        },
+
+        /**
+         * Remove Callback from event
+         *
+         * @public
+         * @expose
+         * @param {string} eventName
+         * @param {Function} callback
+         *
+         * @return {Object} this
+         */
+        off: function (eventName, callback) {
+            var events = this.events;
+
+            if (events &amp;&amp; events[eventName] &amp;&amp; events[eventName] instanceof Array) {
+                events[eventName].splice(events[eventName].indexOf(callback), 1);
+            }
+
+            return this;
+        },
+
+        /**
+         * Register observer on object event
+         *
+         * @expose
+         * @public
+         *
+         * @param {string}         eventName
+         * @param {Function=}  callback
+         *
+         * @return {Object}         self
+         */
+        subscribe: function (eventName, callback) {
+            // console.log(eventName, this.uid, &#039;subscribed&#039;);
+            refinery.pubsub.subscribe(this.uid + &#039;.&#039; + eventName, callback);
+
+            return this;
+        },
+
+        /**
+         * Remove observer from object event
+         *
+         * @expose
+         * @public
+         *
+         * @param {string}         eventName
+         * @param {Function=}  callback
+         *
+         * @return {Object}         self
+         */
+        unsubscribe: function (eventName, callback) {
+            refinery.pubsub.unsubscribe(this.uid + &#039;.&#039; + eventName, callback);
+
+            return this;
+        },
+
+        /**
+         * Call registered callbacks and publish event for object observers
+         *
+         * @expose
+         * @private
+         *
+         * @param {string}      eventName
+         * @param {Array=}    args
+         *
+         * @return {Object}
+         */
+        trigger: function (eventName, args) {
+            var events = this.events, a, i;
+
+            args = (typeof args !== &#039;undefined&#039; &amp;&amp; !(args instanceof Array)) ? [args] : args;
+
+            if (events &amp;&amp; events[eventName]) {
+                for (a = events[eventName], i = a.length - 1; i &gt;= 0; i--) {
+                    if (a[i].apply(this, args) === false) {
+                        break;
+                    }
+                }
+            }
+
+            refinery.pubsub.publish(this.uid + &#039;.&#039; + eventName, args);
+
+            return this;
+        },
+
+        /**
+         * Null object: unbind holder, null state, null events
+         * Events are nulled after broadcasting &#039;destroy&#039; event, because if someone is
+         * listening this event/object then he must get chance to respond.
+         *
+         * @expose
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
+         *
+         * @return {Object} self
+         */
+        destroy: function (removeGlobalReference) {
+            if (this.holder) {
+                this.holder.unbind();
+                this.detach_holder();
+            }
+
+            this.state = null;
+
+            if (removeGlobalReference) {
+                refinery.Object.instances.remove(this.uid);
+            }
+
+            this.trigger(&#039;destroy&#039;);
+            this.events = {};
+
+            return this;
+        },
+
+        /**
+         * Call refinery Object destroy method on prototype.
+         * This is required especialy when we rewrite destroy method on
+         * inherited object from refinery.Object
+         *
+         * @expose
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
+         *
+         * @return {Object} self
+         */
+        _destroy: function (removeGlobalReference) {
+            return refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+        },
+
+         /**
+         * Attach refinery.Object to DOM object (this.holder)
+         *
+         * @expose
+         * @param {!jQuery} holder jQuery wrapper around DOM object
+         *
+         * @return {undefined}
+         */
+        attach_holder: function (holder) {
+            var data = /** @type {Array} */(holder.data(&#039;refinery-instances&#039;) || []);
+            holder.data(&#039;refinery-instances&#039;, data.concat(this.uid));
+            holder.addClass(&#039;refinery-instance&#039;);
+            this.holder = holder;
+        },
+
+        /**
+         * Remove refinery.Object Instance from DOM object (this.holder)
+         *
+         * @expose
+         *
+         * @return {undefined}
+         */
+        detach_holder: function () {
+            var holder = this.holder,
+                data = holder.data(&#039;refinery-instances&#039;) || [],
+                uid = this.uid;
+
+            holder.data(&#039;refinery-instances&#039;,
+                data.filter(function (elm) {
+                    return (elm !== uid);
+                }));
+
+            if (holder.data(&#039;refinery-instances&#039;).length === 0) {
+                holder.removeClass(&#039;refinery-instance&#039;);
+            }
+
+            this.holder = null;
+        },
+
+        /**
+         * Initialization and binding
+         *
+         * @public
+         * @expose
+         * @param {!jQuery} holder
+         *
+         * @return {refinery.Object} self
+         */
+        init: function (holder) {
+            if (this.is(&#039;initialisable&#039;)) {
+                this.holder = holder;
+                this.is(&#039;initialised&#039;, true);
+                this.trigger(&#039;init&#039;);
+            }
+
+            return this;
+        }
+    };
+
+    /**
+     * Incremental objects counter
+     *
+     * @type {number}
+     */
+    refinery.Object.guid = 0;
+
+    /**
+     * Refinery Object
+     *
+     * @expose
+     *
+     * @param {(Object|{objectPrototype: (Object|undefined),
+     *                    objectConstructor: (undefined|function ((undefined|Object)): ?),
+     *                    objectMethods: (Object|undefined),
+     *                    name: (string|undefined),
+     *                    version: (string|undefined),
+     *                    module: (string|undefined),
+     *                    options: (Object|undefined),
+     *                    var_args})=} options
+     *
+     * @return {Object}
+     */
+    refinery.Object.create = function (options) {
+        var MyObject,
+            /** @type {string} */
+            key,
+
+            /**
+             * Singleton/Class methods
+             */
+            object_methods,
+
+            /**
+             * Meta properties of created object
+             * @type {Array}
+             */
+            intern_properties = [&#039;objectPrototype&#039;, &#039;objectConstructor&#039;, &#039;objectMethods&#039;, &#039;id&#039;, &#039;uid&#039;];
+
+        options = options || {};
+        object_methods = options[&#039;objectMethods&#039;];
+
+        /**
+         * @constructor
+         * @extends {refinery.Object}
+         *
+         * @param {Object=} options
+         * @param {boolean=} is_prototype
+         */
+        MyObject = options[&#039;objectConstructor&#039;] || function (options, is_prototype) {
+            refinery.Object.call(this, options, is_prototype);
+        };
+
+        MyObject.prototype = options[&#039;objectPrototype&#039;] || new refinery.Object(null, true);
+
+        /** @expose */
+        options.module = options.module ? &#039;refinery.&#039; + options.module : MyObject.prototype.module;
+
+        options.fullname = options.module + &#039;.&#039; + options.name;
+
+        refinery.provide(options.fullname, MyObject);
+
+        for (key in options) {
+            if (options.hasOwnProperty(key) &amp;&amp; intern_properties.indexOf(key) === -1) {
+                MyObject.prototype[key] = options[key];
+            }
+        }
+
+        if (object_methods) {
+            for (key in object_methods) {
+                if (object_methods.hasOwnProperty(key)) {
+                    MyObject[key] = object_methods[key];
+                }
+            }
+        }
+
+        return MyObject;
+    };
+
+    /**
+     * Remove refinery.Object Instance from DOM object (this.holder)
+     *
+     * @expose
+     * @param {!jQuery} holder jQuery wrapper around DOM object
+     *
+     * @return {undefined}
+     */
+    refinery.Object.unbind = function (holder) {
+        var instances = holder.data(&#039;refinery-instances&#039;, []),
+            instance;
+
+        for (var i = instances.length - 1; i &gt;= 0; i--) {
+            instance = refinery.Object.instances.get(instances[i]);
+            if (instance) {
+                instance.destroy(true);
+            }
+        }
+
+        holder.removeClass(&#039;refinery-instance&#039;);
+    };
+
+    /**
+     * refinery Object Instances
+     *
+     * @expose
+     *
+     * @type {Object}
+     */
+    refinery.Object.instances = (function () {
+
+        /**
+         * Hash of all refinery.Object instances
+         *
+         * @type {Object}
+         */
+        var instances = {};
+
+        return {
+
+            /**
+             * Return all refinery.Object instances
+             *
+             * @return {Object}
+             */
+            all: function () {
+                return instances;
+            },
+
+            /**
+             * Add instance
+             *
+             * @expose
+             * @param {Object} instance
+             */
+            add: function (instance) {
+                instances[instance.uid] = instance;
+            },
+
+            /**
+             * Get Instance by UID
+             *
+             * @expose
+             * @param {string} uid
+             * @return {Object|undefined}
+             */
+            get: function (uid) {
+                return instances[uid];
+            },
+
+            /**
+             * Remove instance by UID
+             *
+             * @expose
+             * @param {string} uid
+             */
+            remove: function (uid) {
+                delete instances[uid];
+            }
+        };
+    }());
+}(refinery));</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

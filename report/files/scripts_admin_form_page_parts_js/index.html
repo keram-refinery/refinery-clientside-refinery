@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>scripts/admin/form_page_parts.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
+      <p class="stat">65.28</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
+      <p class="stat">191</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="span6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="span6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
+      <p class="stat">22.65</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
+      <p class="stat">1.33</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">/*global $, refinery */
+
+(function (refinery) {
+
+    &#039;use strict&#039;;
+
+    /**
+     * @constructor
+     * @extends {refinery.Object}
+     * @param {Object=} options
+     */
+    refinery.Object.create({
+
+        name: &#039;FormPageParts&#039;,
+
+        module: &#039;admin&#039;,
+
+        /**
+         * Create list of page parts for dialog
+         *
+         * @return {string} dialog content
+         */
+        get_dialog_content: function () {
+            var content;
+
+            content = &#039;&lt;ul class=&quot;records&quot;&gt;&#039;;
+
+            this.nav.find(&#039;a&#039;).each(function () {
+                var a = $(this),
+                    active = !a.parent().hasClass(&#039;js-hide&#039;);
+
+                content += &#039;&lt;li data-part=&quot;&#039; + a.attr(&#039;href&#039;) + &#039;&quot; &#039;;
+                content += &#039;class=&quot;clearfix&quot; &gt;&#039;;
+                content += &#039;&lt;label class=&quot;stripped&quot;&gt;&#039;;
+                content += &#039;&lt;input type=&quot;checkbox&quot;&#039; + (active ? &#039; checked=&quot;1&quot;&#039; : &#039;&#039;) + &#039;&quot;&gt; &#039;;
+                content += a.text();
+                content += &#039;&lt;/label&gt;&#039;;
+                content += &#039; &lt;span class=&quot;actions&quot;&gt;&lt;span class=&quot;icon-small move-icon&quot;&gt;&#039;;
+                content += t(&#039;refinery.admin.button_move&#039;) + &#039;&lt;/span&gt;&lt;/span&gt;&#039;;
+                content += &#039;&lt;/li&gt;&#039;;
+            });
+
+            content += &#039;&lt;/ul&gt;&#039;;
+
+            return content;
+        },
+
+        /**
+         * Initialize page part dialog and bind events
+         *
+         * @return {undefined}
+         */
+        init_configuration_dialog: function () {
+            var that = this,
+                holder = that.holder,
+                nav = that.nav,
+                dialog_holder,
+                dialog_buttons = {},
+                parts_tabs = nav.find(&#039;li&#039;);
+
+            dialog_holder = $(&#039;&lt;div/&gt;&#039;, {
+                html: that.get_dialog_content()
+            });
+
+            function update_parts () {
+                var list = [], i, l, active_tab;
+
+                dialog_holder.find(&#039;li&#039;).each(function (j) {
+                    var li = $(this),
+                        part = /** @type string */(li.data(&#039;part&#039;)),
+                        active = li.find(&#039;input&#039;).is(&#039;:checked&#039;),
+                        tab = nav.find(&#039;a[href=&quot;&#039; + part + &#039;&quot;]&#039;).parent().detach(),
+                        panel = $(part);
+
+                    if (active) {
+                        tab.removeClass(&#039;js-hide&#039;);
+                        panel.removeClass(&#039;js-hide&#039;);
+                    } else {
+                        tab.removeClass(&#039;ui-tabs-active ui-state-active&#039;);
+                        tab.addClass(&#039;js-hide&#039;);
+                        panel.addClass(&#039;js-hide&#039;);
+                    }
+
+                    panel.find(&#039;input.part-active&#039;).prop(&#039;checked&#039;, active);
+                    panel.find(&#039;input.part-position&#039;).val(j);
+                    list[list.length] = tab;
+                });
+
+                for (i = 0, l = list.length; i &lt; l; i++) {
+                    nav.append(list[i]);
+                }
+
+                if (nav.find(&#039;.ui-tabs-active&#039;).length === 0) {
+                    active_tab = parts_tabs.index(nav.find(&#039;li:visible&#039;).first());
+
+                    holder.tabs({
+                        &#039;active&#039;: active_tab
+                    });
+                }
+            }
+
+            dialog_holder.on(&#039;change&#039;, &#039;li input&#039;, update_parts);
+
+            dialog_holder.find(&#039;ul&#039;).sortable({
+                &#039;stop&#039;: update_parts
+            });
+
+            dialog_buttons[t(&#039;refinery.admin.button_done&#039;)] = function () {
+                update_parts();
+                dialog_holder.dialog(&#039;close&#039;);
+            };
+
+            dialog_holder.dialog({
+                &#039;title&#039;: t(&#039;refinery.admin.form_page_parts_manage&#039;),
+                &#039;modal&#039;: true,
+                &#039;resizable&#039;: true,
+                &#039;autoOpen&#039;: false,
+                &#039;width&#039;: 400,
+                &#039;buttons&#039;: dialog_buttons
+            });
+
+            holder.on(&#039;click&#039;, &#039;#page-parts-options&#039;, function (e) {
+                e.preventDefault();
+                dialog_holder.dialog(&#039;open&#039;);
+            });
+
+            that.dialog_holder = dialog_holder;
+        },
+
+        /**
+         *
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
+         *
+         * @return {Object} self
+         */
+        destroy: function (removeGlobalReference) {
+            var dialog_holder = this.dialog_holder;
+
+            if (this.is(&#039;initialised&#039;)) {
+                this.nav = null;
+
+                if (dialog_holder) {
+                    if (dialog_holder.parent().hasClass(&#039;ui-dialog&#039;)) {
+                        dialog_holder.dialog(&#039;destroy&#039;);
+                    }
+
+                    dialog_holder.off();
+                    dialog_holder.remove();
+                    dialog_holder = null;
+                }
+            }
+
+            this._destroy(removeGlobalReference);
+
+            return this;
+        },
+
+        /**
+         * initialisation
+         *
+         * @param {!jQuery} holder
+         *
+         * @return {Object} self
+         */
+        init: function (holder) {
+            if (this.is(&#039;initialisable&#039;)) {
+                this.is(&#039;initialising&#039;, true);
+                this.attach_holder(holder);
+                this.nav = holder.find(&#039;.ui-tabs-nav&#039;);
+                this.init_configuration_dialog();
+                this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                this.trigger(&#039;init&#039;);
+            }
+
+            return this;
+        }
+    });
+
+    /**
+     * Form initialization
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @return {undefined}
+     */
+    refinery.admin.ui.formPageParts = function (holder) {
+        holder.find(&#039;#page-parts&#039;).each(function () {
+            refinery(&#039;admin.FormPageParts&#039;).init($(this));
+        });
+    };
+
+}(refinery));</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

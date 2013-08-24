@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>scripts/admin/form.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
+      <p class="stat">70.92</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
+      <p class="stat">225</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="span6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="span6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
+      <p class="stat">24.95</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
+      <p class="stat">1.77</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">/*global $, refinery */
+
+(function (refinery) {
+
+    &#039;use strict&#039;;
+
+    /**
+     * @constructor
+     * @class  refinery.admin.Form
+     * @extends {refinery.Object}
+     * @param {Object=} options
+     */
+    refinery.Object.create({
+
+        name: &#039;Form&#039;,
+
+        module: &#039;admin&#039;,
+
+        /**
+         * Switch locale
+         *
+         * @param {!jQuery} anchor
+         *
+         * @return {undefined}
+         */
+        switch_frontend_locale: function (anchor) {
+            var buttons = {},
+                url = anchor.attr(&#039;href&#039;),
+                that = this;
+
+            buttons[t(&#039;refinery.admin.form_unsaved_save_and_continue&#039;)] = function () {
+                var form = that.holder,
+                    dialog = $(this),
+                    param = url.match(/\?[^\?]+$/)[0];
+
+                $.ajax({
+                    url: form.attr(&#039;action&#039;),
+                    method: form.attr(&#039;method&#039;),
+                    data: form.serialize(),
+                    dataType: &#039;JSON&#039;,
+                    success: function (response, status, xhr) {
+                        var redirected = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
+
+                        dialog.dialog(&#039;close&#039;);
+                        dialog.dialog(&#039;destroy&#039;);
+
+                        if (redirected) {
+                            Turbolinks.visit(redirected + param);
+                        } else if (status === &#039;error&#039;) {
+                            refinery.xhr.success(response, status, xhr, form, true);
+                        } else {
+                            Turbolinks.visit(url);
+                        }
+                    }
+                });
+            };
+
+            buttons[t(&#039;refinery.admin.form_unsaved_continue&#039;)] = function () {
+                Turbolinks.visit(url);
+            };
+
+            buttons[t(&#039;refinery.admin.form_unsaved_cancel&#039;)] = function () {
+                $(this).dialog(&#039;close&#039;);
+                $(this).dialog(&#039;destroy&#039;);
+            };
+
+            $(&#039;&lt;div/&gt;&#039;, { html: t(&#039;refinery.admin.form_unsaved_html&#039;)} ).dialog({
+                &#039;resizable&#039;: false,
+                &#039;height&#039;: 140,
+                &#039;modal&#039;: true,
+                &#039;title&#039;: t(&#039;refinery.admin.form_unsaved_title&#039;),
+                &#039;buttons&#039;: buttons
+            });
+        },
+
+        init_pickers: function () {
+            var that = this,
+                form = that.holder;
+
+            form.find(&#039;.image-picker&#039;).each(function () {
+                var picker = refinery(&#039;admin.ImagePicker&#039;);
+                picker.init($(this));
+            });
+
+            form.find(&#039;.resource-picker&#039;).each(function () {
+                var picker = refinery(&#039;admin.ResourcePicker&#039;);
+                picker.init($(this));
+            });
+
+            form.on(&#039;click&#039;, &#039;.locale-picker a&#039;, function (e) {
+                var a = $(this);
+                if (that.initial_values === form.serialize()) {
+                    return true;
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+                that.switch_frontend_locale(a);
+                return false;
+            });
+        },
+
+        init_upload: function () {
+            var that = this,
+                form = that.holder,
+                file_inputs = form.find(&#039;input[type=&quot;file&quot;]&#039;);
+
+            if (file_inputs.length &gt; 0) {
+                form.on(&#039;submit&#039;, function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    refinery.spinner.on();
+
+                    $.ajax(this.action, {
+                            &#039;data&#039;: form.serializeArray(),
+                            &#039;files&#039;: file_inputs,
+                            &#039;iframe&#039;: true,
+                            &#039;processData&#039;: false
+                        }).done(
+                        /**
+                         * @param {json_response} response
+                         * @param {string} status
+                         * @param {jQuery.jqXHR} xhr
+                         * @return {undefined}
+                         */
+                        function (response, status, xhr) {
+                            form.trigger(&#039;ajax:success&#039;, [response, status, xhr]);
+                        }).always(function () {
+                            refinery.spinner.off();
+                        });
+                });
+            }
+        },
+
+        init_inputs: function () {
+            var that = this,
+                form = that.holder,
+                submit_btn = form.find(&#039;.form-actions .submit-button&#039;),
+                submit_btn_val;
+
+            if (submit_btn.length &gt; 0) {
+                submit_btn_val = submit_btn.val();
+                form.on(&#039;change&#039;, &#039;input, select, textarea&#039;, function () {
+                    if (that.initial_values !== form.serialize() &amp;&amp;
+                        submit_btn_val[submit_btn_val.length] !== &#039;!&#039;
+                    ) {
+                        submit_btn.val(submit_btn_val + &#039; !&#039;);
+                    } else {
+                        submit_btn.val(submit_btn_val.replace(/ !$/, &#039;&#039;));
+                    }
+                });
+            }
+        },
+
+        fly_form_actions: function (left_buttons, holder, $window) {
+            var
+                window_position = $window.scrollTop() + $window.height(),
+                form_actions_pos = holder.position().top;
+
+            if (window_position &lt; form_actions_pos) {
+                left_buttons.addClass(&#039;fly&#039;);
+            } else {
+                left_buttons.removeClass(&#039;fly&#039;);
+            }
+        },
+
+        init_fly_form_actions: function () {
+            var that = this,
+                $window = $(window),
+                holder = that.holder.find(&#039;.form-actions&#039;),
+                left_buttons = that.holder.find(&#039;.form-actions-left&#039;),
+                scroll_handler = function () {
+                    that.fly_form_actions(left_buttons, holder, $window);
+                };
+
+            if (that.holder.find(&#039;textarea&#039;).length &gt; 0 &amp;&amp;
+                holder.length &gt; 0 &amp;&amp; left_buttons.length &gt; 0) {
+
+                that.fly_form_actions(left_buttons, holder, $window);
+                $window.on(&#039;scroll&#039;, scroll_handler);
+                that.on(&#039;destroy&#039;, function () {
+                    $window.unbind(&#039;scroll&#039;, scroll_handler);
+                });
+            }
+        },
+
+        /**
+         * initialisation
+         *
+         * @param {!jQuery} holder
+         *
+         * @return {Object} self
+         */
+        init: function (holder) {
+            var that = this;
+
+            if (that.is(&#039;initialisable&#039;)) {
+                that.is(&#039;initialising&#039;, true);
+                that.attach_holder(holder);
+                that.init_pickers();
+                that.init_inputs();
+                that.init_upload();
+                that.initial_values = holder.serialize();
+                that.init_fly_form_actions();
+
+                that.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                that.trigger(&#039;init&#039;);
+            }
+
+            return that;
+        }
+    });
+
+    /**
+     * Form initialization
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @return {undefined}
+     */
+    refinery.admin.ui.form = function (holder) {
+        holder.find(&#039;form&#039;).each(function () {
+            refinery(&#039;admin.Form&#039;).init($(this));
+        });
+    };
+
+}(refinery));</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

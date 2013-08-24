@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>scripts/admin/sortable_list.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
+      <p class="stat">67.35</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
+      <p class="stat">268</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="span6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="span6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
+      <p class="stat">23.28</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
+      <p class="stat">1.51</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">/*global $, refinery */
+
+(function (refinery) {
+
+    &#039;use strict&#039;;
+
+    /**
+     * Sortable List
+     *
+     * @expose
+     * @todo  refactor that SortableTree constructor and SortableList would be the same
+     * @extends {refinery.Object}
+     * @param {Object=} options
+     * @param {boolean=} is_prototype
+     */
+    refinery.Object.create({
+
+        /**
+         * Configurable options
+         *
+         * @param {{update_url: ?string, redraw: Boolean, nested_sortable: Object}} options
+         */
+        objectConstructor: function (options, is_prototype) {
+            var that = this;
+
+            refinery.Object.apply(that, arguments);
+
+            if (!is_prototype) {
+
+                /**
+                 *
+                 * @expose
+                 * @param {*} event
+                 * @param {*} ui
+                 *
+                 * @return {undefined}
+                 */
+                that.options.nested_sortable.stop = function (event, ui) {
+                    if (that.options.update_url) {
+                        that.update(ui.item);
+                    }
+                };
+            }
+        },
+
+        name: &#039;SortableList&#039;,
+
+        module: &#039;admin&#039;,
+
+        /**
+         * Configurable options
+         *
+         * @type {Object}
+         */
+        options: {
+
+            /**
+             * @expose
+             * @type {?string}
+             */
+            update_url: null,
+
+            /**
+             * @expose
+             * @type {?boolean}
+             */
+            redraw: true,
+
+            /**
+             * @expose
+             * @type {{items: string, listType: string, maxLevels: number}}
+             */
+            nested_sortable: {
+                listType: &#039;ul&#039;,
+                items: &#039;li&#039;,
+                maxLevels: 1
+            }
+        },
+
+        /**
+         * Serialized array of items
+         *
+         * @type {?Array}
+         */
+        set: null,
+
+        /**
+         * Html content of list holder
+         *
+         * @type {?string}
+         */
+        html: null,
+
+        /**
+         * Get Item id
+         *
+         * @param {!jQuery} item
+         *
+         * @return {?string}
+         */
+        getId: function (item) {
+            if (item.attr(&#039;id&#039;) &amp;&amp; /([0-9]+)$/.test(item.attr(&#039;id&#039;))) {
+                return item.attr(&#039;id&#039;).match(/([0-9]+)$/)[1];
+            }
+
+            return null;
+        },
+
+        /**
+         * Update item position on server
+         *
+         * @param {jQuery} item
+         *
+         * @return {Object} self
+         */
+        update: function (item) {
+            var that = this,
+                list = that.holder,
+                set = list.nestedSortable(&#039;toArray&#039;),
+                post_data = {
+                    &#039;item&#039;: {
+                        &#039;id&#039;: that.getId(item),
+                        &#039;prev_id&#039;: that.getId(item.prev()),
+                        &#039;next_id&#039;: that.getId(item.next()),
+                        &#039;parent_id&#039;: that.getId(item.parent().parent())
+                    }
+                };
+
+            if (!that.is(&#039;updating&#039;) &amp;&amp; JSON.stringify(set) !== JSON.stringify(that.set)) {
+                that.is({&#039;updating&#039;: true, &#039;updated&#039;: false});
+                list.nestedSortable(&#039;disable&#039;);
+                refinery.spinner.on();
+
+                $.post(that.options.update_url, post_data, function (response, status, xhr) {
+                    if (status === &#039;error&#039;) {
+                        list.html(that.html);
+                    } else {
+                        that.set = set;
+                        that.html = list.html();
+                    }
+
+                    refinery.xhr.success(response, status, xhr, list);
+                    that.is(&#039;updated&#039;, true);
+                    that.trigger(&#039;update&#039;);
+                }, that.options.redraw ? &#039;JSON&#039; : &#039;HTML&#039;)
+                    .fail(function (response) {
+                        list.html(that.html);
+                        refinery.xhr.error(response);
+                    })
+                    .always(function () {
+                        refinery.spinner.off();
+                        that.is(&#039;updating&#039;, false);
+                        list.nestedSortable(&#039;enable&#039;);
+                    });
+            }
+
+            return that;
+        },
+
+        /**
+         *
+         * @expose
+         * @param {boolean=} removeGlobalReference if is true instance will be removed
+         *                   from refinery.Object.instances
+         *
+         * @return {Object} self
+         */
+        destroy: function (removeGlobalReference) {
+            this.holder.nestedSortable(&#039;destroy&#039;);
+            this.set = null;
+
+            this._destroy(removeGlobalReference);
+
+            return this;
+        },
+
+        init: function (holder) {
+            if (this.is(&#039;initialisable&#039;)) {
+                this.is(&#039;initialising&#039;, true);
+                holder.nestedSortable(this.options.nested_sortable);
+                this.attach_holder(holder);
+                this.set = holder.nestedSortable(&#039;toArray&#039;);
+                this.html = holder.html();
+                this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                this.trigger(&#039;init&#039;);
+            }
+
+            return this;
+        }
+    });
+
+
+    /**
+     * Sortable Tree
+     *
+     * @constructor
+     * @expose
+     * @extends {refinery.admin.SortableList}
+     * @param {Object=} options
+     * @param {boolean=} is_prototype
+     */
+    refinery.Object.create({
+
+        objectConstructor:  function (options, is_prototype) {
+            var that = this;
+
+            refinery.Object.apply(that, arguments);
+
+            if (!is_prototype) {
+
+                /**
+                 *
+                 * @expose
+                 * @param {*} event
+                 * @param {*} ui
+                 *
+                 * @return {undefined}
+                 */
+                that.options.nested_sortable.stop = function (event, ui) {
+                    that.update_tree(ui.item);
+                    if (that.options.update_url) {
+                        that.update(ui.item);
+                    }
+                };
+            }
+        },
+
+        objectPrototype: refinery(&#039;admin.SortableList&#039;, {
+
+            /**
+             * @expose
+             * @type {{items: string, listType: string, maxLevels: number}}
+             */
+            nested_sortable: {
+                &#039;listType&#039;: &#039;ul&#039;,
+                &#039;handle&#039;: &#039;.move&#039;,
+                &#039;items&#039;: &#039;li&#039;,
+                &#039;isAllowed&#039;: function (placeholder, placeholderParent, currentItem) {
+                    if (placeholderParent) {
+                        if (placeholderParent.text() === currentItem.parent().text()) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                },
+                &#039;maxLevels&#039;: 0
+            }
+        }, true),
+
+        name: &#039;SortableTree&#039;,
+
+        update_tree: function (item) {
+            var ul = item.parent();
+
+            this.holder.find(&#039;.toggle&#039;).each(function () {
+                var elm = $(this);
+                if (elm.parent().parent().find(&#039;li&#039;).length === 0) {
+                    elm.removeClass(&#039;toggle expanded&#039;);
+                }
+            });
+
+            if (ul.attr(&#039;id&#039;) !== this.holder.attr(&#039;id&#039;)) {
+                ul.addClass(&#039;nested data-loaded&#039;);
+                ul.parent().find(&#039;.icon&#039;).first().addClass(&#039;toggle expanded&#039;);
+            }
+        }
+    });
+
+}(refinery));</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

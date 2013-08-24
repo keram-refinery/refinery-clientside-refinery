@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>scripts/admin/dialogs/pages_dialog.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
+      <p class="stat">58.64</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
+      <p class="stat">114</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="span6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="span6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
+      <p class="stat">14.86</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
+      <p class="stat">0.58</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">/*global refinery */
+
+(function (refinery) {
+
+    &#039;use strict&#039;;
+
+    /**
+     * @constructor
+     * @extends {refinery.admin.Dialog}
+     * @param {Object=} options
+     */
+    refinery.Object.create({
+        objectPrototype: refinery(&#039;admin.Dialog&#039;, {
+            title: t(&#039;refinery.admin.pages_dialog_title&#039;),
+            url: refinery.admin.backend_path + &#039;/dialogs/pages&#039;
+        }, true),
+
+        name: &#039;PagesDialog&#039;,
+
+        /**
+         * Dialog email tab action processing
+         *
+         * @param {!jQuery} tab
+         *
+         * @return {undefined|pages_dialog_object}
+         */
+        email_link_area: function (tab) {
+            var email_input = tab.find(&#039;#email_address_text:valid&#039;),
+                subject_input = tab.find(&#039;#email_default_subject_text&#039;),
+                body_input = tab.find(&#039;#email_default_body_text&#039;),
+                recipient = /** @type {string} */(email_input.val()),
+                subject = /** @type {string} */(subject_input.val()),
+                body = /** @type {string} */(body_input.val()),
+                modifier = &#039;?&#039;,
+                additional = &#039;&#039;,
+                result;
+
+            subject = encodeURIComponent(subject);
+            body = encodeURIComponent(body);
+
+            if (recipient) {
+                if (subject.length &gt; 0) {
+                    additional += modifier + &#039;subject=&#039; + subject;
+                    modifier = &#039;&amp;&#039;;
+                }
+
+                if (body.length &gt; 0) {
+                    additional += modifier + &#039;body=&#039; + body;
+                    modifier = &#039;&amp;&#039;;
+                }
+
+                result = {
+                    type: &#039;email&#039;,
+                    title: recipient,
+                    url: &#039;mailto:&#039; + encodeURIComponent(recipient) + additional
+                };
+
+                email_input.val(&#039;&#039;);
+                subject_input.val(&#039;&#039;);
+                body_input.val(&#039;&#039;);
+            }
+
+            return result;
+        },
+
+        /**
+         * Dialog Url tab action processing
+         *
+         * @param {!jQuery} tab
+         *
+         * @return {undefined|pages_dialog_object}
+         */
+        website_link_area: function (tab) {
+            var url_input = tab.find(&#039;#web_address_text:valid&#039;),
+                blank_input = tab.find(&#039;#web_address_target_blank&#039;),
+                url = /** @type {string} */(url_input.val()),
+                blank = /** @type {boolean} */(blank_input.prop(&#039;checked&#039;)),
+                result;
+
+            if (url) {
+                result = {
+                    type: &#039;website&#039;,
+                    title: url.replace(/^https?:\/\//, &#039;&#039;),
+                    url: url,
+                    blank: blank
+                };
+
+                url_input.val(&#039;http://&#039;);
+                blank_input.prop(&#039;checked&#039;, false);
+            }
+
+            return result;
+        },
+
+        /**
+         * Dialog Url tab action processing
+         *
+         * @param {!jQuery} tab
+         *
+         * @return {undefined|pages_dialog_object}
+         */
+        pages_link_area: function (tab) {
+            var li = tab.find(&#039;li.ui-selected&#039;),
+                result;
+
+            if (li.length &gt; 0) {
+                result = /** @type {pages_dialog_object} */(li.data(&#039;link&#039;));
+                result.type = &#039;page&#039;;
+                li.removeClass(&#039;ui-selected&#039;);
+            }
+
+            return result;
+        }
+    });
+
+}(refinery));</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

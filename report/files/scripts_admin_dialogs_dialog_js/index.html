@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>scripts/admin/dialogs/dialog.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
+      <p class="stat">70.63</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
+      <p class="stat">432</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="span6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="span6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
+      <p class="stat">35.96</p>
+    </div>
+    <div class="span6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
+      <p class="stat">2.56</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="span6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="span12">/*global $, refinery */
+
+(function (refinery) {
+
+    &#039;use strict&#039;;
+
+    /**
+     * @constructor
+     * @extends {refinery.Object}
+     * @param {{title: string, url: string}=} options
+     * @return {refinery.admin.Dialog}
+     */
+    refinery.Object.create(
+        /**
+         * @extends {refinery.Object.prototype}
+         */
+        {
+            name: &#039;Dialog&#039;,
+
+            module: &#039;admin&#039;,
+
+            options: {
+                &#039;title&#039;: &#039;&#039;,
+
+                /**
+                 * Url which from will be loaded dialog content via xhr or iframe
+                 * @type {?string}
+                 */
+                &#039;url&#039;: null,
+                &#039;width&#039;: 710,
+                &#039;modal&#039;: true,
+                &#039;autoOpen&#039;: false,
+                &#039;autoResize&#039;: true
+            },
+
+            /**
+             * User Interface component
+             *
+             * @expose
+             * @type {?refinery.Object}
+             */
+            ui: null,
+
+            State: /** @type {Object} */(function () {
+                /**
+                 * refinery Object State
+                 *
+                 * @constructor
+                 * @extends {refinery.ObjectState}
+                 * @param {Object=} default_states
+                 *    Usage:
+                 *        new refinery.ObjectState();
+                 *
+                 * @todo  measure perf and if needed refactor to use bit masks, fsm or something else
+                 */
+                function DialogState (default_states) {
+                    var states = $.extend(default_states || {}, {
+                        &#039;closed&#039; : true
+                    });
+
+                    refinery.ObjectState.call(this, states);
+                }
+
+                /**
+                 * Custom State Object prototype
+                 * @expose
+                 * @type {Object}
+                 */
+                DialogState.prototype = {
+                    &#039;_openable&#039;: function () {
+                        return (this.get(&#039;initialised&#039;) &amp;&amp; this.get(&#039;closed&#039;) &amp;&amp; !this.get(&#039;opening&#039;));
+                    },
+                    &#039;_closable&#039;: function () {
+                        return (!this.get(&#039;closing&#039;) &amp;&amp; this.get(&#039;opened&#039;));
+                    },
+                    &#039;_loadable&#039;: function () {
+                        return (!this.get(&#039;loading&#039;) &amp;&amp; !this.get(&#039;loaded&#039;));
+                    },
+                    &#039;_submittable&#039;: function () {
+                        return (this.get(&#039;initialised&#039;) &amp;&amp; !this.get(&#039;submitting&#039;));
+                    },
+                    &#039;_insertable&#039;: function () {
+                        return (this.get(&#039;initialised&#039;) &amp;&amp; !this.get(&#039;inserting&#039;));
+                    }
+                };
+
+                refinery.extend(DialogState.prototype, refinery.ObjectState.prototype);
+
+                return DialogState;
+            }()),
+
+            /**
+             *
+             * @expose
+             *
+             * @return {Object} self
+             */
+            close: function () {
+                if (this.is(&#039;closable&#039;)) {
+                    this.holder.dialog(&#039;close&#039;);
+                }
+
+                return this;
+            },
+
+            /**
+             *
+             * @expose
+             *
+             * @return {Object} self
+             */
+            open: function () {
+                if (this.is(&#039;openable&#039;)) {
+                    this.is(&#039;opening&#039;, true);
+                    this.holder.dialog(&#039;open&#039;);
+                }
+
+                return this;
+            },
+
+            /**
+             *
+             * @expose
+             *
+             * @return {Object} self
+             */
+            submit: function () {
+                var form = this.holder.find(&#039;form&#039;);
+
+                form.submit();
+
+                return this;
+            },
+
+            /**
+             * Submit form
+             * -- just dirty implementation
+             * Implement for specific cases in subclasses
+             *
+             *
+             * @expose
+             * @param {jQuery} form
+             *
+             * @return {undefined}
+             */
+            submit_form: function (form) {
+                var that = this;
+
+                if (that.is(&#039;submittable&#039;)) {
+                    that.is(&#039;submitting&#039;, true);
+
+                    $.ajax({
+                        url: form.attr(&#039;action&#039;),
+                        type: form.attr(&#039;method&#039;),
+                        data: form.serialize(),
+                        dataType: &#039;JSON&#039;
+                    }).done(function (response, status, xhr) {
+                        that.xhr_done(response, status, xhr);
+
+                        that.trigger(&#039;submit&#039;);
+                    }).always(function () {
+                        that.is({&#039;submitted&#039;: true, &#039;submitting&#039;: false});
+                    });
+                }
+            },
+
+            /**
+             * Handle Insert event
+             * For specific use should be implemented in subclasses
+             *
+             * @expose
+             * @param {?jQuery} elm
+             *
+             * @return {Object} self
+             */
+            insert: function (elm) {
+                var tab, obj, fnc;
+
+                if (elm.length &gt; 0) {
+                    tab = elm.closest(&#039;.ui-tabs-panel&#039;);
+
+                    if (tab.length &gt; 0) {
+                        fnc = tab.attr(&#039;id&#039;).replace(/-/g, &#039;_&#039;);
+                        if (typeof this[fnc] === &#039;function&#039;) {
+                            obj = this[fnc](tab);
+                        }
+                    }
+                }
+
+                if (obj) {
+                    this.trigger(&#039;insert&#039;, obj);
+                }
+
+                return this;
+            },
+
+            /**
+             * Bind events to dialog buttons and forms
+             *
+             * @return {undefined}
+             */
+            init_buttons: function () {
+                var that = this,
+                    holder = that.holder;
+
+                holder.on(&#039;click&#039;, &#039;.cancel-button, .close-button&#039;, function (e) {
+                    e.preventDefault();
+                    that.close();
+                    return false;
+                });
+
+                holder.on(&#039;submit&#039;, &#039;form&#039;, function (e) {
+                    var form = $(this);
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    if (form.attr(&#039;action&#039;)) {
+                        that.submit_form(form);
+                    } else {
+                        that.insert(form);
+                    }
+
+                    return false;
+                });
+            },
+
+            /**
+             * Process xhr response and reloading ui interface
+             *
+             * @expose
+             *
+             * @param  {json_response} response
+             * @param  {string} status
+             * @param  {jQuery.jqXHR} xhr
+             *
+             * @return {undefined}
+             */
+            xhr_done: function (response, status, xhr) {
+                var that = this,
+                    ui = that.ui,
+                    holder = ui.holder;
+
+                refinery.xhr.success(response, status, xhr, holder);
+                ui.reload(holder);
+            },
+
+            /**
+             * Xhr fail processing
+             *
+             * @expose
+             *
+             * @param  {jQuery.jqXHR} xhr
+             * @param  {string} status
+             *
+             * @return {undefined}
+             */
+            xhr_fail: function (xhr, status) {
+                refinery.xhr.error(xhr, status);
+            },
+
+            init_paginate: function () {
+                var that = this,
+                    holder = that.holder;
+
+                holder.on(&#039;click&#039;, &#039;.pagination &gt; a&#039;, function (e) {
+                    e.preventDefault();
+                    $.ajax({
+                        url: this.getAttribute(&#039;href&#039;),
+                        dataType: &#039;JSON&#039;
+                    })
+                    .fail(refinery.xhr.error)
+                    .done(function (response, status, xhr) {
+                        that.xhr_done(response, status, xhr);
+                    });
+                });
+            },
+
+            /** @expose */
+            after_load: function () {
+            },
+
+            /**
+             * Load dialog content
+             *
+             * @expose
+             * @todo this is (still) ugly, refactor!
+             *
+             * @return {Object} self
+             */
+            load: function () {
+                var that = this,
+                    holder = that.holder,
+                    url = that.options.url,
+                    locale_input = $(&#039;#frontend_locale&#039;),
+                    params, xhr;
+
+                if (!url) {
+                    throw new Error(&#039;Url isn\&#039;t defined. (&#039; + that.uid + &#039;)&#039;);
+                }
+
+                if (that.is(&#039;loadable&#039;)) {
+                    that.is(&#039;loading&#039;, true);
+
+                    params = {
+                        &#039;id&#039;: that.id,
+                        &#039;frontend_locale&#039;: locale_input.length &gt; 0 ? locale_input.val() : &#039;en&#039;
+                    };
+
+                    xhr = $.ajax(url, params);
+
+                    xhr.fail(function () {
+                        // todo xhr, status
+                        holder.html($(&#039;&lt;div/&gt;&#039;, {
+                            &#039;class&#039;: &#039;flash error&#039;,
+                            &#039;html&#039;: t(&#039;refinery.admin.dialog_content_load_fail&#039;)
+                        }));
+
+                        /**
+                         * Propagate that load finished unsuccessfully
+                         */
+                        that.trigger(&#039;load&#039;, false);
+                    });
+
+                    xhr.always(function () {
+                        that.is(&#039;loading&#039;, false);
+                        holder.removeClass(&#039;loading&#039;);
+                    });
+
+                    xhr.done(function (response, status, xhr) {
+                        var ui_holder;
+
+                        if (status === &#039;success&#039;) {
+                            holder.empty();
+                            ui_holder = $(&#039;&lt;div/&gt;&#039;).appendTo(holder);
+                            refinery.xhr.success(response, status, xhr, ui_holder);
+                            that.ui.init(ui_holder);
+                            that.is(&#039;loaded&#039;, true);
+                            that.after_load();
+
+                            /**
+                             * Propagate that load finished successfully
+                             */
+                            that.trigger(&#039;load&#039;, true);
+                        }
+                    });
+
+                }
+
+                return this;
+            },
+
+            bind_events: function () {
+                var that = this,
+                    holder = that.holder;
+
+                that.on(&#039;insert&#039;, that.close);
+                that.on(&#039;open&#039;, that.load);
+
+                holder.on(&#039;dialogopen&#039;, function () {
+                    that.is({ &#039;opening&#039;: false, &#039;opened&#039;: true, &#039;closed&#039;: false });
+                    that.trigger(&#039;open&#039;);
+                });
+
+                holder.on(&#039;dialogbeforeclose&#039;, function () {
+                    // this is here because dialog can be closed via ESC or X button
+                    // and in that case is not running through that.close
+                    // @todo maybe purge own close - open methods
+                    that.is({ &#039;closing&#039;: false, &#039;closed&#039;: true, &#039;opened&#039;: false });
+                    that.trigger(&#039;close&#039;);
+                });
+
+                holder.on(&#039;selectableselected&#039;, &#039;.records.ui-selectable&#039;, function (event, ui) {
+                    that.insert($(ui.selected));
+                });
+            },
+
+            /**
+             *
+             * @expose
+             * @param {boolean=} removeGlobalReference if is true instance will be removed
+             *                   from refinery.Object.instances
+             *
+             * @return {Object} self
+             */
+            destroy: function (removeGlobalReference) {
+                if (this.ui) {
+                    this.ui.destroy(true);
+                    this.ui = null;
+                }
+
+                if (this.holder &amp;&amp; this.holder.parent().hasClass(&#039;ui-dialog&#039;)) {
+                    this.holder.dialog(&#039;destroy&#039;);
+                }
+
+                this._destroy(removeGlobalReference);
+
+                return this;
+            },
+
+            /**
+             * Initialization and binding
+             *
+             * @public
+             * @expose
+             *
+             * @return {refinery.Object} self
+             */
+            init: function () {
+                var holder;
+
+                if (this.is(&#039;initialisable&#039;)) {
+                    this.is(&#039;initialising&#039;, true);
+                    holder = $(&#039;&lt;div/&gt;&#039;, {
+                        &#039;id&#039;: &#039;dialog-&#039; + this.id,
+                        &#039;class&#039;: &#039;loading&#039;
+                    });
+
+                    holder.dialog(this.options);
+                    this.attach_holder(holder);
+
+                    this.ui = refinery(&#039;admin.UserInterface&#039;);
+                    this.bind_events();
+                    this.init_buttons();
+                    this.init_paginate();
+                    this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                    this.trigger(&#039;init&#039;);
+                }
+
+                return this;
+            }
+        });
+
+}(refinery));</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
