@@ -78,8 +78,8 @@ describe 'refinery.Object subclass', ->
 
   context 'states', ->
     before ->
-      @subobj.state.set('initialised', false)
-      @subobj.state.set('initialising', false)
+      @subobj.is('initialised', false)
+      @subobj.is('initialising', false)
 
     it 'is initialisable', ->
       expect( @subobj.is('initialisable') ).to.be.true
@@ -131,8 +131,8 @@ describe 'refinery.Object subclass', ->
 
       context 'states', ->
         before ->
-          @subobj.state.set('initialised', true)
-          @subobj.state.set('initialising', false)
+          @subobj.is('initialised', true)
+          @subobj.is('initialising', false)
 
         it 'is initialisable', ->
           expect( @subobj.is('initialisable') ).to.be.false
@@ -141,8 +141,8 @@ describe 'refinery.Object subclass', ->
 
         context 'initialised', ->
           before ->
-              @subobj2.state.set('initialised', true)
-              @subobj2.state.set('initialising', false)
+              @subobj2.is('initialised', true)
+              @subobj2.is('initialising', false)
 
           it 'is not initialisable', ->
               expect( @subobj2.is('initialisable') ).to.be.false
@@ -159,10 +159,10 @@ describe 'refinery.Object subclass', ->
 
         context 'opening', ->
           before ->
-              @subobj2.state.set('opening', true)
+              @subobj2.is('opening', true)
 
           after ->
-              @subobj2.state.set('opening', false)
+              @subobj2.is('opening', false)
 
           it 'is not openable', ->
               expect( @subobj2.is('openable') ).to.be.false
@@ -179,13 +179,9 @@ describe 'refinery.Object subclass', ->
 
           context 'opened', ->
             before ->
-              @subobj2.state.set('opening', true)
-              @subobj2.state.set('opened', false)
-              @subobj2.state.set('closed', true)
-              @subobj2.state.toggle('opening', 'opened', 'closed')
+              @subobj2.is({'opening': false, 'opened': true, 'closed': false})
 
             after ->
-              @subobj2.state.toggle('opening', 'opened', 'closed')
 
             it 'is not openable', ->
               expect( @subobj2.is('openable') ).to.be.false

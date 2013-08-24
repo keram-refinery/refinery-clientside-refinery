@@ -70,21 +70,6 @@ refinery.ObjectState.prototype = {
     },
 
     /**
-     * toggle states
-     *
-     * @expose
-     * @param {...string} var_args
-     *
-     * @return {undefined}
-     */
-    toggle: function (var_args) {
-        var i;
-        for (i = arguments.length - 1; i >= 0; i--) {
-            this.states[arguments[i]] = !this.states[arguments[i]];
-        }
-    },
-
-    /**
      * Work with object states
      *
      * @expose

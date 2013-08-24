@@ -95,16 +95,3 @@ describe 'refinery.ObjectState', ->
 
       it 'is closable', ->
         expect( @state.is('closable') ).to.be.true
-
-    context 'with toggle', ->
-      before ->
-        @state.toggle('opened', 'closed')
-
-      it 'is not openable', ->
-        expect( @state.is('openable') ).to.be.false
-
-      it 'is closable', ->
-        expect( @state.is('closed') ).to.be.false
-        expect( @state.is('closable') ).to.be.true
-
-
