@@ -372,7 +372,7 @@
                 that.on('open', that.load);
 
                 that.holder.on('dialogopen', function () {
-                    that.state.toggle('opening', 'opened', 'closed');
+                    that.is({ 'opening': false, 'opened': true, 'closed': false });
                     that.trigger('open');
                 });
 
@@ -380,8 +380,7 @@
                     // this is here because dialog can be closed via ESC or X button
                     // and in that case is not running through that.close
                     // @todo maybe purge own close - open methods
-                    that.is('closing', true);
-                    that.state.toggle('closing', 'closed', 'opened');
+                    that.is({ 'closing': false, 'closed': true, 'opened': false });
                     that.trigger('close');
                 });
             },

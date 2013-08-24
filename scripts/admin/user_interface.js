@@ -238,7 +238,9 @@
                         }
                     });
                 } catch (e) {
-                    console.log(e);
+                    if (typeof console === 'object' && typeof console.log === 'function') {
+                        console.log(e);
+                    }
                 }
 
                 // we can't do this because destroying jquery ui instances a

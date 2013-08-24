@@ -107,6 +107,7 @@
                 form.on('submit', function (event) {
                     event.preventDefault();
                     event.stopPropagation();
+                    refinery.spinner.on();
 
                     $.ajax(this.action, {
                             'data': form.serializeArray(),
@@ -122,6 +123,8 @@
                          */
                         function (response, status, xhr) {
                             form.trigger('ajax:success', [response, status, xhr]);
+                        }).always(function () {
+                            refinery.spinner.off();
                         });
                 });
             }
