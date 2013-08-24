@@ -1,4 +1,6 @@
-(function () {
+/*global $, refinery */
+
+(function (refinery) {
 
     'use strict';
 
@@ -188,4 +190,4 @@
         });
     };
 
-}());
+}(refinery));

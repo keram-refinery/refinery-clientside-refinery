@@ -1,4 +1,6 @@
-(function () {
+/*global $, refinery */
+
+(function (refinery) {
 
     'use strict';
 
@@ -125,25 +127,10 @@
             submit: function () {
                 var form = this.holder.find('form');
 
-                if (form.length > 0) {
-                    this.submit_form(form);
-                }
+                form.submit();
 
                 return this;
             },
-
-
-            /**
-             * Handle .submit-button click
-             * which doesn't have form
-             * Should be implemented by subclasses
-             *
-             * @expose
-             *
-             * @todo  write
-             * @return {undefined}
-             */
-            submit_button: function () { },
 
             /**
              * Submit form
@@ -159,7 +146,7 @@
             submit_form: function (form) {
                 var that = this;
 
-                if (that.is('submittable') && form.attr('action')) {
+                if (that.is('submittable')) {
                     that.is('submitting', true);
 
                     $.ajax({
@@ -182,13 +169,26 @@
              * For specific use should be implemented in subclasses
              *
              * @expose
+             * @param {?jQuery} elm
              *
              * @return {Object} self
              */
-            insert: function () {
-                var li = this.holder.find('.ui-selected');
-                if (li.length > 0) {
-                    this.trigger('insert', li.data());
+            insert: function (elm) {
+                var tab, obj, fnc;
+
+                if (elm.length > 0) {
+                    tab = elm.closest('.ui-tabs-panel');
+
+                    if (tab.length > 0) {
+                        fnc = tab.attr('id').replace(/-/g, '_');
+                        if (typeof this[fnc] === 'function') {
+                            obj = this[fnc](tab);
+                        }
+                    }
+                }
+
+                if (obj) {
+                    this.trigger('insert', obj);
                 }
 
                 return this;
@@ -209,24 +209,18 @@
                     return false;
                 });
 
-                holder.on('click', '.submit-button', function (e) {
-                    if ($(this).closest('form').length === 0) {
-                        e.preventDefault();
-                        that.submit_button();
-                        return false;
-                    }
-                });
-
                 holder.on('submit', 'form', function (e) {
+                    var form = $(this);
+
                     e.preventDefault();
                     e.stopPropagation();
-                    that.submit_form($(this));
-                    return false;
-                });
 
-                holder.on('click', '.insert-button', function (e) {
-                    e.preventDefault();
-                    that.insert();
+                    if (form.attr('action')) {
+                        that.submit_form(form);
+                    } else {
+                        that.insert(form);
+                    }
+
                     return false;
                 });
             },
@@ -236,9 +230,9 @@
              *
              * @expose
              *
-             * @param  {Object} response
+             * @param  {json_response} response
              * @param  {string} status
-             * @param  {Object} xhr
+             * @param  {jQuery.jqXHR} xhr
              *
              * @return {undefined}
              */
@@ -256,7 +250,7 @@
              *
              * @expose
              *
-             * @param  {Object} xhr
+             * @param  {jQuery.jqXHR} xhr
              * @param  {string} status
              *
              * @return {undefined}
@@ -308,80 +302,76 @@
                 if (that.is('loadable')) {
                     that.is('loading', true);
 
-                    if (url[0] === '#') {
-                        $(function () {
-                            holder.html($(url).html());
-                            that.is({'loaded': true, 'loading': false});
+                    params = {
+                        'id': that.id,
+                        'frontend_locale': locale_input.length > 0 ? locale_input.val() : 'en'
+                    };
+
+                    xhr = $.ajax(url, params);
+
+                    xhr.fail(function () {
+                        // todo xhr, status
+                        holder.html($('<div/>', {
+                            'class': 'flash error',
+                            'html': t('refinery.admin.dialog_content_load_fail')
+                        }));
+
+                        /**
+                         * Propagate that load finished unsuccessfully
+                         */
+                        that.trigger('load', false);
+                    });
+
+                    xhr.always(function () {
+                        that.is('loading', false);
+                        holder.removeClass('loading');
+                    });
+
+                    xhr.done(function (response, status, xhr) {
+                        var ui_holder;
+
+                        if (status === 'success') {
+                            holder.empty();
+                            ui_holder = $('<div/>').appendTo(holder);
+                            refinery.xhr.success(response, status, xhr, ui_holder);
+                            that.ui.init(ui_holder);
+                            that.is('loaded', true);
                             that.after_load();
-                            that.trigger('load', true);
-                        });
-                    } else {
-                        params = {
-                            'id': that.id,
-                            'frontend_locale': locale_input.length > 0 ? locale_input.val() : 'en'
-                        };
-
-                        xhr = $.ajax(url, params);
-
-                        xhr.fail(function () {
-                            // todo xhr, status
-                            holder.html($('<div/>', {
-                                'class': 'flash error',
-                                'html': t('refinery.admin.dialog_content_load_fail')
-                            }));
 
                             /**
-                             * Propagate that load finished unsuccessfully
+                             * Propagate that load finished successfully
                              */
-                            that.trigger('load', false);
-                        });
+                            that.trigger('load', true);
+                        }
+                    });
 
-                        xhr.always(function () {
-                            that.is('loading', false);
-                            holder.removeClass('loading');
-                        });
-
-                        xhr.done(function (response, status, xhr) {
-                            var ui_holder;
-
-                            if (status === 'success') {
-                                holder.empty();
-                                ui_holder = $('<div/>').appendTo(holder);
-                                refinery.xhr.success(response, status, xhr, ui_holder);
-                                that.ui.init(ui_holder);
-                                that.is('loaded', true);
-                                that.after_load();
-
-                                /**
-                                 * Propagate that load finished successfully
-                                 */
-                                that.trigger('load', true);
-                            }
-                        });
-
-                    }
                 }
 
                 return this;
             },
 
             bind_events: function () {
-                var that = this;
+                var that = this,
+                    holder = that.holder;
 
                 that.on('insert', that.close);
                 that.on('open', that.load);
 
-                that.holder.on('dialogopen', function () {
+                holder.on('dialogopen', function () {
                     that.is({ 'opening': false, 'opened': true, 'closed': false });
                     that.trigger('open');
                 });
 
-                that.holder.on('dialogbeforeclose', function () {
+                holder.on('dialogbeforeclose', function () {
                     // this is here because dialog can be closed via ESC or X button
                     // and in that case is not running through that.close
                     // @todo maybe purge own close - open methods
                     that.is({ 'closing': false, 'closed': true, 'opened': false });
                     that.trigger('close');
+                });
+
+                holder.on('selectableselected', '.records.ui-selectable', function (event, ui) {
+                    that.insert($(ui.selected));
                 });
             },
 
@@ -441,4 +431,4 @@
             }
         });
 
-}());
+}(refinery));

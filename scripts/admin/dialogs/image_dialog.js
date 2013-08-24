@@ -1,4 +1,6 @@
-(function () {
+/*global refinery */
+
+(function (refinery) {
 
     'use strict';
 
@@ -9,39 +11,46 @@
      */
     refinery.Object.create({
 
-            objectPrototype: refinery('admin.Dialog', {
-                title: t('refinery.admin.image_dialog_title')
-            }, true),
+        /**
+         * test
+         * @param {image_dialog_options} options
+         */
+        objectConstructor: function (options) {
+            options.url = refinery.admin.backend_path + '/dialogs/image/' + options.image_id;
 
-            name: 'ImageDialog',
+            refinery.Object.apply(this, arguments);
+        },
 
-            /**
-             * Propagate selected image wth attributes to dialog observers
-             *
-             * @return {Object} self
-             */
-            insert: function () {
-                var holder = this.holder,
-                    alt = holder.find('#image-alt').val(),
-                    id = holder.find('#image-id').val(),
-                    size_elm = holder.find('#image-size .ui-selected a'),
-                    size = size_elm.data('size'),
-                    geometry = size_elm.data('geometry'),
-                    sizes = holder.find('#image-preview').data(),
-                    obj;
+        objectPrototype: refinery('admin.Dialog', {
+            title: t('refinery.admin.image_dialog_title')
+        }, true),
 
-                obj = {
-                    'id': id,
-                    'alt': alt,
-                    'size': size,
-                    'geometry': geometry,
-                    'sizes': sizes
-                };
+        name: 'ImageDialog',
 
-                this.trigger('insert', obj);
+        /**
+         * Propagate selected image wth attributes to dialog observers
+         *
+         * @return {Object} self
+         */
+        insert: function () {
+            var holder = this.holder,
+                alt = holder.find('#image-alt').val(),
+                id = holder.find('#image-id').val(),
+                size_elm = holder.find('#image-size .ui-selected a'),
+                size = size_elm.data('size'),
+                geometry = size_elm.data('geometry'),
+                sizes = holder.find('#image-preview').data();
 
-                return this;
-            }
-        });
+            this.trigger('insert', {
+                'id': id,
+                'alt': alt,
+                'size': size,
+                'geometry': geometry,
+                'sizes': sizes
+            });
 
-}());
+            return this;
+        }
+    });
+
+}(refinery));

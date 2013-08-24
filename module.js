@@ -33,7 +33,7 @@ var dir = __dirname,
                     'compilerOpts': {
                         'compilation_level': 'ADVANCED_OPTIMIZATIONS',
                         'warning_level': 'verbose',
-                        'externs': ['externs/jquery-1.9.js', 'externs/custom.js'],
+                        'externs': ['externs/jquery-1.9.js', 'externs/custom.js', 'externs/refinery.js'],
                         'language_in': 'ECMASCRIPT5_STRICT',
                         'summary_detail_level': 3,
                         //'formatting': 'PRETTY_PRINT',
@@ -43,7 +43,7 @@ var dir = __dirname,
                 'src': [
                     'scripts/refinery.js',
                     'scripts/object_state.js',
-                    'scripts/*.js'
+                    'scripts/object.js'
                 ],
                 'dest': '.tmp/assets/javascripts/refinery/refinery.min.js'
             }
@@ -54,7 +54,7 @@ var dir = __dirname,
                     'compilerOpts': {
                         'compilation_level': 'ADVANCED_OPTIMIZATIONS',
                         'warning_level': 'verbose',
-                        'externs': ['externs/jquery-1.9.js', 'externs/custom.js', 'externs/refinery.js'],
+                        'externs': ['externs/jquery-1.9.js', 'externs/custom.js', 'externs/refinery.js', 'externs/refinery_object.js'],
                         'language_in': 'ECMASCRIPT5_STRICT',
                         //'formatting': 'PRETTY_PRINT',
                         'summary_detail_level': 3,
@@ -90,7 +90,6 @@ var dir = __dirname,
                 'dest': '.tmp/assets/javascripts/refinery/refinery-admin.all.js'
             }
         }],
-
         'copy': [{
             'js': {
                 'files': [{

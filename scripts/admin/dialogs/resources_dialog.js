@@ -1,4 +1,6 @@
-(function () {
+/*global refinery */
+
+(function (refinery) {
 
     'use strict';
 
@@ -10,7 +12,7 @@
     refinery.Object.create({
         objectPrototype: refinery('admin.Dialog', {
             title: t('refinery.admin.resources_dialog_title'),
-            url: '/refinery/dialogs/resources'
+            url: refinery.admin.backend_path + '/dialogs/resources'
         }, true),
 
         name: 'ResourcesDialog',
@@ -19,40 +21,34 @@
             var that = this,
                 holder = that.holder;
 
-            holder.on('selectableselected', '.ui-selectable', function () {
-                that.library_tab();
-            });
-
             holder.on('ajax:success', function (xhr, response) {
-                that.upload_tab(response.file);
+                that.upload_resource_area(response.file);
             });
         },
 
         /**
          * Handle resource linked from library
          *
-         * @return {Object} self
+         * @expose
+         * @param {jQuery} tab
+         * @return {undefined|file_dialog_object}
          */
-        library_tab: function () {
-            var that = this,
-                tab = that.holder.find('div[aria-expanded="true"]'),
-                li = tab.find('li.ui-selected');
+        existing_resource_area: function (tab) {
+            var li = tab.find('li.ui-selected');
 
             if (li.length > 0) {
                 li.removeClass('ui-selected');
-                that.trigger('insert', li.data('dialog'));
+                return /** @type {file_dialog_object} */(li.data('dialog'));
             }
-
-            return that;
         },
 
         /**
          * Handle uploaded file
          *
          * @param {file_dialog_object} file
-         * @return {Object} self
+         * @return {undefined}
          */
-        upload_tab: function (file) {
+        upload_resource_area: function (file) {
             var that = this,
                 holder = that.holder;
 
@@ -62,19 +58,7 @@
                 holder.find('li.ui-selected').removeClass('ui-selected');
                 holder.find('.ui-tabs').tabs({ 'active': 0 });
             }
-
-            return that;
-        },
-
-        /**
-         * Propagate selected resource wth attributes to dialog observers
-         *
-         * @return {Object} self
-         */
-        insert: function () {
-
-            return this;
         }
     });
 
-}());
+}(refinery));

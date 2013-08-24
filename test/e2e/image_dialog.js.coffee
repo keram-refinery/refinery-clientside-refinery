@@ -16,7 +16,8 @@ describe 'Admin Image Dialog', ->
 
   describe 'Instance', ->
     before ->
-      @dialog = new refinery.admin.ImageDialog url: '/refinery/test/fixtures/image_dialog.json'
+      @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+      @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
 
     after ->
       @dialog.destroy(true)
@@ -31,7 +32,8 @@ describe 'Admin Image Dialog', ->
   describe 'initialised', ->
 
     before ->
-      @dialog = new refinery.admin.ImageDialog url: '/refinery/test/fixtures/image_dialog.json'
+      @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+      @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
       @dialog.init()
 
     after ->
@@ -47,7 +49,8 @@ describe 'Admin Image Dialog', ->
   describe 'open', ->
 
     before ->
-      @dialog = new refinery.admin.ImageDialog url: '/refinery/test/fixtures/image_dialog.json'
+      @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+      @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
       @dialog.init().open()
 
     after ->
@@ -68,9 +71,8 @@ describe 'Admin Image Dialog', ->
     context 'fail', ->
 
       before (done) ->
-        @dialog = new refinery.admin.ImageDialog({
-          url: '/some/nonexistant/url'
-        }).init()
+        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1337
+        @dialog.init()
 
         @dialog.on 'load', (loaded) ->
           done()
@@ -89,9 +91,9 @@ describe 'Admin Image Dialog', ->
 
     context 'success', ->
       before (done) ->
-        @dialog = new refinery.admin.ImageDialog({
-          url: '/refinery/test/fixtures/image_dialog.json'
-        }).init()
+        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+        @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+        @dialog.init()
 
         @dialog.on 'load', (loaded) ->
           done()
@@ -127,12 +129,12 @@ describe 'Admin Image Dialog', ->
             "large":"/refinery/test/fixtures/500x350.jpg",
             "grid":"/refinery/test/fixtures/500x350.jpg"
 
-        @dialog = dialog = new refinery.admin.ImageDialog({
-          url: '/refinery/test/fixtures/image_dialog.json'
-        }).init()
+        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+        @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+        @dialog.init()
 
         @dialog.on 'load', (loaded) ->
-          dialog.holder.find('.button.insert-button:visible').click()
+          dialog.insert()
           done()
 
         @insertSpy = insertSpy = sinon.spy()
@@ -160,7 +162,7 @@ describe 'Admin Image Dialog', ->
           "id": "1",
           "alt":"Image alt",
           "size":"original",
-          "geometry": undefined,
+          "geometry": "128x153",
           "sizes":
             "small":"/refinery/test/fixtures/500x350.jpg",
             "original":"/refinery/test/fixtures/500x350.jpg",
@@ -168,9 +170,9 @@ describe 'Admin Image Dialog', ->
             "large":"/refinery/test/fixtures/500x350.jpg",
             "grid":"/refinery/test/fixtures/500x350.jpg"
 
-        @dialog = dialog = new refinery.admin.ImageDialog({
-          url: '/refinery/test/fixtures/image_dialog.json'
-        }).init()
+        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+        @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+        @dialog.init()
 
         @insertSpy = insertSpy = sinon.spy()
         @dialog.on 'insert', (img) ->
@@ -178,7 +180,7 @@ describe 'Admin Image Dialog', ->
 
         @dialog.on 'load', (loaded) ->
           uiSelect( dialog.holder.find('a[href="#original"]').parent() )
-          dialog.holder.find('.insert-button:visible').click()
+          dialog.insert()
           done()
 
         @dialog.open()

@@ -1,4 +1,6 @@
-(function () {
+/*global $, refinery */
+
+(function (refinery) {
 
     'use strict';
 
@@ -154,8 +156,9 @@
                     if (response.redirect_to) {
                         Turbolinks.visit(response.redirect_to);
                     } else {
+                        that.destroy(false);
                         refinery.xhr.success(response, status, xhr, $(event.target), true);
-                        that.reload();
+                        that.reload(holder);
                     }
                 }
             });
@@ -194,6 +197,8 @@
                     ui[fnc](holder, that);
                 }
             }
+
+            holder.find('input.text, textarea').first().focus();
         },
 
         /**
@@ -277,4 +282,4 @@
         }
     });
 
-}());
+}(refinery));
