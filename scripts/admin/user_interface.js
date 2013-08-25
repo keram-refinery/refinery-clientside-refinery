@@ -16,6 +16,17 @@
 
         module: 'admin',
 
+        options: {
+            /**
+             * When Ajax request receive partial without id,
+             * content of $('#' + main_content_id) will be replaced.
+             *
+             * @expose
+             * @type {!string}
+             */
+            main_content_id: 'content'
+        },
+
         init_checkboxes: function () {
             this.holder.find('div.checkboxes').each(function () {
                 var holder = $(this),
@@ -61,34 +72,6 @@
                     }
                 } else {
                     list.sortable(options);
-                }
-            });
-        },
-
-        init_deletable_records: function () {
-            var holder = this.holder;
-
-            function hideRecord (elm) {
-                var record = elm.closest('.record');
-                record = record.length > 0 ? record : holder.find('.record');
-                record = record.length > 0 ? record : elm.closest('li');
-
-                if (record.length > 0) {
-                    record.fadeOut('normal', function () {
-                        record.remove();
-                    });
-                }
-            }
-
-            holder.on('confirm:complete', '.records .delete', function (event, answer) {
-                if (answer) {
-                    hideRecord($(this));
-                }
-            });
-
-            holder.on('click', 'a.delete', function () {
-                if (!this.hasAttribute('data-confirm')) {
-                    hideRecord($(this));
                 }
             });
         },
@@ -150,6 +133,10 @@
             });
 
             holder.on('ajax:success', function (event, response, status, xhr) {
+                var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To'),
+                    replace_target = true,
+                    target;
+
                 if (response && typeof response === 'object') {
                     event.preventDefault();
 
@@ -157,7 +144,14 @@
                         Turbolinks.visit(response.redirect_to);
                     } else {
                         that.destroy(false);
-                        refinery.xhr.success(response, status, xhr, $(event.target), true);
+                        if (redirected_to) {
+                            target = $('#' + that.options.main_content_id);
+                            replace_target = false;
+                        } else {
+                            target = $(event.target);
+                        }
+
+                        refinery.xhr.success(response, status, xhr, target, replace_target);
                         that.reload(holder);
                     }
                 }
@@ -190,8 +184,6 @@
             that.init_collapsible_lists();
             that.init_toggle_hide();
 
-            that.init_deletable_records();
-
             for (fnc in ui) {
                 if (ui.hasOwnProperty(fnc) && typeof ui[fnc] === 'function') {
                     ui[fnc](holder, that);
@@ -212,7 +204,7 @@
          */
         reload: function (holder) {
             holder = holder || this.holder;
-            this.destroy(false);
+            this.destroy();
             this.state = new this.State();
             return this.init(holder);
         },

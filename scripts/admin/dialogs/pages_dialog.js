@@ -1,5 +1,3 @@
-/*global refinery */
-
 (function (refinery) {
 
     'use strict';
@@ -35,17 +33,14 @@
                 additional = '',
                 result;
 
-            subject = encodeURIComponent(subject);
-            body = encodeURIComponent(body);
-
             if (recipient) {
                 if (subject.length > 0) {
-                    additional += modifier + 'subject=' + subject;
+                    additional += modifier + 'subject=' + encodeURIComponent(subject);
                     modifier = '&';
                 }
 
                 if (body.length > 0) {
-                    additional += modifier + 'body=' + body;
+                    additional += modifier + 'body=' + encodeURIComponent(body);
                     modifier = '&';
                 }
 
@@ -95,6 +90,7 @@
         /**
          * Dialog Url tab action processing
          *
+         * @expose
          * @param {!jQuery} tab
          *
          * @return {undefined|pages_dialog_object}
@@ -104,7 +100,7 @@
                 result;
 
             if (li.length > 0) {
-                result = /** @type {pages_dialog_object} */(li.data('link'));
+                result = /** @type {pages_dialog_object} */(li.data('dialog'));
                 result.type = 'page';
                 li.removeClass('ui-selected');
             }

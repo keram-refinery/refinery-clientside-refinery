@@ -1,4 +1,3 @@
-/*global refinery */
 
 (function (refinery) {
 

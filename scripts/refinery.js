@@ -331,7 +331,7 @@
          * @return {undefined}
          */
         success: function (response, status, xhr, holder, replaceHolder) {
-            var redirected = xhr.getResponseHeader('X-XHR-Redirected-To');
+            var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To');
 
             if (response.html) {
                 refinery.xhr.processHtml(response.html, holder, replaceHolder);
@@ -341,12 +341,12 @@
                 refinery.xhr.processMessage(response.message);
             }
 
-            if (redirected) {
+            if (redirected_to) {
                 window.history.pushState({
                     'refinery': true,
-                    'url': redirected,
+                    'url': redirected_to,
                     'prev_url': document.location.href
-                }, '', redirected);
+                }, '', redirected_to);
             }
         }
     };

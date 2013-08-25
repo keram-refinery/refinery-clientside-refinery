@@ -4,6 +4,51 @@
 
     'use strict';
 
+   /**
+     * refinery Object State
+     *
+     * @constructor
+     * @extends {refinery.ObjectState}
+     * @param {Object=} default_states
+     *    Usage:
+     *        new refinery.ObjectState();
+     *
+     * @todo  measure perf and if needed refactor to use bit masks, fsm or something else
+     */
+    function DialogState (default_states) {
+        var states = $.extend(default_states || {}, {
+            'closed' : true
+        });
+
+        refinery.ObjectState.call(this, states);
+    }
+
+    /**
+     * Custom State Object prototype
+     * @expose
+     * @type {Object}
+     */
+    DialogState.prototype = {
+        '_openable': function () {
+            return (this.get('initialised') && this.get('closed') && !this.get('opening'));
+        },
+        '_closable': function () {
+            return (!this.get('closing') && this.get('opened'));
+        },
+        '_loadable': function () {
+            return (!this.get('loading') && !this.get('loaded'));
+        },
+        '_submittable': function () {
+            return (this.get('initialised') && !this.get('submitting'));
+        },
+        '_insertable': function () {
+            return (this.get('initialised') && !this.get('inserting'));
+        }
+    };
+
+    refinery.extend(DialogState.prototype, refinery.ObjectState.prototype);
+
+
     /**
      * @constructor
      * @extends {refinery.Object}
@@ -41,53 +86,7 @@
              */
             ui: null,
 
-            State: /** @type {Object} */(function () {
-                /**
-                 * refinery Object State
-                 *
-                 * @constructor
-                 * @extends {refinery.ObjectState}
-                 * @param {Object=} default_states
-                 *    Usage:
-                 *        new refinery.ObjectState();
-                 *
-                 * @todo  measure perf and if needed refactor to use bit masks, fsm or something else
-                 */
-                function DialogState (default_states) {
-                    var states = $.extend(default_states || {}, {
-                        'closed' : true
-                    });
-
-                    refinery.ObjectState.call(this, states);
-                }
-
-                /**
-                 * Custom State Object prototype
-                 * @expose
-                 * @type {Object}
-                 */
-                DialogState.prototype = {
-                    '_openable': function () {
-                        return (this.get('initialised') && this.get('closed') && !this.get('opening'));
-                    },
-                    '_closable': function () {
-                        return (!this.get('closing') && this.get('opened'));
-                    },
-                    '_loadable': function () {
-                        return (!this.get('loading') && !this.get('loaded'));
-                    },
-                    '_submittable': function () {
-                        return (this.get('initialised') && !this.get('submitting'));
-                    },
-                    '_insertable': function () {
-                        return (this.get('initialised') && !this.get('inserting'));
-                    }
-                };
-
-                refinery.extend(DialogState.prototype, refinery.ObjectState.prototype);
-
-                return DialogState;
-            }()),
+            State: DialogState,
 
             /**
              *
@@ -419,7 +418,10 @@
                     holder.dialog(this.options);
                     this.attach_holder(holder);
 
-                    this.ui = refinery('admin.UserInterface');
+                    this.ui = refinery('admin.UserInterface', {
+                        'main_content_id': 'dialog-' + this.id
+                    });
+
                     this.bind_events();
                     this.init_buttons();
                     this.init_paginate();
