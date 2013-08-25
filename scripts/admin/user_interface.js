@@ -142,14 +142,16 @@
                         Turbolinks.visit(response.redirect_to);
                     } else {
                         if (redirected_to || event.target.tagName.toLowerCase() === 'a') {
-                            target = $(that.options.main_content_selector);
+                            target = holder.find(that.options.main_content_selector);
                             replace_target = false;
                         } else {
                             target = $(event.target);
                         }
 
+
                         that.destroy();
                         refinery.xhr.success(response, status, xhr, target, replace_target);
+                        that.trigger('ui:change');
                     }
                 }
             });
@@ -215,6 +217,7 @@
                 } catch (e) {
                     if (typeof console === 'object' && typeof console.log === 'function') {
                         console.log(e);
+                        console.log(holders);
                     }
                 }
 

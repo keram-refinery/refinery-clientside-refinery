@@ -171,10 +171,6 @@
                 });
             },
 
-            /** @expose */
-            after_load: function () {
-            },
-
             /**
              * Load dialog content
              *
@@ -210,11 +206,6 @@
                             'class': 'flash error',
                             'html': t('refinery.admin.dialog_content_load_fail')
                         }));
-
-                        /**
-                         * Propagate that load finished unsuccessfully
-                         */
-                        that.trigger('load', false);
                     });
 
                     xhr.always(function () {
@@ -223,24 +214,18 @@
                     });
 
                     xhr.done(function (response, status, xhr) {
-                        var ui_holder;
-
                         if (status === 'success') {
                             holder.empty();
-                            ui_holder = $('<div/>').appendTo(holder);
-                            refinery.xhr.success(response, status, xhr, ui_holder);
-
-                            that.ui = refinery('admin.UserInterface', {
-                                'main_content_selector': '.dialog-content-wrapper'
-                            }).init(ui_holder);
+                            that.ui_holder = $('<div/>').appendTo(holder);
+                            refinery.xhr.success(response, status, xhr, that.ui_holder);
+                            that.ui_change();
 
                             that.is('loaded', true);
-                            that.after_load();
 
                             /**
                              * Propagate that load finished successfully
                              */
-                            that.trigger('load', true);
+                            that.trigger('load');
                         }
                     });
 
@@ -249,10 +234,28 @@
                 return this;
             },
 
+            ui_change: function () {
+                var that = this;
+
+                function ui_change () {
+                    if (that.ui) {
+                        that.ui.destroy();
+                        that.ui.unsubscribe('ui:change', ui_change);
+                    }
+
+                    that.ui = refinery('admin.UserInterface', {
+                        'main_content_selector': '.dialog-content-wrapper'
+                    }).init(that.ui_holder);
+
+                    that.ui.subscribe('ui:change', ui_change);
+                }
+
+                ui_change();
+            },
+
             bind_events: function () {
                 var that = this,
                     holder = that.holder;
-
 
                 that.on('insert', that.close);
                 that.on('open', that.load);
@@ -304,14 +307,18 @@
                      * @return {undefined}
                      */
                     function (xhr, response) {
-                        var ui_holder = holder.find('> div').first();
-
-                        that.ui = refinery('admin.UserInterface', {
-                            'main_content_selector': '.dialog-content-wrapper'
-                        }).init(ui_holder);
-
                         that.upload_area(response);
                     });
+            },
+
+            /**
+             * Handle uploaded resource
+             *
+             * @expose
+             * @param {json_response} json_response
+             * @return {undefined}
+             */
+            upload_area: function (json_response) {
             },
 
             /**
@@ -322,6 +329,7 @@
             destroy: function () {
                 if (this.ui) {
                     this.ui.destroy();
+                    this.ui.unsubscribe('ui:change', this.ui_change);
                     this.ui = null;
                 }
 

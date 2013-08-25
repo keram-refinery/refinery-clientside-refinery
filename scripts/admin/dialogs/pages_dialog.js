@@ -19,6 +19,7 @@
          * Dialog email tab action processing
          *
          * @param {!jQuery} tab
+         * @expose
          *
          * @return {undefined|pages_dialog_object}
          */
@@ -62,6 +63,7 @@
          * Dialog Url tab action processing
          *
          * @param {!jQuery} tab
+         * @expose
          *
          * @return {undefined|pages_dialog_object}
          */

@@ -107,6 +107,7 @@
         /**
          * State class instatiable via Object constructor
          * @expose
+         * @lends {refinery.ObjectState}
          */
         State: refinery.ObjectState,
 
@@ -188,10 +189,10 @@
          * @expose
          * @public
          *
-         * @param {string}         eventName
-         * @param {Function=}  callback
+         * @param {string} eventName
+         * @param {Function} callback
          *
-         * @return {Object}         self
+         * @return {Object} self
          */
         subscribe: function (eventName, callback) {
             // console.log(eventName, this.uid, 'subscribed');
@@ -206,10 +207,10 @@
          * @expose
          * @public
          *
-         * @param {string}         eventName
-         * @param {Function=}  callback
+         * @param {string} eventName
+         * @param {Function} callback
          *
-         * @return {Object}         self
+         * @return {Object} self
          */
         unsubscribe: function (eventName, callback) {
             refinery.pubsub.unsubscribe(this.uid + '.' + eventName, callback);
