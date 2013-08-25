@@ -16,15 +16,6 @@
 
         name: 'ResourcesDialog',
 
-        after_load: function () {
-            var that = this,
-                holder = that.holder;
-
-            holder.on('ajax:success', function (xhr, response) {
-                that.upload_resource_area(response.file);
-            });
-        },
-
         /**
          * Handle resource linked from library
          *
@@ -44,11 +35,12 @@
         /**
          * Handle uploaded file
          *
-         * @param {file_dialog_object} file
+         * @param {json_response} json_response
          * @return {undefined}
          */
-        upload_resource_area: function (file) {
+        upload_area: function (json_response) {
             var that = this,
+                file = json_response.file,
                 holder = that.holder;
 
             if (file) {

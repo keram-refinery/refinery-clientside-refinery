@@ -398,6 +398,13 @@
         }
     };
 
+
+    /**
+     * @type {Object}
+     * @expose
+     */
+    refinery.PageUI = null;
+
     refinery.provide('refinery', refinery);
 
 }());

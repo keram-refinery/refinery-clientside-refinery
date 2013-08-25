@@ -19,12 +19,12 @@
         options: {
             /**
              * When Ajax request receive partial without id,
-             * content of $('#' + main_content_id) will be replaced.
+             * content of $(main_content_selector) will be replaced.
              *
              * @expose
              * @type {!string}
              */
-            main_content_id: 'content'
+            main_content_selector: '#content'
         },
 
         init_checkboxes: function () {
@@ -138,21 +138,18 @@
                     target;
 
                 if (response && typeof response === 'object') {
-                    event.preventDefault();
-
                     if (response.redirect_to) {
                         Turbolinks.visit(response.redirect_to);
                     } else {
-                        that.destroy(false);
-                        if (redirected_to) {
-                            target = $('#' + that.options.main_content_id);
+                        if (redirected_to || event.target.tagName.toLowerCase() === 'a') {
+                            target = $(that.options.main_content_selector);
                             replace_target = false;
                         } else {
                             target = $(event.target);
                         }
 
+                        that.destroy();
                         refinery.xhr.success(response, status, xhr, target, replace_target);
-                        that.reload(holder);
                     }
                 }
             });
@@ -194,30 +191,11 @@
         },
 
         /**
-         * Removing all refinery instances under holder, and reloading self.
-         * This is important when ajax replace current content of holder so, some objects
-         * may not longer exist and we need remove all references to them.
-         *
-         * @param {jQuery} holder
-         *
-         * @return {Object} self
-         */
-        reload: function (holder) {
-            holder = holder || this.holder;
-            this.destroy();
-            this.state = new this.State();
-            return this.init(holder);
-        },
-
-        /**
          * Destroy self and also all refinery, jquery ui instances under holder
          *
-         * @param {boolean=} removeGlobalReference if is true instance will be removed
-         *                   from refinery.Object.instances
-         *
          * @return {Object} self
          */
-        destroy: function (removeGlobalReference) {
+        destroy: function () {
             var holder = this.holder,
                 holders;
 
@@ -231,7 +209,7 @@
 
                         for (var i = instances.length - 1; i >= 0; i--) {
                             instance = refinery.Object.instances.get(instances[i]);
-                            instance.destroy(true);
+                            instance.destroy();
                         }
                     });
                 } catch (e) {
@@ -253,9 +231,7 @@
                 // }
             }
 
-            this._destroy(removeGlobalReference);
-
-            return this;
+            return this._destroy();
         },
 
         init: function (holder) {

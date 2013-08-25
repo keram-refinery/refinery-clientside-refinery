@@ -38,9 +38,6 @@
         '_loadable': function () {
             return (!this.get('loading') && !this.get('loaded'));
         },
-        '_submittable': function () {
-            return (this.get('initialised') && !this.get('submitting'));
-        },
         '_insertable': function () {
             return (this.get('initialised') && !this.get('inserting'));
         }
@@ -118,52 +115,6 @@
             },
 
             /**
-             *
-             * @expose
-             *
-             * @return {Object} self
-             */
-            submit: function () {
-                var form = this.holder.find('form');
-
-                form.submit();
-
-                return this;
-            },
-
-            /**
-             * Submit form
-             * -- just dirty implementation
-             * Implement for specific cases in subclasses
-             *
-             *
-             * @expose
-             * @param {jQuery} form
-             *
-             * @return {undefined}
-             */
-            submit_form: function (form) {
-                var that = this;
-
-                if (that.is('submittable')) {
-                    that.is('submitting', true);
-
-                    $.ajax({
-                        url: form.attr('action'),
-                        type: form.attr('method'),
-                        data: form.serialize(),
-                        dataType: 'JSON'
-                    }).done(function (response, status, xhr) {
-                        that.xhr_done(response, status, xhr);
-
-                        that.trigger('submit');
-                    }).always(function () {
-                        that.is({'submitted': true, 'submitting': false});
-                    });
-                }
-            },
-
-            /**
              * Handle Insert event
              * For specific use should be implemented in subclasses
              *
@@ -196,6 +147,7 @@
             /**
              * Bind events to dialog buttons and forms
              *
+             * @expose
              * @return {undefined}
              */
             init_buttons: function () {
@@ -211,67 +163,11 @@
                 holder.on('submit', 'form', function (e) {
                     var form = $(this);
 
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    if (form.attr('action')) {
-                        that.submit_form(form);
-                    } else {
+                    if (!form.attr('action')) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         that.insert(form);
                     }
-
-                    return false;
-                });
-            },
-
-            /**
-             * Process xhr response and reloading ui interface
-             *
-             * @expose
-             *
-             * @param  {json_response} response
-             * @param  {string} status
-             * @param  {jQuery.jqXHR} xhr
-             *
-             * @return {undefined}
-             */
-            xhr_done: function (response, status, xhr) {
-                var that = this,
-                    ui = that.ui,
-                    holder = ui.holder;
-
-                refinery.xhr.success(response, status, xhr, holder);
-                ui.reload(holder);
-            },
-
-            /**
-             * Xhr fail processing
-             *
-             * @expose
-             *
-             * @param  {jQuery.jqXHR} xhr
-             * @param  {string} status
-             *
-             * @return {undefined}
-             */
-            xhr_fail: function (xhr, status) {
-                refinery.xhr.error(xhr, status);
-            },
-
-            init_paginate: function () {
-                var that = this,
-                    holder = that.holder;
-
-                holder.on('click', '.pagination > a', function (e) {
-                    e.preventDefault();
-                    $.ajax({
-                        url: this.getAttribute('href'),
-                        dataType: 'JSON'
-                    })
-                    .fail(refinery.xhr.error)
-                    .done(function (response, status, xhr) {
-                        that.xhr_done(response, status, xhr);
-                    });
                 });
             },
 
@@ -333,7 +229,11 @@
                             holder.empty();
                             ui_holder = $('<div/>').appendTo(holder);
                             refinery.xhr.success(response, status, xhr, ui_holder);
-                            that.ui.init(ui_holder);
+
+                            that.ui = refinery('admin.UserInterface', {
+                                'main_content_selector': '.dialog-content-wrapper'
+                            }).init(ui_holder);
+
                             that.is('loaded', true);
                             that.after_load();
 
@@ -352,6 +252,7 @@
             bind_events: function () {
                 var that = this,
                     holder = that.holder;
+
 
                 that.on('insert', that.close);
                 that.on('open', that.load);
@@ -372,19 +273,55 @@
                 holder.on('selectableselected', '.records.ui-selectable', function (event, ui) {
                     that.insert($(ui.selected));
                 });
+
+                holder.on('click', '.pagination a', function (event) {
+                    var a = $(this),
+                        url = /** @type {string} */(a.attr('href'));
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    $.get(url).done(
+                        /**
+                         * @param {json_response} response
+                         * @param {string} status
+                         * @param {jQuery.jqXHR} xhr
+                         * @return {undefined}
+                         */
+                        function (response, status, xhr) {
+                            holder.find('.dialog-content-wrapper')
+                            .trigger('ajax:success', [response, status, xhr]);
+                        }).always(function () {
+                            refinery.spinner.off();
+                        });
+                });
+
+                holder.on('ajax:success',
+                    /**
+                     *
+                     * @param  {jQuery.jqXHR} xhr
+                     * @param  {json_response} response
+                     * @return {undefined}
+                     */
+                    function (xhr, response) {
+                        var ui_holder = holder.find('> div').first();
+
+                        that.ui = refinery('admin.UserInterface', {
+                            'main_content_selector': '.dialog-content-wrapper'
+                        }).init(ui_holder);
+
+                        that.upload_area(response);
+                    });
             },
 
             /**
              *
              * @expose
-             * @param {boolean=} removeGlobalReference if is true instance will be removed
-             *                   from refinery.Object.instances
-             *
              * @return {Object} self
              */
-            destroy: function (removeGlobalReference) {
+            destroy: function () {
                 if (this.ui) {
-                    this.ui.destroy(true);
+                    this.ui.destroy();
                     this.ui = null;
                 }
 
@@ -392,9 +329,7 @@
                     this.holder.dialog('destroy');
                 }
 
-                this._destroy(removeGlobalReference);
-
-                return this;
+                return this._destroy();
             },
 
             /**
@@ -418,13 +353,9 @@
                     holder.dialog(this.options);
                     this.attach_holder(holder);
 
-                    this.ui = refinery('admin.UserInterface', {
-                        'main_content_id': 'dialog-' + this.id
-                    });
-
                     this.bind_events();
                     this.init_buttons();
-                    this.init_paginate();
+
                     this.is({'initialised': true, 'initialising': false});
                     this.trigger('init');
                 }

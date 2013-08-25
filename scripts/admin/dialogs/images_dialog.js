@@ -18,21 +18,6 @@
         name: 'ImagesDialog',
 
         /**
-         * Select first image in library
-         * Put focus to first text input element
-         *
-         * @return {undefined}
-         */
-        after_load: function () {
-            var that = this,
-                holder = that.holder;
-
-            holder.on('ajax:success', function (xhr, response) {
-                that.upload_image_area(response.image);
-            });
-        },
-
-        /**
          * Handle image linked from library
          *
          * @expose
@@ -85,11 +70,12 @@
          * Handle uploaded image
          *
          * @expose
-         * @param {Object} image
+         * @param {json_response} json_response
          * @return {undefined}
          */
-        upload_image_area: function (image) {
+        upload_area: function (json_response) {
             var that = this,
+                image = json_response.image,
                 holder = that.holder;
 
             if (image) {

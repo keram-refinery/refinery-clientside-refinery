@@ -109,6 +109,7 @@
         /**
          * Update item position on server
          *
+         * @expose
          * @param {jQuery} item
          *
          * @return {Object} self
@@ -157,21 +158,11 @@
             return that;
         },
 
-        /**
-         *
-         * @expose
-         * @param {boolean=} removeGlobalReference if is true instance will be removed
-         *                   from refinery.Object.instances
-         *
-         * @return {Object} self
-         */
-        destroy: function (removeGlobalReference) {
+        destroy: function () {
             this.holder.nestedSortable('destroy');
             this.set = null;
 
-            this._destroy(removeGlobalReference);
-
-            return this;
+            return this._destroy();
         },
 
         init: function (holder) {

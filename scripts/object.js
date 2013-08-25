@@ -252,12 +252,9 @@
          * listening this event/object then he must get chance to respond.
          *
          * @expose
-         * @param {boolean=} removeGlobalReference if is true instance will be removed
-         *                   from refinery.Object.instances
-         *
          * @return {Object} self
          */
-        destroy: function (removeGlobalReference) {
+        destroy: function () {
             if (this.holder) {
                 this.holder.unbind();
                 this.detach_holder();
@@ -265,9 +262,7 @@
 
             this.state = null;
 
-            if (removeGlobalReference) {
-                refinery.Object.instances.remove(this.uid);
-            }
+            refinery.Object.instances.remove(this.uid);
 
             this.trigger('destroy');
             this.events = {};
@@ -281,13 +276,10 @@
          * inherited object from refinery.Object
          *
          * @expose
-         * @param {boolean=} removeGlobalReference if is true instance will be removed
-         *                   from refinery.Object.instances
-         *
          * @return {Object} self
          */
-        _destroy: function (removeGlobalReference) {
-            return refinery.Object.prototype.destroy.apply(this, [removeGlobalReference]);
+        _destroy: function () {
+            return refinery.Object.prototype.destroy.apply(this, arguments);
         },
 
          /**
