@@ -21,20 +21,15 @@
          * Handle image linked from library
          *
          * @expose
-         * @param {jQuery} tab
-         * @return {undefined|{id: string}}
+         * @param {!jQuery} li selected row
+         * @return {{id: string}}
          */
-        existing_image_area: function (tab) {
-            var li = tab.find('li.ui-selected'),
-                obj;
+        existing_image_area: function (li) {
+            var obj = {
+                id: li.attr('id').match(/[0-9]+$/)[0]
+            };
 
-            if (li.length > 0) {
-                obj = {
-                    id: li.attr('id').match(/[0-9]+$/)[0]
-                };
-
-                li.removeClass('ui-selected');
-            }
+            li.removeClass('ui-selected');
 
             return obj;
         },
@@ -43,12 +38,12 @@
          * Handle image linked by url
          *
          * @expose
-         * @param {jQuery} tab
+         * @param {!jQuery} form
          * @return {undefined|{alt: string, url: string}}
          */
-        external_image_area: function (tab) {
-            var url_input = tab.find('input[type="url"]:valid'),
-                alt_input = tab.find('input[type="text"]:valid'),
+        external_image_area: function (form) {
+            var url_input = form.find('input[type="url"]:valid'),
+                alt_input = form.find('input[type="text"]:valid'),
                 url = /** @type {string} */(url_input.val()),
                 alt = /** @type {string} */(alt_input.val()),
                 obj;

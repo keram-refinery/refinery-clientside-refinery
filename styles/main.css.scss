@@ -101,17 +101,17 @@
 }
 
 .hemisquare,
-.golden-ratio-minor,
-.golden-ratio-main {
+.block-aside,
+.block-main {
     width: 48%;
     float: left;
 }
 
-.golden-ratio-minor {
+.block-aside {
     width: 38%;
 }
 
-.golden-ratio-main {
+.block-main {
     width: 61%;
 }
 
@@ -119,7 +119,7 @@
     float: right;
 }
 
-.golden-ratio-minor.right-side {
+.block-aside.right-side {
     width: 37%;
 }
 

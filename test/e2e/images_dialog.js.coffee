@@ -76,7 +76,7 @@ describe 'Admin Images Dialog', ->
           url: '/some/nonexistant/url'
         }).init(@container)
 
-        @dialog.on 'load', (loaded) ->
+        @dialog.on 'load', ->
           done()
 
         @dialog.open()
@@ -98,7 +98,7 @@ describe 'Admin Images Dialog', ->
           url: '/refinery/test/fixtures/empty_images_dialog.json'
         }).init(@container)
 
-        @dialog.on 'load', (loaded) ->
+        @dialog.on 'load', ->
           done()
 
         @dialog.open()
@@ -121,7 +121,7 @@ describe 'Admin Images Dialog', ->
 
     before (done) ->
       @dialog = new refinery.admin.ImagesDialog().init(@container)
-      @dialog.on 'load', (loaded) ->
+      @dialog.on 'load', ->
         done()
 
       @dialog.open()

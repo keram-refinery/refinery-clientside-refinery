@@ -29,16 +29,16 @@
         /**
          * Propagate selected image wth attributes to dialog observers
          *
+         * @param {!jQuery} form
          * @return {Object} self
          */
-        insert: function () {
-            var holder = this.holder,
-                alt = holder.find('#image-alt').val(),
-                id = holder.find('#image-id').val(),
-                size_elm = holder.find('#image-size .ui-selected a'),
+        insert: function (form) {
+            var alt = form.find('#image-alt').val(),
+                id = form.find('#image-id').val(),
+                size_elm = form.find('#image-size .ui-selected a'),
                 size = size_elm.data('size'),
                 geometry = size_elm.data('geometry'),
-                sizes = holder.find('#image-preview').data();
+                sizes = form.find('#image-preview').data();
 
             this.trigger('insert', {
                 'id': id,

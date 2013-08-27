@@ -152,35 +152,32 @@
             }
         },
 
-        fly_form_actions: function (left_buttons, holder, $window) {
-            var
-                window_position = $window.scrollTop() + $window.height(),
-                form_actions_pos = holder.position().top;
-
-            if (window_position < form_actions_pos) {
-                left_buttons.addClass('fly');
-            } else {
-                left_buttons.removeClass('fly');
-            }
-        },
-
         init_fly_form_actions: function () {
             var that = this,
                 $window = $(window),
                 holder = that.holder.find('.form-actions'),
-                left_buttons = that.holder.find('.form-actions-left'),
-                scroll_handler = function () {
-                    that.fly_form_actions(left_buttons, holder, $window);
-                };
+                left_buttons = that.holder.find('.form-actions-left');
+
+            function scroll () {
+                var window_position = $window.scrollTop() + $window.height(),
+                    form_actions_pos = holder.position().top;
+
+                if (window_position < form_actions_pos) {
+                    left_buttons.addClass('fly');
+                } else {
+                    left_buttons.removeClass('fly');
+                }
+            }
 
             if (that.holder.find('textarea').length > 0 &&
                 holder.length > 0 && left_buttons.length > 0) {
 
-                that.fly_form_actions(left_buttons, holder, $window);
-                $window.on('scroll', scroll_handler);
+                $window.on('scroll', scroll);
                 that.on('destroy', function () {
-                    $window.unbind('scroll', scroll_handler);
+                    $window.unbind('scroll', scroll);
                 });
+
+                scroll();
             }
         },
 

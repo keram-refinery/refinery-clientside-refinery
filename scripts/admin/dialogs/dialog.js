@@ -119,21 +119,18 @@
              * For specific use should be implemented in subclasses
              *
              * @expose
-             * @param {?jQuery} elm
+             * @param {!jQuery} elm Element which evoke insert event
              *
              * @return {Object} self
              */
             insert: function (elm) {
-                var tab, obj, fnc;
+                var tab = elm.closest('.ui-tabs-panel'),
+                    obj, fnc;
 
-                if (elm.length > 0) {
-                    tab = elm.closest('.ui-tabs-panel');
-
-                    if (tab.length > 0) {
-                        fnc = tab.attr('id').replace(/-/g, '_');
-                        if (typeof this[fnc] === 'function') {
-                            obj = this[fnc](tab);
-                        }
+                if (tab.length > 0) {
+                    fnc = tab.attr('id').replace(/-/g, '_');
+                    if (typeof this[fnc] === 'function') {
+                        obj = this[fnc](elm);
                     }
                 }
 
@@ -208,27 +205,21 @@
                         }));
                     });
 
-                    xhr.always(function () {
-                        that.is('loading', false);
-                        holder.removeClass('loading');
-                    });
-
                     xhr.done(function (response, status, xhr) {
                         if (status === 'success') {
                             holder.empty();
                             that.ui_holder = $('<div/>').appendTo(holder);
                             refinery.xhr.success(response, status, xhr, that.ui_holder);
                             that.ui_change();
-
                             that.is('loaded', true);
-
-                            /**
-                             * Propagate that load finished successfully
-                             */
-                            that.trigger('load');
                         }
                     });
 
+                    xhr.always(function () {
+                        that.is('loading', false);
+                        holder.removeClass('loading');
+                        that.trigger('load');
+                    });
                 }
 
                 return this;
@@ -315,11 +306,9 @@
              * Handle uploaded resource
              *
              * @expose
-             * @param {json_response} json_response
              * @return {undefined}
              */
-            upload_area: function (json_response) {
-            },
+            upload_area: function () { },
 
             /**
              *

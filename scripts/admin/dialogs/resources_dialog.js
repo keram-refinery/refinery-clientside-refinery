@@ -20,16 +20,13 @@
          * Handle resource linked from library
          *
          * @expose
-         * @param {jQuery} tab
-         * @return {undefined|file_dialog_object}
+         * @param {!jQuery} li
+         * @return {file_dialog_object}
          */
-        existing_resource_area: function (tab) {
-            var li = tab.find('li.ui-selected');
+        existing_resource_area: function (li) {
+            li.removeClass('ui-selected');
 
-            if (li.length > 0) {
-                li.removeClass('ui-selected');
-                return /** @type {file_dialog_object} */(li.data('dialog'));
-            }
+            return /** @type {file_dialog_object} */(li.data('dialog'));
         },
 
         /**

@@ -18,15 +18,15 @@
         /**
          * Dialog email tab action processing
          *
-         * @param {!jQuery} tab
+         * @param {!jQuery} form
          * @expose
          *
          * @return {undefined|pages_dialog_object}
          */
-        email_link_area: function (tab) {
-            var email_input = tab.find('#email_address_text:valid'),
-                subject_input = tab.find('#email_default_subject_text'),
-                body_input = tab.find('#email_default_body_text'),
+        email_link_area: function (form) {
+            var email_input = form.find('#email_address_text:valid'),
+                subject_input = form.find('#email_default_subject_text'),
+                body_input = form.find('#email_default_body_text'),
                 recipient = /** @type {string} */(email_input.val()),
                 subject = /** @type {string} */(subject_input.val()),
                 body = /** @type {string} */(body_input.val()),
@@ -62,14 +62,14 @@
         /**
          * Dialog Url tab action processing
          *
-         * @param {!jQuery} tab
+         * @param {!jQuery} form
          * @expose
          *
          * @return {undefined|pages_dialog_object}
          */
-        website_link_area: function (tab) {
-            var url_input = tab.find('#web_address_text:valid'),
-                blank_input = tab.find('#web_address_target_blank'),
+        website_link_area: function (form) {
+            var url_input = form.find('#web_address_text:valid'),
+                blank_input = form.find('#web_address_target_blank'),
                 url = /** @type {string} */(url_input.val()),
                 blank = /** @type {boolean} */(blank_input.prop('checked')),
                 result;
@@ -93,19 +93,15 @@
          * Dialog Url tab action processing
          *
          * @expose
-         * @param {!jQuery} tab
+         * @param {!jQuery} li
          *
-         * @return {undefined|pages_dialog_object}
+         * @return {pages_dialog_object}
          */
-        pages_link_area: function (tab) {
-            var li = tab.find('li.ui-selected'),
-                result;
+        pages_link_area: function (li) {
+            var result = /** @type {pages_dialog_object} */(li.data('dialog'));
 
-            if (li.length > 0) {
-                result = /** @type {pages_dialog_object} */(li.data('dialog'));
-                result.type = 'page';
-                li.removeClass('ui-selected');
-            }
+            result.type = 'page';
+            li.removeClass('ui-selected');
 
             return result;
         }

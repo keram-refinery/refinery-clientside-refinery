@@ -6,6 +6,26 @@
     'use strict';
 
     /**
+     * Detect if turbolinks library is present.
+     * If not create object Turbolinks with public method visit,
+     * to ensure that everything is working fine.
+     *
+     */
+    if (typeof Turbolinks === 'undefined') {
+        window.Turbolinks = {
+            /**
+             * Change document.location.href to passed url
+             *
+             * @param  {string} url
+             * @return {undefined}
+             */
+            'visit': function (url) {
+                document.location.href = url;
+            }
+        };
+    }
+
+    /**
      * @return {Object}
      */
     function refinery () {
@@ -60,7 +80,7 @@
      * @param {string} message
      */
     refinery.flash = function (type, message) {
-        var holder = $('#flash-container').empty(),
+        var holder = $('#flash-wrapper').empty(),
             div = $('<div/>', {
                 'class': 'flash flash-' + type,
                 'html': message
@@ -278,8 +298,8 @@
          * @return {undefined}
          */
         processMessage: function (message) {
-            var i,
-                holder = $('#flash-container').empty();
+            var holder = $('#flash-wrapper').empty(),
+                i;
 
             if (typeof message === 'object') {
                 for (i in message) {
@@ -397,13 +417,6 @@
             .prop('aria-busy', false);
         }
     };
-
-
-    /**
-     * @type {Object}
-     * @expose
-     */
-    refinery.PageUI = null;
 
     refinery.provide('refinery', refinery);
 

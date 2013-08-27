@@ -74,7 +74,7 @@ describe 'Admin Image Dialog', ->
         @dialog = dialog = new refinery.admin.ImageDialog image_id: 1337
         @dialog.init()
 
-        @dialog.on 'load', (loaded) ->
+        @dialog.on 'load', ->
           done()
 
         @dialog.open()
@@ -95,7 +95,7 @@ describe 'Admin Image Dialog', ->
         @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
         @dialog.init()
 
-        @dialog.on 'load', (loaded) ->
+        @dialog.on 'load', ->
           done()
 
         @dialog.open()
@@ -133,8 +133,8 @@ describe 'Admin Image Dialog', ->
         @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
         @dialog.init()
 
-        @dialog.on 'load', (loaded) ->
-          dialog.insert()
+        @dialog.on 'load', ->
+          dialog.insert(dialog.holder.find('form'))
           done()
 
         @insertSpy = insertSpy = sinon.spy()
@@ -178,9 +178,9 @@ describe 'Admin Image Dialog', ->
         @dialog.on 'insert', (img) ->
           insertSpy(img)
 
-        @dialog.on 'load', (loaded) ->
+        @dialog.on 'load', ->
           uiSelect( dialog.holder.find('a[href="#original"]').parent() )
-          dialog.insert()
+          dialog.holder.find('form').submit()
           done()
 
         @dialog.open()
