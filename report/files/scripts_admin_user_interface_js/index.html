@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">70.83</p>
+      <p class="stat">68.98</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">283</p>
+      <p class="stat">254</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">41.76</p>
+      <p class="stat">36.08</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.36</p>
+      <p class="stat">2.11</p>
     </div>
   </div>
 </div>
@@ -107,6 +107,17 @@
         name: &#039;UserInterface&#039;,
 
         module: &#039;admin&#039;,
+
+        options: {
+            /**
+             * When Ajax request receive partial without id,
+             * content of $(main_content_selector) will be replaced.
+             *
+             * @expose
+             * @type {!string}
+             */
+            main_content_selector: &#039;#content&#039;
+        },
 
         init_checkboxes: function () {
             this.holder.find(&#039;div.checkboxes&#039;).each(function () {
@@ -153,34 +164,6 @@
                     }
                 } else {
                     list.sortable(options);
-                }
-            });
-        },
-
-        init_deletable_records: function () {
-            var holder = this.holder;
-
-            function hideRecord (elm) {
-                var record = elm.closest(&#039;.record&#039;);
-                record = record.length &gt; 0 ? record : holder.find(&#039;.record&#039;);
-                record = record.length &gt; 0 ? record : elm.closest(&#039;li&#039;);
-
-                if (record.length &gt; 0) {
-                    record.fadeOut(&#039;normal&#039;, function () {
-                        record.remove();
-                    });
-                }
-            }
-
-            holder.on(&#039;confirm:complete&#039;, &#039;.records .delete&#039;, function (event, answer) {
-                if (answer) {
-                    hideRecord($(this));
-                }
-            });
-
-            holder.on(&#039;click&#039;, &#039;a.delete&#039;, function () {
-                if (!this.hasAttribute(&#039;data-confirm&#039;)) {
-                    hideRecord($(this));
                 }
             });
         },
@@ -242,15 +225,25 @@
             });
 
             holder.on(&#039;ajax:success&#039;, function (event, response, status, xhr) {
-                if (response &amp;&amp; typeof response === &#039;object&#039;) {
-                    event.preventDefault();
+                var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;),
+                    replace_target = true,
+                    target;
 
+                if (response &amp;&amp; typeof response === &#039;object&#039;) {
                     if (response.redirect_to) {
                         Turbolinks.visit(response.redirect_to);
                     } else {
-                        that.destroy(false);
-                        refinery.xhr.success(response, status, xhr, $(event.target), true);
-                        that.reload(holder);
+                        if (redirected_to || event.target.tagName.toLowerCase() === &#039;a&#039;) {
+                            target = holder.find(that.options.main_content_selector);
+                            replace_target = false;
+                        } else {
+                            target = $(event.target);
+                        }
+
+
+                        that.destroy();
+                        refinery.xhr.success(response, status, xhr, target, replace_target);
+                        that.trigger(&#039;ui:change&#039;);
                     }
                 }
             });
@@ -282,8 +275,6 @@
             that.init_collapsible_lists();
             that.init_toggle_hide();
 
-            that.init_deletable_records();
-
             for (fnc in ui) {
                 if (ui.hasOwnProperty(fnc) &amp;&amp; typeof ui[fnc] === &#039;function&#039;) {
                     ui[fnc](holder, that);
@@ -294,30 +285,11 @@
         },
 
         /**
-         * Removing all refinery instances under holder, and reloading self.
-         * This is important when ajax replace current content of holder so, some objects
-         * may not longer exist and we need remove all references to them.
-         *
-         * @param {jQuery} holder
-         *
-         * @return {Object} self
-         */
-        reload: function (holder) {
-            holder = holder || this.holder;
-            this.destroy(false);
-            this.state = new this.State();
-            return this.init(holder);
-        },
-
-        /**
          * Destroy self and also all refinery, jquery ui instances under holder
          *
-         * @param {boolean=} removeGlobalReference if is true instance will be removed
-         *                   from refinery.Object.instances
-         *
          * @return {Object} self
          */
-        destroy: function (removeGlobalReference) {
+        destroy: function () {
             var holder = this.holder,
                 holders;
 
@@ -331,12 +303,13 @@
 
                         for (var i = instances.length - 1; i &gt;= 0; i--) {
                             instance = refinery.Object.instances.get(instances[i]);
-                            instance.destroy(true);
+                            instance.destroy();
                         }
                     });
                 } catch (e) {
                     if (typeof console === &#039;object&#039; &amp;&amp; typeof console.log === &#039;function&#039;) {
                         console.log(e);
+                        console.log(holders);
                     }
                 }
 
@@ -353,9 +326,7 @@
                 // }
             }
 
-            this._destroy(removeGlobalReference);
-
-            return this;
+            return this._destroy();
         },
 
         init: function (holder) {

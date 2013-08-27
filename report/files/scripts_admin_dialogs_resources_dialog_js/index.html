@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">72.58</p>
+      <p class="stat">69.96</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">62</p>
+      <p class="stat">51</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">10.36</p>
+      <p class="stat">8.11</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.27</p>
+      <p class="stat">0.19</p>
     </div>
   </div>
 </div>
@@ -90,9 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global refinery */
-
-(function (refinery) {
+    <textarea id="file-source" class="span12">(function (refinery) {
 
     &#039;use strict&#039;;
 
@@ -109,39 +107,28 @@
 
         name: &#039;ResourcesDialog&#039;,
 
-        after_load: function () {
-            var that = this,
-                holder = that.holder;
-
-            holder.on(&#039;ajax:success&#039;, function (xhr, response) {
-                that.upload_resource_area(response.file);
-            });
-        },
-
         /**
          * Handle resource linked from library
          *
          * @expose
-         * @param {jQuery} tab
-         * @return {undefined|file_dialog_object}
+         * @param {!jQuery} li
+         * @return {file_dialog_object}
          */
-        existing_resource_area: function (tab) {
-            var li = tab.find(&#039;li.ui-selected&#039;);
+        existing_resource_area: function (li) {
+            li.removeClass(&#039;ui-selected&#039;);
 
-            if (li.length &gt; 0) {
-                li.removeClass(&#039;ui-selected&#039;);
-                return /** @type {file_dialog_object} */(li.data(&#039;dialog&#039;));
-            }
+            return /** @type {file_dialog_object} */(li.data(&#039;dialog&#039;));
         },
 
         /**
          * Handle uploaded file
          *
-         * @param {file_dialog_object} file
+         * @param {json_response} json_response
          * @return {undefined}
          */
-        upload_resource_area: function (file) {
+        upload_area: function (json_response) {
             var that = this,
+                file = json_response.file,
                 holder = that.holder;
 
             if (file) {

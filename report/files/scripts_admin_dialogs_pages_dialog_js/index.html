@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">58.64</p>
+      <p class="stat">59.77</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">114</p>
+      <p class="stat">110</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">14.86</p>
+      <p class="stat">13.97</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.58</p>
+      <p class="stat">0.54</p>
     </div>
   </div>
 </div>
@@ -90,9 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global refinery */
-
-(function (refinery) {
+    <textarea id="file-source" class="span12">(function (refinery) {
 
     &#039;use strict&#039;;
 
@@ -112,14 +110,15 @@
         /**
          * Dialog email tab action processing
          *
-         * @param {!jQuery} tab
+         * @param {!jQuery} form
+         * @expose
          *
          * @return {undefined|pages_dialog_object}
          */
-        email_link_area: function (tab) {
-            var email_input = tab.find(&#039;#email_address_text:valid&#039;),
-                subject_input = tab.find(&#039;#email_default_subject_text&#039;),
-                body_input = tab.find(&#039;#email_default_body_text&#039;),
+        email_link_area: function (form) {
+            var email_input = form.find(&#039;#email_address_text:valid&#039;),
+                subject_input = form.find(&#039;#email_default_subject_text&#039;),
+                body_input = form.find(&#039;#email_default_body_text&#039;),
                 recipient = /** @type {string} */(email_input.val()),
                 subject = /** @type {string} */(subject_input.val()),
                 body = /** @type {string} */(body_input.val()),
@@ -127,17 +126,14 @@
                 additional = &#039;&#039;,
                 result;
 
-            subject = encodeURIComponent(subject);
-            body = encodeURIComponent(body);
-
             if (recipient) {
                 if (subject.length &gt; 0) {
-                    additional += modifier + &#039;subject=&#039; + subject;
+                    additional += modifier + &#039;subject=&#039; + encodeURIComponent(subject);
                     modifier = &#039;&amp;&#039;;
                 }
 
                 if (body.length &gt; 0) {
-                    additional += modifier + &#039;body=&#039; + body;
+                    additional += modifier + &#039;body=&#039; + encodeURIComponent(body);
                     modifier = &#039;&amp;&#039;;
                 }
 
@@ -158,13 +154,14 @@
         /**
          * Dialog Url tab action processing
          *
-         * @param {!jQuery} tab
+         * @param {!jQuery} form
+         * @expose
          *
          * @return {undefined|pages_dialog_object}
          */
-        website_link_area: function (tab) {
-            var url_input = tab.find(&#039;#web_address_text:valid&#039;),
-                blank_input = tab.find(&#039;#web_address_target_blank&#039;),
+        website_link_area: function (form) {
+            var url_input = form.find(&#039;#web_address_text:valid&#039;),
+                blank_input = form.find(&#039;#web_address_target_blank&#039;),
                 url = /** @type {string} */(url_input.val()),
                 blank = /** @type {boolean} */(blank_input.prop(&#039;checked&#039;)),
                 result;
@@ -187,19 +184,16 @@
         /**
          * Dialog Url tab action processing
          *
-         * @param {!jQuery} tab
+         * @expose
+         * @param {!jQuery} li
          *
-         * @return {undefined|pages_dialog_object}
+         * @return {pages_dialog_object}
          */
-        pages_link_area: function (tab) {
-            var li = tab.find(&#039;li.ui-selected&#039;),
-                result;
+        pages_link_area: function (li) {
+            var result = /** @type {pages_dialog_object} */(li.data(&#039;dialog&#039;));
 
-            if (li.length &gt; 0) {
-                result = /** @type {pages_dialog_object} */(li.data(&#039;link&#039;));
-                result.type = &#039;page&#039;;
-                li.removeClass(&#039;ui-selected&#039;);
-            }
+            result.type = &#039;page&#039;;
+            li.removeClass(&#039;ui-selected&#039;);
 
             return result;
         }

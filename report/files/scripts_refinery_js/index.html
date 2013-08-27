@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">69.24</p>
+      <p class="stat">69.26</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">400</p>
+      <p class="stat">420</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">40.19</p>
+      <p class="stat">40.81</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.67</p>
+      <p class="stat">1.73</p>
     </div>
   </div>
 </div>
@@ -96,6 +96,26 @@
 (function () {
 
     &#039;use strict&#039;;
+
+    /**
+     * Detect if turbolinks library is present.
+     * If not create object Turbolinks with public method visit,
+     * to ensure that everything is working fine.
+     *
+     */
+    if (typeof Turbolinks === &#039;undefined&#039;) {
+        window.Turbolinks = {
+            /**
+             * Change document.location.href to passed url
+             *
+             * @param  {string} url
+             * @return {undefined}
+             */
+            &#039;visit&#039;: function (url) {
+                document.location.href = url;
+            }
+        };
+    }
 
     /**
      * @return {Object}
@@ -152,7 +172,7 @@
      * @param {string} message
      */
     refinery.flash = function (type, message) {
-        var holder = $(&#039;#flash-container&#039;).empty(),
+        var holder = $(&#039;#flash-wrapper&#039;).empty(),
             div = $(&#039;&lt;div/&gt;&#039;, {
                 &#039;class&#039;: &#039;flash flash-&#039; + type,
                 &#039;html&#039;: message
@@ -370,8 +390,8 @@
          * @return {undefined}
          */
         processMessage: function (message) {
-            var i,
-                holder = $(&#039;#flash-container&#039;).empty();
+            var holder = $(&#039;#flash-wrapper&#039;).empty(),
+                i;
 
             if (typeof message === &#039;object&#039;) {
                 for (i in message) {
@@ -423,7 +443,7 @@
          * @return {undefined}
          */
         success: function (response, status, xhr, holder, replaceHolder) {
-            var redirected = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
+            var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
 
             if (response.html) {
                 refinery.xhr.processHtml(response.html, holder, replaceHolder);
@@ -433,12 +453,12 @@
                 refinery.xhr.processMessage(response.message);
             }
 
-            if (redirected) {
+            if (redirected_to) {
                 window.history.pushState({
                     &#039;refinery&#039;: true,
-                    &#039;url&#039;: redirected,
+                    &#039;url&#039;: redirected_to,
                     &#039;prev_url&#039;: document.location.href
-                }, &#039;&#039;, redirected);
+                }, &#039;&#039;, redirected_to);
             }
         }
     };
