@@ -43,7 +43,8 @@ var dir = __dirname,
                 'src': [
                     'scripts/refinery.js',
                     'scripts/object_state.js',
-                    'scripts/object.js'
+                    'scripts/object.js',
+                    'scripts/user_interface.js'
                 ],
                 'dest': '.tmp/assets/javascripts/refinery/refinery.min.js'
             }

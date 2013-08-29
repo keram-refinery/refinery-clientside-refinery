@@ -371,7 +371,8 @@
             key,
 
             /**
-             * Singleton/Class methods
+             * Methods binded to object/class like Object.create
+             * @type {Object}
              */
             object_methods,
 

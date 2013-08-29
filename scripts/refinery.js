@@ -418,6 +418,14 @@
         }
     };
 
+    /**
+     * [ui description]
+     *
+     * @expose
+     * @type {Object}
+     */
+    refinery.ui = {};
+
     refinery.provide('refinery', refinery);
 
 }());
