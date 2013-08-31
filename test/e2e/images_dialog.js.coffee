@@ -6,7 +6,7 @@ describe 'Admin Images Dialog', ->
     @container = $('#container')
 
   after ->
-    # @container.empty()
+    @container.empty()
 
   describe 'Class', ->
     after ->
@@ -219,7 +219,8 @@ describe 'Admin Images Dialog', ->
 
         before ->
           @return_obj = return_obj =
-            "id": "1"
+            "id": 3
+            "thumbnail": "/refinery/test/fixtures/300x200-a.jpg"
 
         after ->
 

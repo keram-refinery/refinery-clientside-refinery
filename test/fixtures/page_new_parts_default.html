@@ -1,12 +1,15 @@
 <div class="field">
     <div class="ui-tabs clearfix" id="page-parts">
 
-  <div class="ui-tabs-settings">
+  <div class="nojs-hide ui-tabs-settings">
     <a title="Manage page parts" id="page-parts-options" href="#" class="icon-small page-add-icon">Configure</a>
   </div>
 
   <ul class="nojs-hide ui-tabs-nav">
-      <li class="js-hide ">
+      <li class="">
+        <a href="#page_part_title">Title</a>
+      </li>
+      <li class=" js-hide">
         <a href="#page_part_perex">Perex</a>
       </li>
       <li class="ui-state-active">
@@ -19,30 +22,65 @@
 
   <div class="ui-tabs-panels">
 
+      <div id="page_part_title" class="page-part">
+  <div class="js-hide">
+    <label for="page_parts_attributes_0_body">Title</label>
+    <input type="hidden" value="0" name="page[parts_attributes][0][active]"><input type="checkbox" value="1" name="page[parts_attributes][0][active]" id="page_parts_attributes_0_active" class="part-active" checked="checked">
+    <label for="page_parts_attributes_0_active" class="stripped">Active</label>
+  </div>
+  <br>
+  <input type="text" placeholder="Leave empty and will be used title above." name="page[parts_attributes][0][body]" id="page_parts_attributes_0_body" class="larger widest">
+
+  <input type="hidden" value="0" name="page[parts_attributes][0][position]" id="page_parts_attributes_0_position" class="part-position">
+  <input type="hidden" value="title" name="page[parts_attributes][0][title]" id="page_parts_attributes_0_title">
+</div>
+
+
       <div id="page_part_perex" class="page-part">
-  <label for="page_parts_attributes_0_body" class="js-hide">Perex</label>
-  <textarea rows="20" name="page[parts_attributes][0][body]" id="page_parts_attributes_0_body" cols="120" class="replace-with-editor"></textarea>
-  <input type="hidden" value="0" name="page[parts_attributes][0][position]" id="page_parts_attributes_0_position">
-  <input type="hidden" value="0" name="page[parts_attributes][0][active]"><input type="checkbox" value="1" name="page[parts_attributes][0][active]" id="page_parts_attributes_0_active" class="js-hide">
-  <label for="page_parts_attributes_0_active" class="stripped js-hide">Active</label>
+  <div class="js-hide">
+    <label for="page_parts_attributes_1_body">Perex</label>
+    <input type="hidden" value="0" name="page[parts_attributes][1][active]"><input type="checkbox" value="1" name="page[parts_attributes][1][active]" id="page_parts_attributes_1_active" class="part-active">
+    <label for="page_parts_attributes_1_active" class="stripped">Active</label>
+  </div>
+    <div class="wysiwyg-editor-wrapper">
+  <textarea rows="20" name="page[parts_attributes][1][body]" id="page_parts_attributes_1_body" cols="120" class="wysiwyg-editor widest"></textarea>
+</div>
+
+
+  <input type="hidden" value="1" name="page[parts_attributes][1][position]" id="page_parts_attributes_1_position" class="part-position">
+  <input type="hidden" value="perex" name="page[parts_attributes][1][title]" id="page_parts_attributes_1_title">
 </div>
 
 
       <div id="page_part_body" class="page-part">
-  <label for="page_parts_attributes_1_body" class="js-hide">Body</label>
-  <textarea rows="20" name="page[parts_attributes][1][body]" id="page_parts_attributes_1_body" cols="120" class="replace-with-editor"></textarea>
-  <input type="hidden" value="1" name="page[parts_attributes][1][position]" id="page_parts_attributes_1_position">
-  <input type="hidden" value="0" name="page[parts_attributes][1][active]"><input type="checkbox" value="1" name="page[parts_attributes][1][active]" id="page_parts_attributes_1_active" class="js-hide" checked="checked">
-  <label for="page_parts_attributes_1_active" class="stripped js-hide">Active</label>
+  <div class="js-hide">
+    <label for="page_parts_attributes_2_body">Body</label>
+    <input type="hidden" value="0" name="page[parts_attributes][2][active]"><input type="checkbox" value="1" name="page[parts_attributes][2][active]" id="page_parts_attributes_2_active" class="part-active" checked="checked">
+    <label for="page_parts_attributes_2_active" class="stripped">Active</label>
+  </div>
+    <div class="wysiwyg-editor-wrapper">
+  <textarea rows="20" name="page[parts_attributes][2][body]" id="page_parts_attributes_2_body" cols="120" class="wysiwyg-editor widest"></textarea>
+</div>
+
+
+  <input type="hidden" value="2" name="page[parts_attributes][2][position]" id="page_parts_attributes_2_position" class="part-position">
+  <input type="hidden" value="body" name="page[parts_attributes][2][title]" id="page_parts_attributes_2_title">
 </div>
 
 
       <div id="page_part_side_body" class="page-part">
-  <label for="page_parts_attributes_2_body" class="js-hide">Side Body</label>
-  <textarea rows="20" name="page[parts_attributes][2][body]" id="page_parts_attributes_2_body" cols="120" class="replace-with-editor"></textarea>
-  <input type="hidden" value="2" name="page[parts_attributes][2][position]" id="page_parts_attributes_2_position">
-  <input type="hidden" value="0" name="page[parts_attributes][2][active]"><input type="checkbox" value="1" name="page[parts_attributes][2][active]" id="page_parts_attributes_2_active" class="js-hide" checked="checked">
-  <label for="page_parts_attributes_2_active" class="stripped js-hide">Active</label>
+  <div class="js-hide">
+    <label for="page_parts_attributes_3_body">Side Body</label>
+    <input type="hidden" value="0" name="page[parts_attributes][3][active]"><input type="checkbox" value="1" name="page[parts_attributes][3][active]" id="page_parts_attributes_3_active" class="part-active" checked="checked">
+    <label for="page_parts_attributes_3_active" class="stripped">Active</label>
+  </div>
+    <div class="wysiwyg-editor-wrapper">
+  <textarea rows="20" name="page[parts_attributes][3][body]" id="page_parts_attributes_3_body" cols="120" class="wysiwyg-editor widest"></textarea>
+</div>
+
+
+  <input type="hidden" value="3" name="page[parts_attributes][3][position]" id="page_parts_attributes_3_position" class="part-position">
+  <input type="hidden" value="side_body" name="page[parts_attributes][3][title]" id="page_parts_attributes_3_title">
 </div>
 
   </div>

@@ -13,18 +13,19 @@ describe 'PageParts', ->
     @container = container
 
   after ->
-    @container.empty()
+    # @container.empty()
 
   describe 'activate part', ->
     before ->
       $('#page-parts-options').click()
-      $('.ui-dialog li label').first().click()
+      $('.ui-dialog li[data-part="#page_part_perex"] label').first().click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
-    after ->
+    after (done) ->
       $('#page-parts-options').click()
-      $('.ui-dialog li label').first().click()
+      $('.ui-dialog li[data-part="#page_part_perex"] label').first().click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
+      done()
 
     it 'show perex tab', ->
       expect( $('.ui-tabs-nav a[href="#page_part_perex"]').is(':visible') ).to.be.true
@@ -32,7 +33,7 @@ describe 'PageParts', ->
   describe 'deactivate part', ->
     before ->
       $('#page-parts-options').click()
-      $('.ui-dialog li label').get(1).click()
+      $('.ui-dialog li[data-part="#page_part_body"] label').first().click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     after ->
@@ -49,7 +50,7 @@ describe 'PageParts', ->
   describe 'reorder parts', ->
     before ->
       $('#page-parts-options').click()
-      body_li = $($('.ui-dialog li').get(1)).detach()
+      body_li = $($('.ui-dialog li[data-part="#page_part_body"]')).detach()
       $('.ui-dialog .records').append(body_li)
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
