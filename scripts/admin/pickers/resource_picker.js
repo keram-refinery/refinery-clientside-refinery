@@ -15,26 +15,44 @@
         name: 'ResourcePicker',
 
         /**
-         * Attach resource to form
+         * Initialize Resources Dialog
          *
-         * @param {{id: string, url: string, html: string}} resource
+         */
+        init_dialog: function () {
+            /**
+             * refinery.admin.ResourcesDialog
+             */
+            this.dialog = refinery('admin.ResourcesDialog').init();
+        },
+
+
+        /**
+         * Attach resource - file to form
+         *
+         * @param {file_dialog_object} file
          *
          * @return {Object} self
          */
-        insert: function (resource) {
-            if (resource) {
-                this.elm_current_record_id.val(resource.id);
+        insert: function (file) {
+            var html;
 
-                this.elm_record_holder.html($('<a/>', {
-                    src: resource.url,
-                    html: resource.html
-                }));
+            html = $('<span/>', {
+                'text': file.name + ' - ' + file.size,
+                'class': 'title' + ( ' ' + file.ext || '')
+            });
 
-                this.elm_no_picked_record.addClass('hide');
-                this.elm_remove_picked_record.removeClass('hide');
-                this.dialog.close();
-                this.trigger('insert');
-            }
+            this.elm_current_record_id.val(file.id);
+
+            this.elm_record_holder.html($('<a/>', {
+                'src': file.url,
+                'html': html,
+                'class': 'record'
+            }));
+
+            this.elm_no_picked_record.addClass('hide');
+            this.elm_remove_picked_record.removeClass('hide');
+            this.dialog.close();
+            this.trigger('insert');
 
             return this;
         }

@@ -7,6 +7,7 @@
      * @constructor
      * @extends {refinery.admin.Dialog}
      * @param {Object=} options
+     * @return {refinery.admin.ResourcesDialog}
      */
     refinery.Object.create({
         objectPrototype: refinery('admin.Dialog', {

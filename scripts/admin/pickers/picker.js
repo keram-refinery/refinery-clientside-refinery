@@ -14,26 +14,26 @@
         module: 'admin',
 
         /**
-         *
+         * @expose
          * @type {?string}
          */
         elm_current_record_id: null,
 
         /**
-         *
-         * @type {?(jQuerySelector|jQuery)}
+         * @expose
+         * @type {jQuery}
          */
         elm_record_holder: null,
 
         /**
-         *
-         * @type {?(jQuerySelector|jQuery)}
+         * @expose
+         * @type {jQuery}
          */
         elm_no_picked_record: null,
 
         /**
-         *
-         * @type {?(jQuerySelector|jQuery)}
+         * @expose
+         * @type {jQuery}
          */
         elm_remove_picked_record: null,
 
@@ -115,14 +115,23 @@
         },
 
         /**
+         * Abstract method
+         *
+         * abstract
+         * @expose
+         */
+        init_dialog: function () {
+
+        },
+
+        /**
          * Initialization and binding
          *
          * @param {!jQuery} holder
-         * @param {!refinery.Object} dialog
          *
          * @return {refinery.Object} self
          */
-        init: function (holder, dialog) {
+        init: function (holder) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
                 this.attach_holder(holder);
@@ -130,7 +139,7 @@
                 this.elm_record_holder = holder.find('.record-holder');
                 this.elm_no_picked_record = holder.find('.no-picked-record-selected');
                 this.elm_remove_picked_record = holder.find('.remove-picked-record');
-                this.dialog = dialog.init(holder);
+                this.init_dialog();
                 this.bind_events();
                 this.is({'initialised': true, 'initialising': false});
                 this.is({'initialising' : false, 'initialised': true });

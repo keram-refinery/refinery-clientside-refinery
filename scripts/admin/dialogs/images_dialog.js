@@ -22,16 +22,12 @@
          *
          * @expose
          * @param {!jQuery} li selected row
-         * @return {{id: string}}
+         * @return {images_dialog_object}
          */
         existing_image_area: function (li) {
-            var obj = {
-                id: li.attr('id').match(/[0-9]+$/)[0]
-            };
-
             li.removeClass('ui-selected');
 
-            return obj;
+            return /** @type {images_dialog_object} */(li.data('dialog'));
         },
 
         /**
@@ -39,7 +35,7 @@
          *
          * @expose
          * @param {!jQuery} form
-         * @return {undefined|{alt: string, url: string}}
+         * @return {undefined|images_dialog_object}
          */
         external_image_area: function (form) {
             var url_input = form.find('input[type="url"]:valid'),
@@ -70,7 +66,7 @@
          */
         upload_area: function (json_response) {
             var that = this,
-                image = json_response.image,
+                image = /** @type {images_dialog_object} */(json_response.image),
                 holder = that.holder;
 
             if (image) {
