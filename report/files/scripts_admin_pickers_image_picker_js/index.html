@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">66.53</p>
+      <p class="stat">73.23</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">42</p>
+      <p class="stat">62</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">5.25</p>
+      <p class="stat">6.18</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.18</p>
+      <p class="stat">0.23</p>
     </div>
   </div>
 </div>
@@ -107,27 +107,47 @@
         name: &#039;ImagePicker&#039;,
 
         /**
+         * Initialize Images Dialog
+         */
+        init_dialog: function () {
+            /**
+             * refinery.admin.ImagesDialog
+             */
+            var dialog = refinery(&#039;admin.ImagesDialog&#039;).init();
+
+            /**
+             * Hide url tab as we can insert in picker only images from our library.
+             * When it will be implemented functionality upload external image to server
+             * then this can disappear
+             *
+             * @return {undefined}
+             */
+            dialog.on(&#039;load&#039;, function () {
+                dialog.holder.find(&#039;a[href=&quot;#external-image-area&quot;]&#039;).parent().hide();
+            });
+
+            this.dialog = dialog;
+        },
+
+        /**
          * Attach image to form
          *
-         * @param {{id: string, size: string, medium: string}} img
+         * @param {images_dialog_object} img
          *
          * @return {Object} self
          */
         insert: function (img) {
-            if (img) {
-                this.elm_current_record_id.val(img.id);
-                this.holder.find(&#039;.current-image-size&#039;).val(img.size);
+            this.elm_current_record_id.val(img.id);
 
-                this.elm_record_holder.html($(&#039;&lt;img/&gt;&#039;, {
-                    &#039;class&#039;: &#039;size-medium&#039;,
-                    &#039;src&#039;: img.medium
-                }));
+            this.elm_record_holder.html($(&#039;&lt;img/&gt;&#039;, {
+                &#039;class&#039;: &#039;record size-medium&#039;,
+                &#039;src&#039;: img.thumbnail
+            }));
 
-                this.elm_no_picked_record.addClass(&#039;hide&#039;);
-                this.elm_remove_picked_record.removeClass(&#039;hide&#039;);
-                this.dialog.close();
-                this.trigger(&#039;insert&#039;);
-            }
+            this.elm_no_picked_record.addClass(&#039;hide&#039;);
+            this.elm_remove_picked_record.removeClass(&#039;hide&#039;);
+            this.dialog.close();
+            this.trigger(&#039;insert&#039;);
 
             return this;
         }

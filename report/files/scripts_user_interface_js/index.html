@@ -37,7 +37,7 @@
 
 <div class="jumbotron">
   <div class="container">
-    <h1>scripts/admin/dialogs/resources_dialog.js</h1>
+    <h1>scripts/user_interface.js</h1>
   </div>
 </div>
 
@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">69.96</p>
+      <p class="stat">66.70</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">52</p>
+      <p class="stat">154</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">8.11</p>
+      <p class="stat">26.18</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.19</p>
+      <p class="stat">0.78</p>
     </div>
   </div>
 </div>
@@ -90,54 +90,158 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">(function (refinery) {
+    <textarea id="file-source" class="span12">/*global $, refinery */
+
+(function (refinery) {
 
     &#039;use strict&#039;;
 
     /**
      * @constructor
-     * @extends {refinery.admin.Dialog}
+     * @extends {refinery.Object}
      * @param {Object=} options
-     * @return {refinery.admin.ResourcesDialog}
+     * @return {refinery.UserInterface}
      */
     refinery.Object.create({
-        objectPrototype: refinery(&#039;admin.Dialog&#039;, {
-            title: t(&#039;refinery.admin.resources_dialog_title&#039;),
-            url: refinery.admin.backend_path + &#039;/dialogs/resources&#039;
-        }, true),
 
-        name: &#039;ResourcesDialog&#039;,
+        name: &#039;UserInterface&#039;,
 
-        /**
-         * Handle resource linked from library
-         *
-         * @expose
-         * @param {!jQuery} li
-         * @return {file_dialog_object}
-         */
-        existing_resource_area: function (li) {
-            li.removeClass(&#039;ui-selected&#039;);
-
-            return /** @type {file_dialog_object} */(li.data(&#039;dialog&#039;));
+        options: {
+            /**
+             * When Ajax request receive partial without id,
+             * content of holder.find(main_content_selector) will be replaced.
+             *
+             * @expose
+             * @type {!string}
+             */
+            main_content_selector: &#039;#content&#039;
         },
 
         /**
-         * Handle uploaded file
+         * Register standard ui events on holder
+         *     - flash message close button
+         *     - ajax response processing
          *
-         * @param {json_response} json_response
          * @return {undefined}
          */
-        upload_area: function (json_response) {
+        bind_events: function () {
             var that = this,
-                file = json_response.file,
                 holder = that.holder;
 
-            if (file) {
-                that.trigger(&#039;insert&#039;, file);
+            holder.on(&#039;click&#039;, &#039;.flash-close&#039;, function (e) {
+                e.preventDefault();
+                $(this).parent().fadeOut();
+                return false;
+            });
 
-                holder.find(&#039;li.ui-selected&#039;).removeClass(&#039;ui-selected&#039;);
-                holder.find(&#039;.ui-tabs&#039;).tabs({ &#039;active&#039;: 0 });
+            /**
+             * Process ajax response
+             *
+             * @param  {jQuery.event} event
+             * @param  {json_response} response
+             * @param  {string} status
+             * @param  {jQuery.jqXHR} xhr
+             * @return {undefined}
+             */
+            function ajax_success (event, response, status, xhr) {
+                var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;),
+                    replace_target = true,
+                    target = event.target;
+
+                if (response.redirect_to) {
+                    Turbolinks.visit(response.redirect_to);
+                } else {
+                    if (redirected_to || target.tagName.toLowerCase() === &#039;a&#039;) {
+                        target = holder.find(that.options.main_content_selector);
+                        replace_target = false;
+                    } else {
+                        target = $(target);
+                    }
+
+                    that.destroy();
+                    refinery.xhr.success(response, status, xhr, target, replace_target);
+                    that.trigger(&#039;ui:change&#039;);
+                }
             }
+
+            holder.on(&#039;ajax:success&#039;, ajax_success);
+
+            holder.on(&#039;ajax:error&#039;,
+                /**
+                 * @param {jQuery.event} event
+                 * @param {jQuery.jqXHR} xhr
+                 * @param {string} status
+                 * @return {undefined}
+                 */
+                function (event, xhr, status) {
+                    refinery.xhr.error(xhr, status);
+                });
+        },
+
+        /**
+         * Iterate through refinery.ui namespace
+         * and if found function, call with passed ui holder and self
+         *
+         * @return {undefined}
+         */
+        initialize_elements: function () {
+            var that = this,
+                holder = that.holder,
+                ui = refinery.ui,
+                fnc;
+
+            for (fnc in ui) {
+                if (ui.hasOwnProperty(fnc) &amp;&amp; typeof ui[fnc] === &#039;function&#039;) {
+                    ui[fnc](holder, that);
+                }
+            }
+        },
+
+        /**
+         * Destroy self and also all refinery, jquery ui instances under holder
+         *
+         * @return {Object} self
+         */
+        destroy: function () {
+            var holder = this.holder,
+                holders;
+
+            if (holder) {
+                holders = /** array */(holder.find(&#039;.refinery-instance&#039;));
+
+                try {
+                    holders.each(function () {
+                        var instances = $(this).data(&#039;refinery-instances&#039;),
+                            instance;
+
+                        for (var i = instances.length - 1; i &gt;= 0; i--) {
+                            instance = refinery.Object.instances.get(instances[i]);
+                            instance.destroy();
+                        }
+                    });
+                } catch (e) {
+                    if (typeof console === &#039;object&#039; &amp;&amp; typeof console.log === &#039;function&#039;) {
+                        console.log(e);
+                    }
+                }
+            }
+
+            return this._destroy();
+        },
+
+        init: function (holder) {
+            var that = this;
+
+            if (that.is(&#039;initialisable&#039;)) {
+                that.is(&#039;initialising&#039;, true);
+                that.attach_holder(holder);
+                that.bind_events();
+                that.initialize_elements();
+                that.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                that.trigger(&#039;init&#039;);
+            }
+
+            return that;
         }
     });
 

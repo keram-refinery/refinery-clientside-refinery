@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">70.50</p>
+      <p class="stat">71.63</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">143</p>
+      <p class="stat">152</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">13.08</p>
+      <p class="stat">12.67</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.54</p>
+      <p class="stat">0.53</p>
     </div>
   </div>
 </div>
@@ -105,26 +105,26 @@
         module: &#039;admin&#039;,
 
         /**
-         *
+         * @expose
          * @type {?string}
          */
         elm_current_record_id: null,
 
         /**
-         *
-         * @type {?(jQuerySelector|jQuery)}
+         * @expose
+         * @type {jQuery}
          */
         elm_record_holder: null,
 
         /**
-         *
-         * @type {?(jQuerySelector|jQuery)}
+         * @expose
+         * @type {jQuery}
          */
         elm_no_picked_record: null,
 
         /**
-         *
-         * @type {?(jQuerySelector|jQuery)}
+         * @expose
+         * @type {jQuery}
          */
         elm_remove_picked_record: null,
 
@@ -206,14 +206,23 @@
         },
 
         /**
+         * Abstract method
+         *
+         * abstract
+         * @expose
+         */
+        init_dialog: function () {
+
+        },
+
+        /**
          * Initialization and binding
          *
          * @param {!jQuery} holder
-         * @param {!refinery.Object} dialog
          *
          * @return {refinery.Object} self
          */
-        init: function (holder, dialog) {
+        init: function (holder) {
             if (this.is(&#039;initialisable&#039;)) {
                 this.is(&#039;initialising&#039;, true);
                 this.attach_holder(holder);
@@ -221,7 +230,7 @@
                 this.elm_record_holder = holder.find(&#039;.record-holder&#039;);
                 this.elm_no_picked_record = holder.find(&#039;.no-picked-record-selected&#039;);
                 this.elm_remove_picked_record = holder.find(&#039;.remove-picked-record&#039;);
-                this.dialog = dialog.init(holder);
+                this.init_dialog();
                 this.bind_events();
                 this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
                 this.is({&#039;initialising&#039; : false, &#039;initialised&#039;: true });
