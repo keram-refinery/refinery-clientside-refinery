@@ -419,6 +419,16 @@
     };
 
     /**
+     * if browser doesn't support console.log log nothing
+     *
+     * @expose
+     * @typedef {Function}
+     */
+    refinery.log = (typeof console === 'object' &&
+                    typeof console.log === 'function') ? console.log : function () {};
+
+
+    /**
      * [ui description]
      *
      * @expose

@@ -79,7 +79,7 @@
          * @return {Object} self
          */
         insert: function (record) {
-            console.log(record);
+            refinery.log(record);
             return this;
         },
 

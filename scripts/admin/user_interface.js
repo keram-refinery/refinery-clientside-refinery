@@ -133,16 +133,16 @@
             function ajax_success (event, response, status, xhr) {
                 var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To'),
                     replace_target = true,
-                    target;
+                    target = event.target;
 
                 if (response.redirect_to) {
                     Turbolinks.visit(response.redirect_to);
                 } else {
-                    if (redirected_to || event.target.tagName.toLowerCase() === 'a') {
+                    if (redirected_to || target.tagName.toLowerCase() === 'a') {
                         target = holder.find(that.options.main_content_selector);
                         replace_target = false;
                     } else {
-                        target = $(event.target);
+                        target = $(target);
                     }
 
                     that.destroy();
@@ -230,23 +230,9 @@
                         }
                     });
                 } catch (e) {
-                    if (typeof console === 'object' && typeof console.log === 'function') {
-                        console.log(e);
-                        console.log(holders);
-                    }
+                    refinery.log(e);
+                    refinery.log(holders);
                 }
-
-                // we can't do this because destroying jquery ui instances a
-                // also removes classes on objects which we use
-                //
-                // try {
-                //     holder.find('.collapsible-list').accordion('destroy');
-                //     holder.find('.ui-tabs').tabs('destroy');
-                //     holder.find('.ui-selectable').selectable('destroy');
-                //     holder.find('.sortable-list').not('.records').sortable('destroy');
-                // } catch (e) {
-                //     console.log(e);
-                // }
             }
 
             return this._destroy();

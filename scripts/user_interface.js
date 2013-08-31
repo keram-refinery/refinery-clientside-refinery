@@ -128,9 +128,7 @@
                         }
                     });
                 } catch (e) {
-                    if (typeof console === 'object' && typeof console.log === 'function') {
-                        console.log(e);
-                    }
+                    refinery.log(e);
                 }
             }
 
