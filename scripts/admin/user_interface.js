@@ -121,6 +121,36 @@
             var that = this,
                 holder = that.holder;
 
+            /**
+             * Process ajax response
+             *
+             * @param  {jQuery.event} event
+             * @param  {json_response} response
+             * @param  {string} status
+             * @param  {jQuery.jqXHR} xhr
+             * @return {undefined}
+             */
+            function ajax_success (event, response, status, xhr) {
+                var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To'),
+                    replace_target = true,
+                    target;
+
+                if (response.redirect_to) {
+                    Turbolinks.visit(response.redirect_to);
+                } else {
+                    if (redirected_to || event.target.tagName.toLowerCase() === 'a') {
+                        target = holder.find(that.options.main_content_selector);
+                        replace_target = false;
+                    } else {
+                        target = $(event.target);
+                    }
+
+                    that.destroy();
+                    refinery.xhr.success(response, status, xhr, target, replace_target);
+                    that.trigger('ui:change');
+                }
+            }
+
             holder.on('click', '.flash-close', function (e) {
                 e.preventDefault();
                 $(this).parent().fadeOut();
@@ -132,33 +162,18 @@
                 that.toggle_tree_branch($(this).parents('li:first'));
             });
 
-            holder.on('ajax:success', function (event, response, status, xhr) {
-                var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To'),
-                    replace_target = true,
-                    target;
+            holder.on('ajax:success', ajax_success);
 
-                if (response && typeof response === 'object') {
-                    if (response.redirect_to) {
-                        Turbolinks.visit(response.redirect_to);
-                    } else {
-                        if (redirected_to || event.target.tagName.toLowerCase() === 'a') {
-                            target = holder.find(that.options.main_content_selector);
-                            replace_target = false;
-                        } else {
-                            target = $(event.target);
-                        }
-
-
-                        that.destroy();
-                        refinery.xhr.success(response, status, xhr, target, replace_target);
-                        that.trigger('ui:change');
-                    }
-                }
-            });
-
-            holder.on('ajax:error', function (event, xhr, status) {
-                refinery.xhr.error(xhr, status);
-            });
+            holder.on('ajax:error',
+                /**
+                 * @param {jQuery.event} event
+                 * @param {jQuery.jqXHR} xhr
+                 * @param {string} status
+                 * @return {undefined}
+                 */
+                function (event, xhr, status) {
+                    refinery.xhr.error(xhr, status);
+                });
 
             holder.find('.ui-selectable').selectable({ 'filter': 'li' });
         },
