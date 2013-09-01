@@ -103,6 +103,7 @@
         init_upload: function () {
             var that = this,
                 form = that.holder,
+                csrf_param = $('meta[name=csrf-param]').attr('content'),
                 file_inputs = form.find('input[type="file"]');
 
             if (file_inputs.length > 0) {
@@ -110,6 +111,19 @@
                     event.preventDefault();
                     event.stopPropagation();
                     refinery.spinner.on();
+
+                    /**
+                     * when form doesn't have included csrf token aka
+                     * embed_authenticity_token_in_remote_forms is false
+                     * then include it to hidden input from meta
+                     */
+                    if (form.find('input[name="' + csrf_param + '"]').length === 0) {
+                        $('<input/>', {
+                            'name': csrf_param,
+                            'type': 'hidden',
+                            'value': $('meta[name=csrf-token]').attr('content')
+                        }).appendTo(form);
+                    }
 
                     $.ajax(this.action, {
                             'data': form.serializeArray(),
