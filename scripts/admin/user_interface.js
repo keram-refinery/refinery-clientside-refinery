@@ -53,9 +53,11 @@
         },
 
         init_collapsible_lists: function () {
-            this.holder.find('.collapsible-list').accordion({
-                collapsible: true,
-                heightStyle: 'content'
+            this.holder.find('.collapsible-list').each(function () {
+                var list = $(this),
+                    options = /** Object */(list.data('ui-accordion-options'));
+
+                list.accordion(options);
             });
         },
 
