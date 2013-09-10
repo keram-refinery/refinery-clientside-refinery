@@ -42,10 +42,13 @@
     vertical-align: middle;
 }
 
+.locales a,
 .actions a {
     padding: 4px;
 }
 
+.locales a:hover,
+.locales a:focus,
 .actions a:hover,
 .actions a:focus {
     background-color: #65C3F7;
@@ -178,7 +181,7 @@ a.move:active {
 .records:not(.image-grid) .ui-selected,
 .records:not(.image-grid) .ui-selected:hover,
 .records:not(.tree) .ui-selected:nth-child(2n-1) {
-    background: #E0F5E0;
+    background-color: #E0F5E0;
     outline: solid 1px #00A017;
     color: #00A017;
 }
@@ -200,6 +203,10 @@ a.move:active {
     display: block;
     height: 100%;
     padding: 9px 12px 9px 12px;
+}
+
+#actions .active a {
+    font-weight: bold;
 }
 
 #actions li a:hover {
