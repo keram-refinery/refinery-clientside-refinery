@@ -13,27 +13,28 @@ describe 'PageParts', ->
     @container = container
 
   after ->
-    # @container.empty()
+    @ui.destroy()
+    @container.empty()
 
   describe 'activate part', ->
     before ->
       $('#page-parts-options').click()
-      $('.ui-dialog li[data-part="#page_part_perex"] label').first().click()
+      $('.ui-dialog li[data-part="perex"] label').first().click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     after (done) ->
       $('#page-parts-options').click()
-      $('.ui-dialog li[data-part="#page_part_perex"] label').first().click()
+      $('.ui-dialog li[data-part="perex"] label').first().click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
       done()
 
     it 'show perex tab', ->
-      expect( $('.ui-tabs-nav a[href="#page_part_perex"]').is(':visible') ).to.be.true
+      expect( $('.ui-tabs-nav li[aria-controls="page_part_perex"]').hasClass('js-hide') ).to.be.false
 
   describe 'deactivate part', ->
     before ->
       $('#page-parts-options').click()
-      $('.ui-dialog li[data-part="#page_part_body"] label').first().click()
+      $('.ui-dialog li[data-part="body"] label').first().click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     after ->
@@ -42,15 +43,15 @@ describe 'PageParts', ->
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     it 'hide body tab', ->
-      expect( $('.ui-tabs-nav a[href="#page_part_body"]').is(':visible') ).to.be.false
+      expect( $('.ui-tabs-nav li[aria-controls="page_part_body"]').hasClass('js-hide') ).to.be.true
 
     it 'activate another tab', ->
-      expect( $('.ui-tabs-nav .ui-tabs-active').is(':visible') ).to.be.true
+      expect( $('.ui-tabs-nav .ui-tabs-active').hasClass('js-hide') ).to.be.false
 
   describe 'reorder parts', ->
     before ->
       $('#page-parts-options').click()
-      body_li = $($('.ui-dialog li[data-part="#page_part_body"]')).detach()
+      body_li = $($('.ui-dialog li[data-part="body"]')).detach()
       $('.ui-dialog .records').append(body_li)
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
