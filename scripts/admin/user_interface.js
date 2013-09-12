@@ -205,8 +205,6 @@
                     ui[fnc](holder, that);
                 }
             }
-
-            holder.find('input.text, textarea').first().focus();
         },
 
         /**
