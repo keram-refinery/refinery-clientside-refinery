@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">70.67</p>
+      <p class="stat">68.24</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">222</p>
+      <p class="stat">335</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">24.20</p>
+      <p class="stat">30.20</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.72</p>
+      <p class="stat">2.52</p>
     </div>
   </div>
 </div>
@@ -131,13 +131,34 @@
                     data: form.serialize(),
                     dataType: &#039;JSON&#039;,
                     success: function (response, status, xhr) {
-                        var redirected = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
+                        var param_re = /frontend_locale=[\w\-]+/,
+                            redirected = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
 
                         dialog.dialog(&#039;close&#039;);
                         dialog.dialog(&#039;destroy&#039;);
 
                         if (redirected) {
-                            Turbolinks.visit(redirected + param);
+                            /**
+                             * This is requried in case that user has defined other locale than default.
+                             * In that case this scenario is happen:
+                             *
+                             * POST /refinery/pages/12 // Save request
+                             * 302 Found
+                             *
+                             * GET /refinery/pages/12/edit?frontend_locale=cs // Ok, redirect after save
+                             * 200 OK
+                             *
+                             * GET /refinery/pages/12/edit?frontend_locale=sk // Locale switch request
+                             * 200 OK
+                             */
+                            if (param_re.test(redirected) &amp;&amp; param_re.test(param)) {
+                                url = redirected.replace(param_re, param.match(param_re)[0]);
+                            } else if (/\?/.test(redirected)) {
+                                url = redirected + &#039;&amp;&#039; + param.match(param_re)[0];
+                            } else {
+                                url = redirected + param;
+                            }
+                            Turbolinks.visit(url);
                         } else if (status === &#039;error&#039;) {
                             refinery.xhr.success(response, status, xhr, form, true);
                         } else {
@@ -148,6 +169,7 @@
             };
 
             buttons[t(&#039;refinery.admin.form_unsaved_continue&#039;)] = function () {
+                $(this).dialog(&#039;destroy&#039;);
                 Turbolinks.visit(url);
             };
 
@@ -195,6 +217,7 @@
         init_upload: function () {
             var that = this,
                 form = that.holder,
+                csrf_param = $(&#039;meta[name=csrf-param]&#039;).attr(&#039;content&#039;),
                 file_inputs = form.find(&#039;input[type=&quot;file&quot;]&#039;);
 
             if (file_inputs.length &gt; 0) {
@@ -202,6 +225,19 @@
                     event.preventDefault();
                     event.stopPropagation();
                     refinery.spinner.on();
+
+                    /**
+                     * when form doesn&#039;t have included csrf token aka
+                     * embed_authenticity_token_in_remote_forms is false
+                     * then include it to hidden input from meta
+                     */
+                    if (form.find(&#039;input[name=&quot;&#039; + csrf_param + &#039;&quot;]&#039;).length === 0) {
+                        $(&#039;&lt;input/&gt;&#039;, {
+                            &#039;name&#039;: csrf_param,
+                            &#039;type&#039;: &#039;hidden&#039;,
+                            &#039;value&#039;: $(&#039;meta[name=csrf-token]&#039;).attr(&#039;content&#039;)
+                        }).appendTo(form);
+                    }
 
                     $.ajax(this.action, {
                             &#039;data&#039;: form.serializeArray(),
@@ -224,6 +260,77 @@
             }
         },
 
+        /**
+         * Handle click on preview button
+         * If preview window exists it is refreshed after form change.
+         *
+         * @return {undefined}
+         */
+        init_preview: function () {
+            var form = this.holder,
+                prev_url = form.attr(&#039;action&#039;),
+                prev_target = form.attr(&#039;target&#039;),
+                prev_method = form.attr(&#039;method&#039;),
+                prev_remote = form.data(&#039;remote&#039;),
+                preview_btn = form.find(&#039;.preview-button&#039;),
+                preview_window;
+
+            /**
+             * Submits form to window with name href attribute of preview link button.
+             * If window doesn&#039;t exists or was closed create it at first.
+             *
+             * @return {undefined}
+             */
+            function preview_submit () {
+                if (form.is(&#039;:valid&#039;)) {
+                    // removing jquery_ujs form submit handle
+                    form.removeData(&#039;remote&#039;);
+                    form.removeAttr(&#039;data-remote&#039;);
+
+                    if (!preview_window || preview_window.closed) {
+                        preview_window = window.open(&#039;&#039;, preview_btn.attr(&#039;href&#039;));
+                    }
+
+                    form.attr({
+                        &#039;action&#039;: preview_btn.attr(&#039;href&#039;),
+                        &#039;method&#039;: &#039;POST&#039;,
+                        &#039;target&#039;: preview_btn.attr(&#039;href&#039;)
+                    });
+
+                    form.submit();
+
+                    form.attr({
+                        &#039;action&#039;: prev_url,
+                        &#039;method&#039;: prev_method,
+                        &#039;target&#039;: prev_target
+                    });
+
+                    if (prev_remote) {
+                        form.attr(&#039;data-remote&#039;, prev_remote);
+                        form.data(&#039;remote&#039;, prev_remote);
+                    }
+                }
+            }
+
+            if (preview_btn.length &gt; 0) {
+                form.on(&#039;click&#039;, &#039;.preview-button&#039;, function (e) {
+                    e.preventDefault();
+                    preview_submit();
+                });
+
+                form.on(&#039;change&#039;, &#039;input, select, textarea&#039;, function () {
+                    if (preview_window &amp;&amp; !preview_window.closed) {
+                        preview_submit();
+                    }
+                });
+            }
+        },
+
+        /**
+         * Include exclamation mark to submit button if form has unsaved changes.
+         *
+         * @return {undefined}
+         */
         init_inputs: function () {
             var that = this,
                 form = that.holder,
@@ -244,6 +351,11 @@
             }
         },
 
+        /**
+         * Fix buttons to bottom of page if their holder is out of screen.
+         *
+         * @return {undefined}
+         */
         init_fly_form_actions: function () {
             var that = this,
                 $window = $(window),
@@ -289,6 +401,7 @@
                 that.init_pickers();
                 that.init_inputs();
                 that.init_upload();
+                that.init_preview();
                 that.initial_values = holder.serialize();
                 that.init_fly_form_actions();
 

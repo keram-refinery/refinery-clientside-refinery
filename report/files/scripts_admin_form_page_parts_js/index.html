@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">65.73</p>
+      <p class="stat">64.90</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">180</p>
+      <p class="stat">194</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">22.59</p>
+      <p class="stat">23.44</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.29</p>
+      <p class="stat">1.28</p>
     </div>
   </div>
 </div>
@@ -113,28 +113,27 @@
          * @return {string} dialog content
          */
         get_dialog_content: function () {
-            var content;
+            var data = this.holder.find(&#039;#page-parts-options&#039;).data(&#039;page-parts&#039;),
+                list,
+                part;
 
-            content = &#039;&lt;ul class=&quot;records&quot;&gt;&#039;;
+            list = &#039;&lt;ul class=&quot;records&quot;&gt;&#039;;
+            for (var i = 0, l = data.length; i &lt; l; i++) {
+                part = /** @type {page_part} */(data[i]);
+                list += &#039;&lt;li data-part=&quot;&#039; + part.name + &#039;&quot; &#039; +
+                            &#039;class=&quot;clearfix&quot; &gt;&#039; +
+                            &#039;&lt;label class=&quot;stripped&quot;&gt;&#039; +
+                            &#039;&lt;input type=&quot;checkbox&quot;&#039; + (part.active ? &#039; checked=&quot;1&quot;&#039; : &#039;&#039;) + &#039;&quot;&gt; &#039; +
+                             part.title +
+                            &#039;&lt;/label&gt;&#039; +
+                            &#039; &lt;span class=&quot;actions&quot;&gt;&lt;span class=&quot;icon-small move-icon&quot;&gt;&#039; +
+                            t(&#039;refinery.admin.button_move&#039;) + &#039;&lt;/span&gt;&lt;/span&gt;&#039; +
+                            &#039;&lt;/li&gt;&#039;;
+            }
 
-            this.nav.find(&#039;a&#039;).each(function () {
-                var a = $(this),
-                    active = !a.parent().hasClass(&#039;js-hide&#039;);
+            list += &#039;&lt;/ul&gt;&#039;;
 
-                content += &#039;&lt;li data-part=&quot;&#039; + a.attr(&#039;href&#039;) + &#039;&quot; &#039;;
-                content += &#039;class=&quot;clearfix&quot; &gt;&#039;;
-                content += &#039;&lt;label class=&quot;stripped&quot;&gt;&#039;;
-                content += &#039;&lt;input type=&quot;checkbox&quot;&#039; + (active ? &#039; checked=&quot;1&quot;&#039; : &#039;&#039;) + &#039;&quot;&gt; &#039;;
-                content += a.text();
-                content += &#039;&lt;/label&gt;&#039;;
-                content += &#039; &lt;span class=&quot;actions&quot;&gt;&lt;span class=&quot;icon-small move-icon&quot;&gt;&#039;;
-                content += t(&#039;refinery.admin.button_move&#039;) + &#039;&lt;/span&gt;&lt;/span&gt;&#039;;
-                content += &#039;&lt;/li&gt;&#039;;
-            });
-
-            content += &#039;&lt;/ul&gt;&#039;;
-
-            return content;
+            return list;
         },
 
         /**
@@ -161,8 +160,8 @@
                     var li = $(this),
                         part = /** @type string */(li.data(&#039;part&#039;)),
                         active = li.find(&#039;input&#039;).is(&#039;:checked&#039;),
-                        tab = nav.find(&#039;a[href=&quot;&#039; + part + &#039;&quot;]&#039;).parent().detach(),
-                        panel = $(part);
+                        tab = nav.find(&#039;li[aria-controls=&quot;page_part_&#039; + part + &#039;&quot;]&#039;).detach(),
+                        panel = $(&#039;#page_part_&#039; + part);
 
                     if (active) {
                         tab.removeClass(&#039;js-hide&#039;);
@@ -175,15 +174,30 @@
 
                     panel.find(&#039;input.part-active&#039;).prop(&#039;checked&#039;, active);
                     panel.find(&#039;input.part-position&#039;).val(j);
-                    list[list.length] = tab;
+
+                    /**
+                     * If title part exist is not showed in tabs, but
+                     * as field &quot;Custom content title&quot; in Advanced options
+                     */
+                    if (part !== &#039;title&#039;) {
+                        list[list.length] = tab;
+                    }
                 });
 
+                /**
+                 * Reordeting tabs by parts position
+                 *
+                 */
                 for (i = 0, l = list.length; i &lt; l; i++) {
                     nav.append(list[i]);
                 }
 
+                /**
+                 * Ensure that if we hide current active tab,
+                 * will be activated other, first visible tab.
+                 */
                 if (nav.find(&#039;.ui-tabs-active&#039;).length === 0) {
-                    active_tab = parts_tabs.index(nav.find(&#039;li:visible&#039;).first());
+                    active_tab = /** @type {number} */(parts_tabs.index(nav.find(&#039;li:visible&#039;).first()));
 
                     holder.tabs({
                         &#039;active&#039;: active_tab
