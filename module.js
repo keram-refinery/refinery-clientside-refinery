@@ -10,20 +10,20 @@ var dir = __dirname,
         'watch' : [{
             'base_js' : {
                 'files': [scripts_dir + '/*.js'],
-                'tasks': ['closureCompiler:refinery_base_js',
-                            'concat:refinery_base_js',
-                            'copy:refinery_js']
+                'tasks': ['closureCompiler:refinerycms-clientside_base_js',
+                            'concat:refinerycms-clientside_base_js',
+                            'copy:refinerycms-clientside_js']
             },
             'admin_js' : {
                 'files': [scripts_dir + '/admin/{,*/}*.js'],
-                'tasks': ['closureCompiler:refinery_admin_js',
-                            'concat:refinery_admin_js',
-                            'copy:refinery_js',
+                'tasks': ['closureCompiler:refinerycms-clientside_admin_js',
+                            'concat:refinerycms-clientside_admin_js',
+                            'copy:refinerycms-clientside_js',
                             'livereload']
             },
             'styles' : {
                 'files': [styles_dir + '/{,*/}*.css', styles_dir + '/{,*/}*.css.scss'],
-                'tasks': ['assetUrl:refinery_styles', 'copy:refinery_styles']
+                'tasks': ['assetUrl:refinerycms-clientside_styles', 'copy:refinerycms-clientside_styles']
             }
         }],
         'closureCompiler': [{
@@ -46,7 +46,7 @@ var dir = __dirname,
                     'scripts/object.js',
                     'scripts/user_interface.js'
                 ],
-                'dest': '.tmp/assets/javascripts/refinery/refinery.min.js'
+                'dest': '.tmp/assets/javascripts/refinery.min.js'
             }
         }, {
             'admin_js': {
@@ -68,7 +68,7 @@ var dir = __dirname,
                     'scripts/admin/pickers/picker.js',
                     'scripts/admin/*/*.js'
                 ],
-                'dest': '.tmp/assets/javascripts/refinery/refinery-admin.min.js'
+                'dest': '.tmp/assets/javascripts/admin.min.js'
             }
         }],
         'concat': [{
@@ -78,7 +78,7 @@ var dir = __dirname,
                     'scripts/object_state.js',
                     'scripts/*.js'
                 ],
-                'dest': '.tmp/assets/javascripts/refinery/refinery.all.js'
+                'dest': '.tmp/assets/javascripts/refinery.all.js'
             }
         }, {
             'admin_js' : {
@@ -88,7 +88,7 @@ var dir = __dirname,
                     'scripts/admin/pickers/picker.js',
                     'scripts/admin/*/*.js'
                 ],
-                'dest': '.tmp/assets/javascripts/refinery/refinery-admin.all.js'
+                'dest': '.tmp/assets/javascripts/admin.all.js'
             }
         }],
         'copy': [{
@@ -97,7 +97,7 @@ var dir = __dirname,
                     'expand': true,
                     'dot': true,
                     'cwd': dir + '/.tmp/assets/javascripts/',
-                    'dest': build_dir + '/javascripts/',
+                    'dest': build_dir + '/javascripts/refinery/',
                     'src': [
                         '**'
                     ]
@@ -109,7 +109,7 @@ var dir = __dirname,
                     'expand': true,
                     'dot': true,
                     'cwd': dir + '/.tmp/assets/stylesheets/',
-                    'dest': build_dir + '/stylesheets/',
+                    'dest': build_dir + '/stylesheets/refinery/',
                     'src': [
                         '**'
                     ]

@@ -17,7 +17,7 @@ describe 'Admin Image Dialog', ->
   describe 'Instance', ->
     before ->
       @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
-      @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+      @dialog.options.url = '/refinerycms-clientside/test/fixtures/image_dialog.json'
 
     after ->
       @dialog.destroy(true)
@@ -33,7 +33,7 @@ describe 'Admin Image Dialog', ->
 
     before ->
       @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
-      @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+      @dialog.options.url = '/refinerycms-clientside/test/fixtures/image_dialog.json'
       @dialog.init()
 
     after ->
@@ -50,7 +50,7 @@ describe 'Admin Image Dialog', ->
 
     before ->
       @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
-      @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+      @dialog.options.url = '/refinerycms-clientside/test/fixtures/image_dialog.json'
       @dialog.init().open()
 
     after ->
@@ -92,7 +92,7 @@ describe 'Admin Image Dialog', ->
     context 'success', ->
       before (done) ->
         @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
-        @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+        @dialog.options.url = '/refinerycms-clientside/test/fixtures/image_dialog.json'
         @dialog.init()
 
         @dialog.on 'load', ->
@@ -123,14 +123,14 @@ describe 'Admin Image Dialog', ->
           "size":"medium",
           "geometry":"225x255>",
           "sizes":
-            "small":"/refinery/test/fixtures/500x350.jpg",
-            "original":"/refinery/test/fixtures/500x350.jpg",
-            "medium":"/refinery/test/fixtures/500x350.jpg",
-            "large":"/refinery/test/fixtures/500x350.jpg",
-            "grid":"/refinery/test/fixtures/500x350.jpg"
+            "small":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "original":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "medium":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "large":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "grid":"/refinerycms-clientside/test/fixtures/500x350.jpg"
 
         @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
-        @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+        @dialog.options.url = '/refinerycms-clientside/test/fixtures/image_dialog.json'
         @dialog.init()
 
         @dialog.on 'load', ->
@@ -164,14 +164,14 @@ describe 'Admin Image Dialog', ->
           "size":"original",
           "geometry": "128x153",
           "sizes":
-            "small":"/refinery/test/fixtures/500x350.jpg",
-            "original":"/refinery/test/fixtures/500x350.jpg",
-            "medium":"/refinery/test/fixtures/500x350.jpg",
-            "large":"/refinery/test/fixtures/500x350.jpg",
-            "grid":"/refinery/test/fixtures/500x350.jpg"
+            "small":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "original":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "medium":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "large":"/refinerycms-clientside/test/fixtures/500x350.jpg",
+            "grid":"/refinerycms-clientside/test/fixtures/500x350.jpg"
 
         @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
-        @dialog.options.url = '/refinery/test/fixtures/image_dialog.json'
+        @dialog.options.url = '/refinerycms-clientside/test/fixtures/image_dialog.json'
         @dialog.init()
 
         @insertSpy = insertSpy = sinon.spy()

@@ -1,4 +1,4 @@
-refinery.admin.ImagesDialog.prototype.options.url = '/refinery/test/fixtures/images_dialog.json'
+refinery.admin.ImagesDialog.prototype.options.url = '/refinerycms-clientside/test/fixtures/images_dialog.json'
 
 describe 'Admin Images Dialog', ->
 
@@ -95,7 +95,7 @@ describe 'Admin Images Dialog', ->
 
       before (done) ->
         @dialog = new refinery.admin.ImagesDialog({
-          url: '/refinery/test/fixtures/empty_images_dialog.json'
+          url: '/refinerycms-clientside/test/fixtures/empty_images_dialog.json'
         }).init(@container)
 
         @dialog.on 'load', ->
@@ -220,7 +220,7 @@ describe 'Admin Images Dialog', ->
         before ->
           @return_obj = return_obj =
             "id": 3
-            "thumbnail": "/refinery/test/fixtures/300x200-a.jpg"
+            "thumbnail": "/refinerycms-clientside/test/fixtures/300x200-a.jpg"
 
         after ->
 
