@@ -10,6 +10,12 @@
      * @type {Object}
      */
     refinery.admin = {
+        /**
+         * Namespace for loading modules to ui
+         *
+         * @expose
+         * @type {Object}
+         */
         ui: {},
 
         /**

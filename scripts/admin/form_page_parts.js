@@ -119,10 +119,14 @@
                 'stop': update_parts
             });
 
-            dialog_buttons[t('refinery.admin.button_done')] = function () {
-                update_parts();
-                dialog_holder.dialog('close');
-            };
+            dialog_buttons = [{
+                'text': t('refinery.admin.button_done'),
+                'class': 'submit-button',
+                'click': function () {
+                    update_parts();
+                    dialog_holder.dialog('close');
+                }
+            }];
 
             dialog_holder.dialog({
                 'title': t('refinery.admin.form_page_parts_manage'),
