@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">64.90</p>
+      <p class="stat">64.48</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">194</p>
+      <p class="stat">198</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">23.44</p>
+      <p class="stat">23.33</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.28</p>
+      <p class="stat">1.31</p>
     </div>
   </div>
 </div>
@@ -211,10 +211,14 @@
                 &#039;stop&#039;: update_parts
             });
 
-            dialog_buttons[t(&#039;refinery.admin.button_done&#039;)] = function () {
-                update_parts();
-                dialog_holder.dialog(&#039;close&#039;);
-            };
+            dialog_buttons = [{
+                &#039;text&#039;: t(&#039;refinery.admin.button_done&#039;),
+                &#039;class&#039;: &#039;submit-button&#039;,
+                &#039;click&#039;: function () {
+                    update_parts();
+                    dialog_holder.dialog(&#039;close&#039;);
+                }
+            }];
 
             dialog_holder.dialog({
                 &#039;title&#039;: t(&#039;refinery.admin.form_page_parts_manage&#039;),

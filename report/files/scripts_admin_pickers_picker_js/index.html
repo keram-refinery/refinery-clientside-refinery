@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">71.63</p>
+      <p class="stat">73.00</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">152</p>
+      <p class="stat">167</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">12.91</p>
+      <p class="stat">13.73</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.53</p>
+      <p class="stat">0.55</p>
     </div>
   </div>
 </div>
@@ -133,7 +133,7 @@
          *
          * @expose
          *
-         * @type {?refinery.Object}
+         * @type {?refinery.admin.Dialog}
          */
         dialog: null,
 
@@ -145,7 +145,7 @@
          * @return {Object} self
          */
         open: function () {
-            this.dialog.open();
+            this.getDialog().open();
             return this;
         },
 
@@ -157,7 +157,7 @@
          * @return {Object} self
          */
         close: function () {
-            this.dialog.close();
+            this.getDialog().close();
             return this;
         },
 
@@ -175,6 +175,19 @@
         },
 
         /**
+         *
+         * @expose
+         * @return {Object} self
+         */
+        destroy: function () {
+            if (this.dialog) {
+                this.dialog.destroy();
+            }
+
+            return this._destroy();
+        },
+
+        /**
          * Bind events
          *
          * @protected
@@ -185,10 +198,6 @@
         bind_events: function () {
             var that = this,
                 holder = that.holder;
-
-            that.dialog.on(&#039;insert&#039;, function (record) {
-                that.insert(record);
-            });
 
             holder.find(&#039;.current-record-link&#039;).on(&#039;click&#039;, function (e) {
                 e.preventDefault();
@@ -211,8 +220,16 @@
          * abstract
          * @expose
          */
-        init_dialog: function () {
+        init_dialog: function () { },
 
+        /**
+         * Returns dialog, if it doesn&#039;t exists yet, create one.
+         *
+         * @expose
+         * @return {refinery.admin.Dialog}
+         */
+        getDialog: function () {
+            return (this.dialog ? this.dialog : this.init_dialog());
         },
 
         /**
@@ -230,10 +247,8 @@
                 this.elm_record_holder = holder.find(&#039;.record-holder&#039;);
                 this.elm_no_picked_record = holder.find(&#039;.no-picked-record-selected&#039;);
                 this.elm_remove_picked_record = holder.find(&#039;.remove-picked-record&#039;);
-                this.init_dialog();
                 this.bind_events();
-                this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
-                this.is({&#039;initialising&#039; : false, &#039;initialised&#039;: true });
+                this.is({ &#039;initialised&#039;: true, &#039;initialising&#039;: false });
                 this.trigger(&#039;init&#039;);
             }
 
