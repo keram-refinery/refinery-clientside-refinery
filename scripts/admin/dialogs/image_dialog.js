@@ -11,7 +11,6 @@
     refinery.Object.create({
 
         /**
-         * test
          * @param {image_dialog_options} options
          */
         objectConstructor: function (options) {

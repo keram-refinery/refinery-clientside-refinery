@@ -18,23 +18,28 @@
          * Initialize Images Dialog
          */
         init_dialog: function () {
+            var that = this;
+
             /**
              * refinery.admin.ImagesDialog
              */
-            var dialog = refinery('admin.ImagesDialog').init();
+            that.dialog = refinery('admin.ImagesDialog')
+                .init()
+                .on('load', function () {
+                    /**
+                     * Hide url tab as we can insert in picker only images from our library.
+                     * When it will be implemented functionality upload external image to server
+                     * then this can disappear
+                     *
+                     */
+                    that.dialog.holder.find('li[aria-controls="external-image-area"]').hide();
+                })
+                .on('insert', function (record) {
+                    that.insert(record);
+                    that.dialog.close();
+                });
 
-            /**
-             * Hide url tab as we can insert in picker only images from our library.
-             * When it will be implemented functionality upload external image to server
-             * then this can disappear
-             *
-             * @return {undefined}
-             */
-            dialog.on('load', function () {
-                dialog.holder.find('a[href="#external-image-area"]').parent().hide();
-            });
-
-            this.dialog = dialog;
+            return that.dialog;
         },
 
         /**
@@ -54,7 +59,6 @@
 
             this.elm_no_picked_record.addClass('hide');
             this.elm_remove_picked_record.removeClass('hide');
-            this.dialog.close();
             this.trigger('insert');
 
             return this;

@@ -42,7 +42,7 @@
          *
          * @expose
          *
-         * @type {?refinery.Object}
+         * @type {?refinery.admin.Dialog}
          */
         dialog: null,
 
@@ -54,7 +54,7 @@
          * @return {Object} self
          */
         open: function () {
-            this.dialog.open();
+            this.getDialog().open();
             return this;
         },
 
@@ -66,7 +66,7 @@
          * @return {Object} self
          */
         close: function () {
-            this.dialog.close();
+            this.getDialog().close();
             return this;
         },
 
@@ -108,10 +108,6 @@
             var that = this,
                 holder = that.holder;
 
-            that.dialog.on('insert', function (record) {
-                that.insert(record);
-            });
-
             holder.find('.current-record-link').on('click', function (e) {
                 e.preventDefault();
                 that.open();
@@ -133,8 +129,16 @@
          * abstract
          * @expose
          */
-        init_dialog: function () {
+        init_dialog: function () { },
 
+        /**
+         * Returns dialog, if it doesn't exists yet, create one.
+         *
+         * @expose
+         * @return {refinery.admin.Dialog}
+         */
+        getDialog: function () {
+            return (this.dialog ? this.dialog : this.init_dialog());
         },
 
         /**
@@ -152,10 +156,8 @@
                 this.elm_record_holder = holder.find('.record-holder');
                 this.elm_no_picked_record = holder.find('.no-picked-record-selected');
                 this.elm_remove_picked_record = holder.find('.remove-picked-record');
-                this.init_dialog();
                 this.bind_events();
-                this.is({'initialised': true, 'initialising': false});
-                this.is({'initialising' : false, 'initialised': true });
+                this.is({ 'initialised': true, 'initialising': false });
                 this.trigger('init');
             }
 

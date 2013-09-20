@@ -16,15 +16,22 @@
 
         /**
          * Initialize Resources Dialog
-         *
          */
         init_dialog: function () {
+            var that = this;
+
             /**
              * refinery.admin.ResourcesDialog
              */
-            this.dialog = refinery('admin.ResourcesDialog').init();
-        },
+            that.dialog = refinery('admin.ResourcesDialog')
+                .init()
+                .on('insert', function (record) {
+                    that.insert(record);
+                    that.dialog.close();
+                });
 
+            return that.dialog;
+        },
 
         /**
          * Attach resource - file to form
@@ -51,7 +58,6 @@
 
             this.elm_no_picked_record.addClass('hide');
             this.elm_remove_picked_record.removeClass('hide');
-            this.dialog.close();
             this.trigger('insert');
 
             return this;
