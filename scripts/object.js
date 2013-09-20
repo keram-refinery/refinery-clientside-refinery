@@ -151,7 +151,7 @@
          * @param {string} eventName
          * @param {Function} callback
          *
-         * @return {Object} this
+         * @return {refinery.Object} self
          */
         on: function (eventName, callback) {
             var events = this.events || {};
@@ -171,7 +171,7 @@
          * @param {string} eventName
          * @param {Function} callback
          *
-         * @return {Object} this
+         * @return {refinery.Object} self
          */
         off: function (eventName, callback) {
             var events = this.events;
@@ -192,7 +192,7 @@
          * @param {string} eventName
          * @param {Function} callback
          *
-         * @return {Object} self
+         * @return {refinery.Object} self
          */
         subscribe: function (eventName, callback) {
             // console.log(eventName, this.uid, 'subscribed');
@@ -210,7 +210,7 @@
          * @param {string} eventName
          * @param {Function} callback
          *
-         * @return {Object} self
+         * @return {refinery.Object} self
          */
         unsubscribe: function (eventName, callback) {
             refinery.pubsub.unsubscribe(this.uid + '.' + eventName, callback);
@@ -224,10 +224,10 @@
          * @expose
          * @private
          *
-         * @param {string}      eventName
-         * @param {Array=}    args
+         * @param {string} eventName
+         * @param {Array=} args
          *
-         * @return {Object}
+         * @return {refinery.Object}
          */
         trigger: function (eventName, args) {
             var events = this.events, a, i;
