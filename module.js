@@ -55,7 +55,12 @@ var dir = __dirname,
                     'compilerOpts': {
                         'compilation_level': 'ADVANCED_OPTIMIZATIONS',
                         'warning_level': 'verbose',
-                        'externs': ['externs/jquery-1.9.js', 'externs/custom.js', 'externs/refinery.js', 'externs/refinery_object.js'],
+                        'externs': ['externs/jquery-1.9.js',
+                                    'externs/custom.js',
+                                    'externs/refinery.js',
+                                    'externs/refinery_object.js',
+                                    'externs/refinery-admin.js'
+                                    ],
                         'language_in': 'ECMASCRIPT5_STRICT',
                         //'formatting': 'PRETTY_PRINT',
                         'summary_detail_level': 3,
