@@ -401,6 +401,39 @@
     refinery.log = (typeof console === 'object' &&
                     typeof console.log === 'function') ? console.log : function () {};
 
+    /**
+     * Encode & > < " ' to html entities
+     *
+     * @param {string}
+     * @return {string}
+     */
+    refinery.htmlEncode = (function () {
+        var symbols = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+
+        /**
+         *
+         * @param  {string} symbol
+         * @return {string}
+         */
+        function substitute (symbol) {
+            return symbols[symbol] || symbol;
+        }
+
+        /**
+         *
+         * @param  {string} str
+         * @return {string}
+         */
+        return function (str) {
+            return str.replace(/[&<>\"\']/g, substitute);
+        }
+    }());
 
     /**
      * [ui description]
