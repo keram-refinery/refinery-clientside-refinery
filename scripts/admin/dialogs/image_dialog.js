@@ -32,22 +32,15 @@
          * @return {Object} self
          */
         insert: function (form) {
-            var alt = form.find('#image-alt').val(),
-                id = form.find('#image-id').val(),
-                size_elm = form.find('#image-size .ui-selected a'),
-                size = size_elm.data('size'),
-                geometry = size_elm.data('geometry'),
-                sizes = form.find('#image-preview').data();
+            var size_elm = form.find('#image-size .ui-selected a');
 
-            this.trigger('insert', {
-                'id': id,
-                'alt': alt,
-                'size': size,
-                'geometry': geometry,
-                'sizes': sizes
+            return this.trigger('insert', {
+                'id': form.find('#image-id').val(),
+                'alt': form.find('#image-alt').val(),
+                'size': size_elm.data('size'),
+                'geometry': size_elm.data('geometry'),
+                'sizes': form.find('#image-preview').data()
             });
-
-            return this;
         }
     });
 

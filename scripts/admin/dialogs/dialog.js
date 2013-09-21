@@ -131,6 +131,8 @@
                     fnc = tab.attr('id').replace(/-/g, '_');
                     if (typeof this[fnc] === 'function') {
                         obj = this[fnc](elm);
+                    } else if (elm.hasClass('ui-selected')) {
+                        obj = this.selectable_area(elm);
                     }
                 }
 
@@ -305,10 +307,24 @@
             /**
              * Handle uploaded resource
              *
+             * abstract
              * @expose
              * @return {undefined}
              */
             upload_area: function () { },
+
+            /**
+             * Handle default behavior on selecting element on dialog
+             *
+             * @param {!jQuery} element
+             * @return {!Object}
+             */
+            selectable_area: function (element) {
+                element.removeClass('ui-selected');
+
+                return /** @type {!Object} */(element.data('dialog'));
+            },
+
 
             /**
              *

@@ -17,34 +17,17 @@
         name: 'ResourcesDialog',
 
         /**
-         * Handle resource linked from library
-         *
-         * @expose
-         * @param {!jQuery} li
-         * @return {file_dialog_object}
-         */
-        existing_resource_area: function (li) {
-            li.removeClass('ui-selected');
-
-            return /** @type {file_dialog_object} */(li.data('dialog'));
-        },
-
-        /**
          * Handle uploaded file
          *
          * @param {json_response} json_response
          * @return {undefined}
          */
         upload_area: function (json_response) {
-            var that = this,
-                file = json_response.file,
-                holder = that.holder;
+            if (json_response.file) {
+                this.trigger('insert', json_response.file);
 
-            if (file) {
-                that.trigger('insert', file);
-
-                holder.find('li.ui-selected').removeClass('ui-selected');
-                holder.find('.ui-tabs').tabs({ 'active': 0 });
+                this.holder.find('li.ui-selected').removeClass('ui-selected');
+                this.holder.find('.ui-tabs').tabs({ 'active': 0 });
             }
         }
     });
