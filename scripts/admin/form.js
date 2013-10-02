@@ -339,10 +339,6 @@
                 return val.split( /,\s*/ );
             }
 
-            function extractLast( term ) {
-                return split( term ).pop();
-            }
-
             /**
              * @todo support for remote source
              * @return {undefined}
@@ -358,7 +354,7 @@
                     options = input.data('autocomplete');
 
                 if (options.multiple) {
-                    data = options.source;
+                    data = /** Array */(options.source);
 
                     input.bind( 'keydown', function( event ) {
                         if ( event.keyCode === $.ui.keyCode.TAB &&
@@ -387,8 +383,13 @@
                          * @param {Function} response
                          */
                         source: function ( request, response ) {
-                            response( $.ui.autocomplete.filter(
-                                data, extractLast( request.term ) ) );
+                            var terms = split(request.term),
+                                term = terms.pop(),
+                                filtered_data = data.filter(function (term) {
+                                    return terms.indexOf(term) === -1;
+                                });
+
+                            response( $.ui.autocomplete.filter( filtered_data, term ) );
                         },
 
                         focus: function () {
