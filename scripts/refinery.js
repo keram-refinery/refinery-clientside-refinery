@@ -404,7 +404,6 @@
     /**
      * Encode & > < " ' to html entities
      *
-     * @param {string}
      * @return {string}
      */
     refinery.htmlEncode = (function () {
@@ -413,7 +412,7 @@
             '<': '&lt;',
             '>': '&gt;',
             '"': '&quot;',
-            "'": '&#039;'
+            '\'': '&#039;'
         };
 
         /**
@@ -422,7 +421,7 @@
          * @return {string}
          */
         function substitute (symbol) {
-            return symbols[symbol] || symbol;
+            return symbols[symbol];
         }
 
         /**
@@ -432,7 +431,7 @@
          */
         return function (str) {
             return str.replace(/[&<>\"\']/g, substitute);
-        }
+        };
     }());
 
     /**
