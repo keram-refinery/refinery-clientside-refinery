@@ -334,6 +334,71 @@
                     }
                 });
             }
+
+            function split( val ) {
+                return val.split( /,\s*/ );
+            }
+
+            function extractLast( term ) {
+                return split( term ).pop();
+            }
+
+            /**
+             * @todo support for remote source
+             * @return {undefined}
+             */
+            form.find('input.autocomplete').each(function () {
+                var input = $(this),
+                    data,
+
+                    /**
+                     *
+                     * @type {jquery_ui_autocomplete_options}
+                     */
+                    options = input.data('autocomplete');
+
+                if (options.multiple) {
+                    data = options.source;
+
+                    input.bind( 'keydown', function( event ) {
+                        if ( event.keyCode === $.ui.keyCode.TAB &&
+                                $( this ).data('ui-autocomplete').menu.active ) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $.extend(options, {
+                        select: function ( event, ui ) {
+                            var terms = split( this.value );
+                            // remove the current input
+                            terms.pop();
+                            // add the selected item
+                            terms.push( ui.item.value );
+                            // add placeholder to get the comma-and-space at the end
+                            terms.push( '' );
+                            this.value = terms.join( ', ' );
+
+                            return false;
+                        },
+
+                        /**
+                         *
+                         * @param {jquery_ui_autocomplete_request} request
+                         * @param {Function} response
+                         */
+                        source: function ( request, response ) {
+                            response( $.ui.autocomplete.filter(
+                                data, extractLast( request.term ) ) );
+                        },
+
+                        focus: function () {
+                            return false;
+                        }
+                    });
+                }
+
+                input.autocomplete(options);
+            });
         },
 
         /**
