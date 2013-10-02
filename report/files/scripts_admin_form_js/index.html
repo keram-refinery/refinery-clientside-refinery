@@ -45,11 +45,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">67.18</p>
+      <p class="stat">68.41</p>
     </div>
     <div class="span6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">412</p>
+      <p class="stat">477</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="span6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">32.27</p>
+      <p class="stat">32.14</p>
     </div>
     <div class="span6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.74</p>
+      <p class="stat">3.26</p>
     </div>
   </div>
 </div>
@@ -426,6 +426,71 @@
                     }
                 });
             }
+
+            function split( val ) {
+                return val.split( /,\s*/ );
+            }
+
+            function extractLast( term ) {
+                return split( term ).pop();
+            }
+
+            /**
+             * @todo support for remote source
+             * @return {undefined}
+             */
+            form.find(&#039;input.autocomplete&#039;).each(function () {
+                var input = $(this),
+                    data,
+
+                    /**
+                     *
+                     * @type {jquery_ui_autocomplete_options}
+                     */
+                    options = input.data(&#039;autocomplete&#039;);
+
+                if (options.multiple) {
+                    data = options.source;
+
+                    input.bind( &#039;keydown&#039;, function( event ) {
+                        if ( event.keyCode === $.ui.keyCode.TAB &amp;&amp;
+                                $( this ).data(&#039;ui-autocomplete&#039;).menu.active ) {
+                            event.preventDefault();
+                        }
+                    });
+
+                    $.extend(options, {
+                        select: function ( event, ui ) {
+                            var terms = split( this.value );
+                            // remove the current input
+                            terms.pop();
+                            // add the selected item
+                            terms.push( ui.item.value );
+                            // add placeholder to get the comma-and-space at the end
+                            terms.push( &#039;&#039; );
+                            this.value = terms.join( &#039;, &#039; );
+
+                            return false;
+                        },
+
+                        /**
+                         *
+                         * @param {jquery_ui_autocomplete_request} request
+                         * @param {Function} response
+                         */
+                        source: function ( request, response ) {
+                            response( $.ui.autocomplete.filter(
+                                data, extractLast( request.term ) ) );
+                        },
+
+                        focus: function () {
+                            return false;
+                        }
+                    });
+                }
+
+                input.autocomplete(options);
+            });
         },
 
         /**
