@@ -18,7 +18,7 @@
         /**
          * Configurable options
          *
-         * @param {{update_url: ?string, redraw: Boolean, nested_sortable: Object}} options
+         * @param {{redraw: Boolean, nested_sortable: Object}} options
          */
         objectConstructor: function (options, is_prototype) {
             var that = this;
@@ -36,9 +36,7 @@
                  * @return {undefined}
                  */
                 that.options.nested_sortable.stop = function (event, ui) {
-                    if (that.options.update_url) {
-                        that.update(ui.item);
-                    }
+                    that.update(ui.item);
                 };
             }
         },
@@ -53,13 +51,6 @@
          * @type {Object}
          */
         options: {
-
-            /**
-             * @expose
-             * @type {?string}
-             */
-            update_url: null,
-
             /**
              * @expose
              * @type {?boolean}
@@ -117,6 +108,7 @@
         update: function (item) {
             var that = this,
                 list = that.holder,
+                update_url = list.data('update_url'),
                 set = list.nestedSortable('toArray'),
                 post_data = {
                     'item': {
@@ -132,7 +124,7 @@
                 list.nestedSortable('disable');
                 refinery.spinner.on();
 
-                $.post(that.options.update_url, post_data, function (response, status, xhr) {
+                $.post(update_url, post_data, function (response, status, xhr) {
                     if (status === 'error') {
                         list.html(that.html);
                     } else {
@@ -168,8 +160,9 @@
         init: function (holder) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
+
                 holder.nestedSortable(this.options.nested_sortable);
-                this.attach_holder(holder);
+                this.holder = holder;
                 this.set = holder.nestedSortable('toArray');
                 this.html = holder.html();
                 this.is({'initialised': true, 'initialising': false});
@@ -182,6 +175,22 @@
 
 
     /**
+     * Sortable list initialization
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
+     * @return {undefined}
+     */
+    refinery.admin.ui.sortableList = function (holder, ui) {
+        holder.find('.sortable-list').each(function () {
+            ui.addObject(
+                refinery('admin.SortableList').init($(this))
+            );
+        });
+    };
+
+    /**
      * Sortable Tree
      *
      * @constructor
@@ -191,31 +200,6 @@
      * @param {boolean=} is_prototype
      */
     refinery.Object.create({
-
-        objectConstructor:  function (options, is_prototype) {
-            var that = this;
-
-            refinery.Object.apply(that, arguments);
-
-            if (!is_prototype) {
-
-                /**
-                 *
-                 * @expose
-                 * @param {*} event
-                 * @param {*} ui
-                 *
-                 * @return {undefined}
-                 */
-                that.options.nested_sortable.stop = function (event, ui) {
-                    that.update_tree(ui.item);
-                    if (that.options.update_url) {
-                        that.update(ui.item);
-                    }
-                };
-            }
-        },
-
         objectPrototype: refinery('admin.SortableList', {
 
             /**
@@ -239,23 +223,23 @@
             }
         }, true),
 
-        name: 'SortableTree',
-
-        update_tree: function (item) {
-            var ul = item.parent();
-
-            this.holder.find('.toggle').each(function () {
-                var elm = $(this);
-                if (elm.parent().parent().find('li').length === 0) {
-                    elm.removeClass('toggle expanded');
-                }
-            });
-
-            if (ul.attr('id') !== this.holder.attr('id')) {
-                ul.addClass('nested data-loaded');
-                ul.parent().find('.icon').first().addClass('toggle expanded');
-            }
-        }
+        name: 'SortableTree'
     });
+
+    /**
+     * Sortable tree initialization
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
+     * @return {undefined}
+     */
+    refinery.admin.ui.sortableTree = function (holder, ui) {
+        holder.find('.sortable-tree').each(function () {
+            ui.addObject(
+                refinery('admin.SortableTree').init($(this))
+            );
+        });
+    };
 
 }(refinery));

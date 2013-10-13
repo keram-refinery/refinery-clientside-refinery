@@ -364,7 +364,7 @@
                     });
 
                     holder.dialog(this.options);
-                    this.attach_holder(holder);
+                    this.holder = holder;
 
                     this.bind_events();
                     this.init_buttons();

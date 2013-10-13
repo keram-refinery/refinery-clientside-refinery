@@ -8,9 +8,6 @@ describe 'refinery.Object', ->
   it 'is instance of refinery.Object', ->
     expect( @obj ).to.be.an.instanceof(refinery.Object)
 
-  it 'is registered in refinery.Object instances', ->
-    expect( refinery.Object.instances.get(@obj.uid) ).to.be.eql(@obj)
-
   context 'properties', ->
     it 'should have properties, id, name, module, version, uid, fullname', ->
       expect( @obj ).to.have.property('id')
@@ -73,9 +70,6 @@ describe 'refinery.Object subclass', ->
   it 'is instance of refinery.Object', ->
     expect( @subobj ).to.be.an.instanceof(refinery.Object)
 
-  it 'is registered in refinery.Object instances', ->
-    expect( refinery.Object.instances.get(@subobj.uid) ).to.be.eql(@subobj)
-
   context 'states', ->
     before ->
       @subobj.is('initialised', false)
@@ -116,9 +110,6 @@ describe 'refinery.Object subclass', ->
 
       it 'is instance of refinery.TestClass', ->
         expect( @subobj2 ).to.be.an.instanceof(refinery.TestClass)
-
-      it 'is registered in refinery.Object instances', ->
-        expect( refinery.Object.instances.get(@subobj.uid) ).to.be.eql(@subobj)
 
       it 'is initialisable', ->
         expect( @subobj.is('initialisable') ).to.be.true

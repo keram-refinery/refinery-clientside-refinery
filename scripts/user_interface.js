@@ -11,6 +11,10 @@
      * @return {refinery.UserInterface}
      */
     refinery.Object.create({
+        objectConstructor: function () {
+            this.objects = [];
+            refinery.Object.apply(this, arguments);
+        },
 
         name: 'UserInterface',
 
@@ -23,6 +27,23 @@
              * @type {!string}
              */
             main_content_selector: '#content'
+        },
+
+        /**
+         * @expose
+         * @type {Object}
+         */
+        ui: refinery.ui,
+
+        /**
+         * @expose
+         * @param  {refinery.Object} object
+         * @return {Object} self
+         */
+        addObject: function (object) {
+            this.objects.push(object);
+
+            return this;
         },
 
         /**
@@ -84,25 +105,137 @@
                 function (event, xhr, status) {
                     refinery.xhr.error(xhr, status);
                 });
+
+            holder.on('click', '.tree .toggle', function (e) {
+                e.preventDefault();
+                that.toggle_tree_branch($(this).parents('li:first'));
+            });
         },
 
+        toggle_tree_branch: function (li) {
+            var elm = li.find('.toggle').first(),
+                nested = li.find('.nested').first();
+
+            if (elm.hasClass('expanded')) {
+                elm.removeClass('expanded');
+                nested.slideUp();
+            } else {
+
+                if (nested.hasClass('data-loaded')) {
+                    elm.addClass('expanded');
+                    nested.slideDown();
+                } else {
+                    li.addClass('loading');
+                    nested.load(nested.data('ajax-content'), function () {
+                        elm.addClass('expanded');
+                        nested.slideDown();
+                        li.removeClass('loading');
+
+                        if (nested.hasClass('data-cache')) {
+                            nested.addClass('data-loaded');
+                        }
+                    });
+                }
+            }
+        },
+
+
         /**
-         * Iterate through refinery.ui namespace
-         * and if found function, call with passed ui holder and self
+         * Iterate through ui namespace and if found function,
+         * call it with passed ui holder and self
          *
+         * @expose
          * @return {undefined}
          */
-        initialize_elements: function () {
-            var that = this,
-                holder = that.holder,
-                ui = refinery.ui,
+        initialize_modules: function () {
+            var holder = this.holder,
+                ui = this.ui,
                 fnc;
 
             for (fnc in ui) {
                 if (ui.hasOwnProperty(fnc) && typeof ui[fnc] === 'function') {
-                    ui[fnc](holder, that);
+                    ui[fnc](holder, this);
                 }
             }
+        },
+
+        /**
+         * @expose
+         * @return {undefined}
+         */
+        init_tabs: function () {
+            this.holder.find('.ui-tabs').each(function () {
+                var elm = $(this),
+                    index = elm.find('.ui-tabs-nav .ui-state-active').index();
+
+                elm.tabs({
+                    'active': (index > -1 ? index : 0),
+                    'activate': function (event, ui) {
+                        ui.newPanel.find('input.text, textarea').first().focus();
+                    }
+                });
+            });
+        },
+
+        /**
+         * @expose
+         * @return {undefined}
+         */
+        init_collapsible_lists: function () {
+            this.holder.find('.collapsible-list').each(function () {
+                var list = $(this),
+                    options = /** Object */(list.data('ui-accordion-options'));
+
+                list.accordion(options);
+            });
+        },
+
+        /**
+         * @expose
+         * @return {undefined}
+         */
+        init_sortable: function () {
+            this.holder.find('.sortable').each(function () {
+                var list = $(this);
+
+                list.sortable(list.data('ui-sortable-options'));
+            });
+        },
+
+        init_checkboxes: function () {
+            this.holder.find('div.checkboxes').each(function () {
+                var holder = $(this),
+                    chboxs = holder.find('input:checkbox').not('[readonly]');
+
+                if (chboxs.length > 1) {
+                    holder.find('.checkboxes-cmd.' +
+                            ((chboxs.length === chboxs.filter(':checked').length) ? 'none' : 'all')
+                    ).removeClass('hide');
+                }
+            });
+
+            this.holder.on('click', '.checkboxes-cmd', function (e) {
+                e.preventDefault();
+                var a = $(this),
+                    parent = a.parent(),
+                    checkboxes = parent.find('input:checkbox'),
+                    checked = a.hasClass('all');
+
+                checkboxes.prop('checked', checked);
+                parent.find('.checkboxes-cmd').toggleClass('hide');
+            });
+        },
+
+        /**
+         * @expose
+         * @return {undefined}
+         */
+        init_toggle_hide: function () {
+            this.holder.on('click', '.toggle-hide', function () {
+                var elm = $(this);
+                $(elm.attr('href')).toggleClass('js-hide');
+                elm.toggleClass('toggle-on');
+            });
         },
 
         /**
@@ -111,25 +244,15 @@
          * @return {Object} self
          */
         destroy: function () {
-            var holder = this.holder,
-                holders;
-
-            if (holder) {
-                holders = /** array */(holder.find('.refinery-instance'));
-
-                try {
-                    holders.each(function () {
-                        var instances = $(this).data('refinery-instances'),
-                            instance;
-
-                        for (var i = instances.length - 1; i >= 0; i--) {
-                            instance = refinery.Object.instances.get(instances[i]);
-                            instance.destroy();
-                        }
-                    });
-                } catch (e) {
-                    refinery.log(e);
+            var o = this.objects.pop();
+            try {
+                while ( o ) {
+                    o.destroy();
+                    o = this.objects.pop();
                 }
+            } catch (e) {
+                refinery.log(e);
+                refinery.log(o, this.objects);
             }
 
             return this._destroy();
@@ -140,9 +263,16 @@
 
             if (that.is('initialisable')) {
                 that.is('initialising', true);
-                that.attach_holder(holder);
+                that.holder = holder;
                 that.bind_events();
-                that.initialize_elements();
+
+                that.init_sortable();
+                that.init_tabs();
+                that.init_checkboxes();
+                that.init_collapsible_lists();
+                that.init_toggle_hide();
+
+                that.initialize_modules();
                 that.is({'initialised': true, 'initialising': false});
                 that.trigger('init');
             }

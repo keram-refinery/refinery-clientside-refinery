@@ -65,4 +65,17 @@
         }
     });
 
+    /**
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
+     * @return {undefined}
+     */
+    refinery.admin.ui.imagePicker = function (holder, ui) {
+        holder.find('.image-picker').each(function () {
+            ui.addObject( refinery('admin.ImagePicker').init($(this)) );
+        });
+    };
+
 }(refinery));

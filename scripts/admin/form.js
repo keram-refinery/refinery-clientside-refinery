@@ -148,30 +148,16 @@
             });
         },
 
-        init_pickers: function () {
+        init_locale_picker: function () {
             var that = this,
                 form = that.holder;
 
-            form.find('.image-picker').each(function () {
-                var picker = refinery('admin.ImagePicker');
-                picker.init($(this));
-            });
-
-            form.find('.resource-picker').each(function () {
-                var picker = refinery('admin.ResourcePicker');
-                picker.init($(this));
-            });
-
             form.on('click', '.locale-picker a', function (e) {
-                var a = $(this);
-                if (that.initial_values === form.serialize()) {
-                    return true;
+                if (that.initial_values !== form.serialize()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    that.switch_frontend_locale($(this));
                 }
-
-                e.preventDefault();
-                e.stopPropagation();
-                that.switch_frontend_locale(a);
-                return false;
             });
         },
 
@@ -448,8 +434,8 @@
 
             if (that.is('initialisable')) {
                 that.is('initialising', true);
-                that.attach_holder(holder);
-                that.init_pickers();
+                that.holder = holder;
+                that.init_locale_picker();
                 that.init_inputs();
                 that.init_upload();
                 that.init_preview();
@@ -469,11 +455,12 @@
      *
      * @expose
      * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
      * @return {undefined}
      */
-    refinery.admin.ui.form = function (holder) {
+    refinery.admin.ui.form = function (holder, ui) {
         holder.find('form').each(function () {
-            refinery('admin.Form').init($(this));
+            ui.addObject( refinery('admin.Form').init($(this)) );
         });
     };
 

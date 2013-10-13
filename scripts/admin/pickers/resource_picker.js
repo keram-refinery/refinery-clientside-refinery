@@ -65,4 +65,17 @@
 
     });
 
+    /**
+     *
+     * @expose
+     * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
+     * @return {undefined}
+     */
+    refinery.admin.ui.resourcePicker = function (holder, ui) {
+        holder.find('.resource-picker').each(function () {
+            ui.addObject( refinery('admin.ResourcePicker').init($(this)) );
+        });
+    };
+
 }(refinery));

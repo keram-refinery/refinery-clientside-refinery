@@ -17,6 +17,7 @@
     refinery.Object = function (options, is_prototype) {
         this.id = refinery.Object.guid++;
         this.options = $.extend({}, this.options, options);
+        this.events = {};
 
         /**
          * Unique Object Instance ID consist from his name and id
@@ -31,7 +32,6 @@
         // we are not using this object prototype
         if (!is_prototype) {
             this.state = new this.State();
-            refinery.Object.instances.add(this);
         }
     };
 
@@ -154,11 +154,10 @@
          * @return {refinery.Object} self
          */
         on: function (eventName, callback) {
-            var events = this.events || {};
+            var events = this.events;
 
             events[eventName] = events[eventName] || [];
             events[eventName].push(callback);
-            this.events = events;
 
             return this;
         },
@@ -176,7 +175,7 @@
         off: function (eventName, callback) {
             var events = this.events;
 
-            if (events && events[eventName] && events[eventName] instanceof Array) {
+            if (events[eventName] && events[eventName] instanceof Array) {
                 events[eventName].splice(events[eventName].indexOf(callback), 1);
             }
 
@@ -258,12 +257,9 @@
         destroy: function () {
             if (this.holder) {
                 this.holder.unbind();
-                this.detach_holder();
             }
 
             this.state = null;
-
-            refinery.Object.instances.remove(this.uid);
 
             this.trigger('destroy');
             this.events = {};
@@ -281,45 +277,6 @@
          */
         _destroy: function () {
             return refinery.Object.prototype.destroy.apply(this, arguments);
-        },
-
-         /**
-         * Attach refinery.Object to DOM object (this.holder)
-         *
-         * @expose
-         * @param {!jQuery} holder jQuery wrapper around DOM object
-         *
-         * @return {undefined}
-         */
-        attach_holder: function (holder) {
-            var data = /** @type {Array} */(holder.data('refinery-instances') || []);
-            holder.data('refinery-instances', data.concat(this.uid));
-            holder.addClass('refinery-instance');
-            this.holder = holder;
-        },
-
-        /**
-         * Remove refinery.Object Instance from DOM object (this.holder)
-         *
-         * @expose
-         *
-         * @return {undefined}
-         */
-        detach_holder: function () {
-            var holder = this.holder,
-                data = holder.data('refinery-instances') || [],
-                uid = this.uid;
-
-            holder.data('refinery-instances',
-                data.filter(function (elm) {
-                    return (elm !== uid);
-                }));
-
-            if (holder.data('refinery-instances').length === 0) {
-                holder.removeClass('refinery-instance');
-            }
-
-            this.holder = null;
         },
 
         /**
@@ -422,85 +379,4 @@
         return MyObject;
     };
 
-    /**
-     * Remove refinery.Object Instance from DOM object (this.holder)
-     *
-     * @expose
-     * @param {!jQuery} holder jQuery wrapper around DOM object
-     *
-     * @return {undefined}
-     */
-    refinery.Object.unbind = function (holder) {
-        var instances = holder.data('refinery-instances', []),
-            instance;
-
-        for (var i = instances.length - 1; i >= 0; i--) {
-            instance = refinery.Object.instances.get(instances[i]);
-            if (instance) {
-                instance.destroy(true);
-            }
-        }
-
-        holder.removeClass('refinery-instance');
-    };
-
-    /**
-     * refinery Object Instances
-     *
-     * @expose
-     *
-     * @type {Object}
-     */
-    refinery.Object.instances = (function () {
-
-        /**
-         * Hash of all refinery.Object instances
-         *
-         * @type {Object}
-         */
-        var instances = {};
-
-        return {
-
-            /**
-             * Return all refinery.Object instances
-             *
-             * @return {Object}
-             */
-            all: function () {
-                return instances;
-            },
-
-            /**
-             * Add instance
-             *
-             * @expose
-             * @param {Object} instance
-             */
-            add: function (instance) {
-                instances[instance.uid] = instance;
-            },
-
-            /**
-             * Get Instance by UID
-             *
-             * @expose
-             * @param {string} uid
-             * @return {Object|undefined}
-             */
-            get: function (uid) {
-                return instances[uid];
-            },
-
-            /**
-             * Remove instance by UID
-             *
-             * @expose
-             * @param {string} uid
-             */
-            remove: function (uid) {
-                delete instances[uid];
-            }
-        };
-    }());
 }(refinery));

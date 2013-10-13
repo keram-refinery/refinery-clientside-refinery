@@ -52,17 +52,15 @@
         init_configuration_dialog: function () {
             var that = this,
                 holder = that.holder,
-                nav = that.nav,
-                dialog_holder,
-                dialog_buttons = {},
-                parts_tabs = nav.find('li');
+                nav = holder.find('.ui-tabs-nav'),
+                parts_tabs = nav.find('li'),
+                dialog_holder = $('<div/>'),
+                dialog_buttons;
 
-            dialog_holder = $('<div/>', {
-                html: that.get_dialog_content()
-            });
+            dialog_holder.html( that.get_dialog_content() );
 
             function update_parts () {
-                var list = [], i, l, active_tab;
+                var list = [], i, l;
 
                 dialog_holder.find('li').each(function (j) {
                     var li = $(this),
@@ -105,10 +103,8 @@
                  * will be activated other, first visible tab.
                  */
                 if (nav.find('.ui-tabs-active').length === 0) {
-                    active_tab = /** @type {number} */(parts_tabs.index(nav.find('li:visible').first()));
-
                     holder.tabs({
-                        'active': active_tab
+                        'active': /** @type {number} */(parts_tabs.index(nav.find('li:visible').first()))
                     });
                 }
             }
@@ -151,8 +147,6 @@
          */
         destroy: function () {
             if (this.is('initialised')) {
-                this.nav = null;
-
                 if (this.dialog_holder) {
                     this.dialog_holder.dialog('destroy');
                     this.dialog_holder.off();
@@ -173,8 +167,7 @@
         init: function (holder) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
-                this.attach_holder(holder);
-                this.nav = holder.find('.ui-tabs-nav');
+                this.holder = holder;
                 this.init_configuration_dialog();
                 this.is({'initialised': true, 'initialising': false});
                 this.trigger('init');
@@ -189,11 +182,12 @@
      *
      * @expose
      * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
      * @return {undefined}
      */
-    refinery.admin.ui.formPageParts = function (holder) {
+    refinery.admin.ui.formPageParts = function (holder, ui) {
         holder.find('#page-parts').each(function () {
-            refinery('admin.FormPageParts').init($(this));
+            ui.addObject( refinery('admin.FormPageParts').init($(this)) );
         });
     };
 

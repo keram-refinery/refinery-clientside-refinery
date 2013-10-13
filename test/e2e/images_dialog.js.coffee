@@ -6,7 +6,7 @@ describe 'Admin Images Dialog', ->
     @container = $('#container')
 
   after ->
-    @container.empty()
+    # @container.empty()
 
   describe 'Class', ->
     after ->
