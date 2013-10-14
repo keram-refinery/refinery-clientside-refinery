@@ -94,8 +94,8 @@
                  * Reordeting tabs by parts position
                  *
                  */
-                for (i = 0, l = list.length; i < l; i++) {
-                    nav.append(list[i]);
+                for (i = list.length; i >= 0; i--) {
+                    nav.prepend(list[i]);
                 }
 
                 /**
