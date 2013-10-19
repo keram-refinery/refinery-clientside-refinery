@@ -18,7 +18,7 @@
         /**
          * Configurable options
          *
-         * @param {{redraw: Boolean, nested_sortable: Object}} options
+         * @param {{nested_sortable: Object}} options
          */
         objectConstructor: function (options, is_prototype) {
             var that = this;
@@ -51,12 +51,6 @@
          * @type {Object}
          */
         options: {
-            /**
-             * @expose
-             * @type {?boolean}
-             */
-            redraw: true,
-
             /**
              * @expose
              * @type {{items: string, listType: string, maxLevels: number}}
@@ -108,7 +102,7 @@
         update: function (item) {
             var that = this,
                 list = that.holder,
-                update_url = list.data('update_url'),
+                update_url = list.data('update_positions_url'),
                 set = list.nestedSortable('toArray'),
                 post_data = {
                     'item': {
@@ -135,7 +129,7 @@
                     refinery.xhr.success(response, status, xhr, list);
                     that.is('updated', true);
                     that.trigger('update');
-                }, that.options.redraw ? 'JSON' : 'HTML')
+                }, 'JSON')
                     .fail(function (response) {
                         list.html(that.html);
                         refinery.xhr.error(response);
@@ -200,6 +194,33 @@
      * @param {boolean=} is_prototype
      */
     refinery.Object.create({
+
+        /**
+         * Configurable options
+         *
+         * @param {{nested_sortable: Object}} options
+         */
+        objectConstructor: function (options, is_prototype) {
+            var that = this;
+
+            refinery.Object.apply(that, arguments);
+
+            if (!is_prototype) {
+
+                /**
+                 *
+                 * @expose
+                 * @param {*} event
+                 * @param {*} ui
+                 *
+                 * @return {undefined}
+                 */
+                that.options.nested_sortable.stop = function (event, ui) {
+                    that.update(ui.item);
+                };
+            }
+        },
+
         objectPrototype: refinery('admin.SortableList', {
 
             /**

@@ -173,10 +173,10 @@
          * @return {refinery.Object} self
          */
         off: function (eventName, callback) {
-            var events = this.events;
+            var event_callbacks = this.events[eventName];
 
-            if (events[eventName] && events[eventName] instanceof Array) {
-                events[eventName].splice(events[eventName].indexOf(callback), 1);
+            if (event_callbacks) {
+                event_callbacks.splice(event_callbacks.indexOf(callback), 1);
             }
 
             return this;
@@ -229,12 +229,13 @@
          * @return {refinery.Object}
          */
         trigger: function (eventName, args) {
-            var events = this.events, a, i;
+            var callbacks = this.events[eventName],
+                a, i;
 
             args = (typeof args !== 'undefined' && !(args instanceof Array)) ? [args] : args;
 
-            if (events && events[eventName]) {
-                for (a = events[eventName], i = a.length - 1; i >= 0; i--) {
+            if (callbacks) {
+                for (a = callbacks, i = a.length - 1; i >= 0; i--) {
                     if (a[i].apply(this, args) === false) {
                         break;
                     }

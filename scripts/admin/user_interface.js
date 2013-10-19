@@ -11,18 +11,13 @@
      * @return {refinery.admin.UserInterface}
      */
     refinery.Object.create({
-
-        objectPrototype: refinery('UserInterface', null, true),
+        objectPrototype: refinery('UserInterface', {
+            'ui_modules': refinery.admin.ui
+        }, true),
 
         module: 'admin',
 
-        name: 'UserInterface',
-
-        /**
-         * @expose
-         * @type {Object}
-         */
-        ui: refinery.admin.ui
+        name: 'UserInterface'
     });
 
 }(refinery));

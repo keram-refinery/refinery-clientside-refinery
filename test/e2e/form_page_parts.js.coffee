@@ -2,7 +2,7 @@ describe 'PageParts', ->
 
   before (done) ->
     container = $('#container')
-    ui = new refinery.admin.UserInterface();
+    ui = new refinery.UserInterface({ ui_modules: refinery.admin.ui });
     $.get('../fixtures/page_new_parts_default.html', (response) ->
       container.html(response)
       ui.init(container)

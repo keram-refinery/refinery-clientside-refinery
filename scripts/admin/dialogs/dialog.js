@@ -233,7 +233,6 @@
                 function ui_change () {
                     if (that.ui) {
                         that.ui.destroy();
-                        that.ui.unsubscribe('ui:change', ui_change);
                     }
 
                     that.ui = refinery('admin.UserInterface', {
@@ -334,7 +333,6 @@
             destroy: function () {
                 if (this.ui) {
                     this.ui.destroy();
-                    this.ui.unsubscribe('ui:change', this.ui_change);
                     this.ui = null;
                 }
 
