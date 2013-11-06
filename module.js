@@ -5,7 +5,7 @@ var dir = __dirname,
     styles_dir = dir + '/styles',
     // images_dir = dir + '/images',
     // tests_dir = dir + '/test',
-    build_dir = '../refinerycms/core/app/assets',
+    build_dir = dir + '/lib/assets',
     grunt = {
         'watch' : [{
             'base_js' : {

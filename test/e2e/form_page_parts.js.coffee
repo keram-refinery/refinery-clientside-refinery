@@ -3,7 +3,7 @@ describe 'PageParts', ->
   before (done) ->
     container = $('#container')
     ui = new refinery.UserInterface({ ui_modules: refinery.admin.ui });
-    $.get('../fixtures/page_new_parts_default.html', (response) ->
+    $.get('/test/fixtures/page_new_parts_default.html', (response) ->
       container.html(response)
       ui.init(container)
       done()
@@ -13,8 +13,8 @@ describe 'PageParts', ->
     @container = container
 
   after ->
-    @ui.destroy()
-    @container.empty()
+    #@ui.destroy()
+    #@container.empty()
 
   describe 'activate part', ->
     before ->
@@ -23,9 +23,9 @@ describe 'PageParts', ->
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     after (done) ->
-      $('#page-parts-options').click()
-      $('.ui-dialog li[data-part="perex"] label').first().click()
-      $('.ui-dialog .ui-dialog-buttonset button').click()
+      #$('#page-parts-options').click()
+      #$('.ui-dialog li[data-part="perex"] label').first().click()
+      #$('.ui-dialog .ui-dialog-buttonset button').click()
       done()
 
     it 'show perex tab', ->
