@@ -1,4 +1,4 @@
-describe 'refinery.Object -t-11', ->
+describe 'refinery.Object', ->
   before ->
     @obj = new refinery.Object()
 

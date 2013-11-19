@@ -13,8 +13,8 @@ describe 'PageParts', ->
     @container = container
 
   after ->
-    #@ui.destroy()
-    #@container.empty()
+    @ui.destroy()
+    @container.empty()
 
   describe 'activate part', ->
     before ->

@@ -1,31 +1,33 @@
 <div class="field">
     <div class="ui-tabs clearfix" id="page_parts">
-
   <div class="nojs-hide ui-tabs-settings">
-    <a title="Manage page parts" id="page_parts-options" href="#" data-page-parts="[{&quot;name&quot;:&quot;title&quot;,&quot;title&quot;:&quot;Title&quot;,&quot;active&quot;:true},{&quot;name&quot;:&quot;perex&quot;,&quot;title&quot;:&quot;Perex&quot;,&quot;active&quot;:false},{&quot;name&quot;:&quot;body&quot;,&quot;title&quot;:&quot;Body&quot;,&quot;active&quot;:true},{&quot;name&quot;:&quot;side_body&quot;,&quot;title&quot;:&quot;Side Body&quot;,&quot;active&quot;:true}]" class="icon-small page-add-icon">Configure</a>
+    <a title="Manage page parts" id="page_parts-options" href="#" data-page-parts="[{&quot;name&quot;:&quot;title&quot;,&quot;title&quot;:&quot;Title&quot;,&quot;active&quot;:true},{&quot;name&quot;:&quot;perex&quot;,&quot;title&quot;:&quot;Perex&quot;,&quot;active&quot;:false},{&quot;name&quot;:&quot;body&quot;,&quot;title&quot;:&quot;Body&quot;,&quot;active&quot;:true},{&quot;name&quot;:&quot;side_body&quot;,&quot;title&quot;:&quot;Side Body&quot;,&quot;active&quot;:false}]" class="icon-small page-add-icon">Configure</a>
   </div>
   <ul class="nojs-hide ui-tabs-nav">
-      <li class=" js-hide">
+      <li class="page-part js-hide">
         <a href="#page_part_perex">Perex</a>
       </li>
-      <li class="ui-state-active">
+      <li class="page-part ">
         <a href="#page_part_body">Body</a>
       </li>
-      <li class="">
+      <li class="page-part js-hide">
         <a href="#page_part_side_body">Side Body</a>
       </li>
+
+
   </ul>
 
   <div class="ui-tabs-panels">
 
 
-        <div id="page_part_perex" class="page-part">
+        <div id="page_part_perex" class="page-part js-hide">
     <div class="js-hide">
       <label for="page_parts_attributes_1_body">Perex</label>
       <input type="hidden" value="0" name="page[parts_attributes][1][active]"><input type="checkbox" value="1" name="page[parts_attributes][1][active]" id="page_parts_attributes_1_active" class="part-active">
       <label for="page_parts_attributes_1_active" class="stripped">Active</label>
     </div>
-    <div class="clearfix wysiwyg-editor-wrapper">
+
+    <div data-editor-options="{&quot;directionality&quot;:&quot;ltr&quot;,&quot;browser_spellcheck&quot;:true,&quot;language&quot;:&quot;en&quot;,&quot;nowrap&quot;:false,&quot;object_resizing&quot;:true,&quot;plugins&quot;:[&quot;refinery_links&quot;,&quot;refinery_images&quot;,&quot;code&quot;,&quot;table&quot;,&quot;lists&quot;,&quot;charmap&quot;,&quot;autolink&quot;,&quot;hr&quot;,&quot;anchor&quot;,&quot;pagebreak&quot;,&quot;fullscreen&quot;],&quot;skin&quot;:&quot;lightgray&quot;,&quot;theme&quot;:&quot;modern&quot;,&quot;content_css&quot;:&quot;http://localhost:3000/assets/refinery/theme.css&quot;,&quot;visual&quot;:true,&quot;custom_undo_redo_levels&quot;:10,&quot;resize&quot;:&quot;both&quot;,&quot;convert_urls&quot;:false,&quot;relative_urls&quot;:false,&quot;remove_script_host&quot;:false,&quot;document_base_url&quot;:&quot;&quot;,&quot;tinymce_url&quot;:&quot;/components/tinymce/js/tinymce/tinymce.min.js&quot;}" class="clearfix wysiwyg-editor-wrapper">
   <textarea rows="20" name="page[parts_attributes][1][body]" id="page_parts_attributes_1_body" cols="120" class="wysiwyg-editor widest"></textarea>
 </div>
 
@@ -34,13 +36,14 @@
   </div>
 
 
-        <div id="page_part_body" class="page-part">
+        <div id="page_part_body" class="page-part ">
     <div class="js-hide">
       <label for="page_parts_attributes_2_body">Body</label>
       <input type="hidden" value="0" name="page[parts_attributes][2][active]"><input type="checkbox" value="1" name="page[parts_attributes][2][active]" id="page_parts_attributes_2_active" class="part-active" checked="checked">
       <label for="page_parts_attributes_2_active" class="stripped">Active</label>
     </div>
-    <div class="clearfix wysiwyg-editor-wrapper">
+
+    <div data-editor-options="{&quot;directionality&quot;:&quot;ltr&quot;,&quot;browser_spellcheck&quot;:true,&quot;language&quot;:&quot;en&quot;,&quot;nowrap&quot;:false,&quot;object_resizing&quot;:true,&quot;plugins&quot;:[&quot;refinery_links&quot;,&quot;refinery_images&quot;,&quot;code&quot;,&quot;table&quot;,&quot;lists&quot;,&quot;charmap&quot;,&quot;autolink&quot;,&quot;hr&quot;,&quot;anchor&quot;,&quot;pagebreak&quot;,&quot;fullscreen&quot;],&quot;skin&quot;:&quot;lightgray&quot;,&quot;theme&quot;:&quot;modern&quot;,&quot;content_css&quot;:&quot;http://localhost:3000/assets/refinery/theme.css&quot;,&quot;visual&quot;:true,&quot;custom_undo_redo_levels&quot;:10,&quot;resize&quot;:&quot;both&quot;,&quot;convert_urls&quot;:false,&quot;relative_urls&quot;:false,&quot;remove_script_host&quot;:false,&quot;document_base_url&quot;:&quot;&quot;,&quot;tinymce_url&quot;:&quot;/components/tinymce/js/tinymce/tinymce.min.js&quot;}" class="clearfix wysiwyg-editor-wrapper">
   <textarea rows="20" name="page[parts_attributes][2][body]" id="page_parts_attributes_2_body" cols="120" class="wysiwyg-editor widest"></textarea>
 </div>
 
@@ -49,19 +52,22 @@
   </div>
 
 
-        <div id="page_part_side_body" class="page-part">
+        <div id="page_part_side_body" class="page-part js-hide">
     <div class="js-hide">
       <label for="page_parts_attributes_3_body">Side Body</label>
-      <input type="hidden" value="0" name="page[parts_attributes][3][active]"><input type="checkbox" value="1" name="page[parts_attributes][3][active]" id="page_parts_attributes_3_active" class="part-active" checked="checked">
+      <input type="hidden" value="0" name="page[parts_attributes][3][active]"><input type="checkbox" value="1" name="page[parts_attributes][3][active]" id="page_parts_attributes_3_active" class="part-active">
       <label for="page_parts_attributes_3_active" class="stripped">Active</label>
     </div>
-    <div class="clearfix wysiwyg-editor-wrapper">
+
+    <div data-editor-options="{&quot;directionality&quot;:&quot;ltr&quot;,&quot;browser_spellcheck&quot;:true,&quot;language&quot;:&quot;en&quot;,&quot;nowrap&quot;:false,&quot;object_resizing&quot;:true,&quot;plugins&quot;:[&quot;refinery_links&quot;,&quot;refinery_images&quot;,&quot;code&quot;,&quot;table&quot;,&quot;lists&quot;,&quot;charmap&quot;,&quot;autolink&quot;,&quot;hr&quot;,&quot;anchor&quot;,&quot;pagebreak&quot;,&quot;fullscreen&quot;],&quot;skin&quot;:&quot;lightgray&quot;,&quot;theme&quot;:&quot;modern&quot;,&quot;content_css&quot;:&quot;http://localhost:3000/assets/refinery/theme.css&quot;,&quot;visual&quot;:true,&quot;custom_undo_redo_levels&quot;:10,&quot;resize&quot;:&quot;both&quot;,&quot;convert_urls&quot;:false,&quot;relative_urls&quot;:false,&quot;remove_script_host&quot;:false,&quot;document_base_url&quot;:&quot;&quot;,&quot;tinymce_url&quot;:&quot;/components/tinymce/js/tinymce/tinymce.min.js&quot;}" class="clearfix wysiwyg-editor-wrapper">
   <textarea rows="20" name="page[parts_attributes][3][body]" id="page_parts_attributes_3_body" cols="120" class="wysiwyg-editor widest"></textarea>
 </div>
 
     <input type="hidden" value="3" name="page[parts_attributes][3][position]" id="page_parts_attributes_3_position" class="part-position">
     <input type="hidden" value="side_body" name="page[parts_attributes][3][title]" id="page_parts_attributes_3_title">
   </div>
+
+
 
   </div>
 

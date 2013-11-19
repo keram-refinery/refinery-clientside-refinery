@@ -15,10 +15,10 @@
     });
     describe('Instance', function() {
       before(function() {
-        return this.dialog = new refinery.admin.ImagesDialog;
+        return this.dialog = refinery('admin.ImagesDialog');
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('is instance of refinery.Object', function() {
         return expect(this.dialog).to.be.an["instanceof"](refinery.Object);
@@ -29,11 +29,11 @@
     });
     describe('initialised', function() {
       before(function() {
-        this.dialog = new refinery.admin.ImagesDialog;
-        return this.dialog.init(this.container);
+        this.dialog = refinery('admin.ImagesDialog');
+        return this.dialog.init();
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('is initialised', function() {
         expect(this.dialog.is('initialised')).to.be["true"];
@@ -45,12 +45,11 @@
     });
     describe('open', function() {
       before(function() {
-        this.dialog = new refinery.admin.ImagesDialog;
-        this.dialog.init(this.container);
-        return this.dialog.open();
+        this.dialog = refinery('admin.ImagesDialog');
+        return this.dialog.init().open();
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('is opened', function() {
         expect(this.dialog.is('opened')).to.be["true"];
@@ -67,16 +66,16 @@
     describe('load', function() {
       context('fail', function() {
         before(function(done) {
-          this.dialog = new refinery.admin.ImagesDialog({
+          this.dialog = refinery('admin.ImagesDialog', {
             url: '/some/nonexistant/url'
-          }).init(this.container);
+          }).init();
           this.dialog.on('load', function() {
             return done();
           });
           return this.dialog.open();
         });
         after(function() {
-          return this.dialog.destroy(true);
+          return this.dialog.destroy();
         });
         it('contain info about load fail', function() {
           return expect(this.dialog.holder.text()).to.have.string('Dialog content load fail');
@@ -87,16 +86,16 @@
       });
       return context('success', function() {
         before(function(done) {
-          this.dialog = new refinery.admin.ImagesDialog({
+          this.dialog = refinery('admin.ImagesDialog', {
             url: '/test/fixtures/empty_images_dialog.json'
-          }).init(this.container);
+          }).init();
           this.dialog.on('load', function() {
             return done();
           });
           return this.dialog.open();
         });
         after(function() {
-          return this.dialog.destroy(true);
+          return this.dialog.destroy();
         });
         it('is loaded', function() {
           return expect(this.dialog.is('loaded')).to.be["true"];
@@ -112,14 +111,14 @@
     });
     return describe('tabs', function() {
       before(function(done) {
-        this.dialog = new refinery.admin.ImagesDialog().init(this.container);
+        this.dialog = refinery('admin.ImagesDialog').init();
         this.dialog.on('load', function() {
           return done();
         });
         return this.dialog.open();
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('has tab Library', function() {
         return expect(this.dialog.holder.text()).to.have.string('Library');
@@ -195,27 +194,24 @@
           });
         });
         after(function() {});
-        beforeEach(function() {
-          var insertSpy;
-          this.insertSpy = insertSpy = sinon.spy();
-          return this.dialog.on('insert', function(img) {
-            return insertSpy(img);
-          });
-        });
         it('is active', function() {
           return expect(this.dialog.holder.find('.ui-tabs-nav .ui-state-active').text()).to.have.string('Library');
         });
         return describe('insert success', function() {
           before(function() {
-            var return_obj;
-            return this.return_obj = return_obj = {
+            var insertSpy, return_obj;
+            this.insertSpy = insertSpy = sinon.spy();
+            this.dialog.on('insert', function(img) {
+              return insertSpy(img);
+            });
+            this.return_obj = return_obj = {
               "id": 3,
               "thumbnail": "/test/fixtures/300x200-a.jpg"
             };
+            return uiSelect(this.dialog.holder.find('.ui-selectable .ui-selectee').first());
           });
           after(function() {});
           return it('return img object', function(done) {
-            uiSelect(this.dialog.holder.find('.ui-selectable .ui-selectee').first());
             expect(this.insertSpy.called, 'Event insert did not fire.').to.be["true"];
             expect(this.insertSpy.calledOnce, 'Event fired more than once').to.be["true"];
             expect(this.insertSpy.calledWith(this.return_obj), 'Returned object should be: \n' + JSON.stringify(this.return_obj)).to.be["true"];

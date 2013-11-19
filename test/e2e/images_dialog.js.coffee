@@ -18,10 +18,10 @@ describe 'Admin Images Dialog', ->
 
   describe 'Instance', ->
     before ->
-      @dialog = new refinery.admin.ImagesDialog
+      @dialog = refinery('admin.ImagesDialog')
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'is instance of refinery.Object', ->
       expect( @dialog ).to.be.an.instanceof refinery.Object
@@ -33,11 +33,11 @@ describe 'Admin Images Dialog', ->
   describe 'initialised', ->
 
     before ->
-      @dialog = new refinery.admin.ImagesDialog
-      @dialog.init(@container)
+      @dialog = refinery('admin.ImagesDialog')
+      @dialog.init()
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'is initialised', ->
       expect( @dialog.is('initialised') ).to.be.true
@@ -49,12 +49,11 @@ describe 'Admin Images Dialog', ->
   describe 'open', ->
 
     before ->
-      @dialog = new refinery.admin.ImagesDialog
-      @dialog.init(@container)
-      @dialog.open()
+      @dialog = refinery('admin.ImagesDialog')
+      @dialog.init().open()
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'is opened', ->
       expect( @dialog.is('opened') ).to.be.true
@@ -72,9 +71,9 @@ describe 'Admin Images Dialog', ->
     context 'fail', ->
 
       before (done) ->
-        @dialog = new refinery.admin.ImagesDialog({
+        @dialog = refinery('admin.ImagesDialog', {
           url: '/some/nonexistant/url'
-        }).init(@container)
+        }).init()
 
         @dialog.on 'load', ->
           done()
@@ -82,7 +81,7 @@ describe 'Admin Images Dialog', ->
         @dialog.open()
 
       after ->
-        @dialog.destroy(true)
+        @dialog.destroy()
 
       it 'contain info about load fail', ->
         expect( @dialog.holder.text() ).to.have.string 'Dialog content load fail'
@@ -94,9 +93,9 @@ describe 'Admin Images Dialog', ->
     context 'success', ->
 
       before (done) ->
-        @dialog = new refinery.admin.ImagesDialog({
+        @dialog = refinery('admin.ImagesDialog', {
           url: '/test/fixtures/empty_images_dialog.json'
-        }).init(@container)
+        }).init()
 
         @dialog.on 'load', ->
           done()
@@ -104,7 +103,7 @@ describe 'Admin Images Dialog', ->
         @dialog.open()
 
       after ->
-        @dialog.destroy(true)
+        @dialog.destroy()
 
       it 'is loaded', ->
         expect( @dialog.is('loaded') ).to.be.true
@@ -120,14 +119,14 @@ describe 'Admin Images Dialog', ->
   describe 'tabs', ->
 
     before (done) ->
-      @dialog = new refinery.admin.ImagesDialog().init(@container)
+      @dialog = refinery('admin.ImagesDialog').init()
       @dialog.on 'load', ->
         done()
 
       @dialog.open()
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'has tab Library', ->
       expect( @dialog.holder.text() ).to.have.string 'Library'
@@ -205,12 +204,6 @@ describe 'Admin Images Dialog', ->
 
       after ->
 
-      beforeEach ->
-        @insertSpy = insertSpy = sinon.spy()
-
-        @dialog.on 'insert', (img) ->
-          insertSpy(img)
-
       it 'is active', ->
         expect( @dialog.holder.find('.ui-tabs-nav .ui-state-active').text() ).to.have.string 'Library'
 
@@ -218,15 +211,20 @@ describe 'Admin Images Dialog', ->
       describe 'insert success', ->
 
         before ->
+          @insertSpy = insertSpy = sinon.spy()
+
+          @dialog.on 'insert', (img) ->
+            insertSpy(img)
+
           @return_obj = return_obj =
             "id": 3
             "thumbnail": "/test/fixtures/300x200-a.jpg"
 
+          uiSelect( @dialog.holder.find('.ui-selectable .ui-selectee').first() )
+
         after ->
 
         it 'return img object', (done) ->
-          uiSelect( @dialog.holder.find('.ui-selectable .ui-selectee').first() )
-
           expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
           expect( @insertSpy.calledOnce, 'Event fired more than once' ).to.be.true
           expect( @insertSpy.calledWith( @return_obj ), 'Returned object should be: \n' + JSON.stringify(@return_obj) ).to.be.true

@@ -1,5 +1,5 @@
 (function() {
-  describe('refinery.Object -t-11', function() {
+  describe('refinery.Object', function() {
     before(function() {
       return this.obj = new refinery.Object();
     });

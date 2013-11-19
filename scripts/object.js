@@ -305,7 +305,7 @@
      *
      * @type {number}
      */
-    refinery.Object.guid = 0;
+    refinery.Object.guid = 1;
 
     /**
      * Refinery Object

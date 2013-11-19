@@ -15,14 +15,6 @@
          * @extends {refinery.Object.prototype}
          */
         {
-            /**
-             * @expose
-             */
-            objectConstructor: function () {
-                this.objects = [];
-                refinery.Object.apply(this, arguments);
-            },
-
             name: 'UserInterface',
 
             options: {
@@ -147,7 +139,6 @@
                 }
             },
 
-
             /**
              * Iterate through ui namespace and if found function,
              * call it with passed ui holder and self
@@ -161,7 +152,7 @@
                     fnc;
 
                 for (fnc in ui) {
-                    if (ui.hasOwnProperty(fnc) && typeof ui[fnc] === 'function') {
+                    if (ui.hasOwnProperty(fnc)) {
                         ui[fnc](holder, this);
                     }
                 }
@@ -199,9 +190,11 @@
              */
             init_jquery_ui_widgets: function () {
                 var holder = this.holder;
+
                 $.each(['selectable', 'sortable', 'accordion'], function (key, val) {
                     holder.find('.ui-' + val).each(function () {
                         var list = $(this);
+
                         list[val](list.data('ui-' + val + '-options'));
                     });
                 });
@@ -234,7 +227,6 @@
             },
 
             /**
-             * @expose
              * @return {undefined}
              */
             init_toggle_hide: function () {
@@ -251,15 +243,18 @@
              * @return {Object} self
              */
             destroy: function () {
-                var o = this.objects.pop();
-                try {
-                    while ( o ) {
-                        o.destroy();
-                        o = this.objects.pop();
+                if (this.is('initialised')) {
+                    var o = this.objects.pop();
+
+                    try {
+                        while ( o ) {
+                            o.destroy();
+                            o = this.objects.pop();
+                        }
+                    } catch (e) {
+                        refinery.log(e);
+                        refinery.log(o, this.objects);
                     }
-                } catch (e) {
-                    refinery.log(e);
-                    refinery.log(o, this.objects);
                 }
 
                 return this._destroy();
@@ -271,6 +266,7 @@
                 if (that.is('initialisable')) {
                     that.is('initialising', true);
                     that.holder = holder;
+                    this.objects = [];
                     that.bind_events();
                     that.init_jquery_ui_widgets();
                     that.init_checkboxes();

@@ -16,11 +16,11 @@ describe 'Admin Image Dialog', ->
 
   describe 'Instance', ->
     before ->
-      @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+      @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
       @dialog.options.url = '/test/fixtures/image_dialog.json'
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'is instance of refinery.Object', ->
       expect( @dialog ).to.be.an.instanceof refinery.Object
@@ -32,12 +32,12 @@ describe 'Admin Image Dialog', ->
   describe 'initialised', ->
 
     before ->
-      @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+      @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
       @dialog.options.url = '/test/fixtures/image_dialog.json'
       @dialog.init()
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'is initialised', ->
       expect( @dialog.is('initialised') ).to.be.true
@@ -49,12 +49,12 @@ describe 'Admin Image Dialog', ->
   describe 'open', ->
 
     before ->
-      @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+      @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
       @dialog.options.url = '/test/fixtures/image_dialog.json'
       @dialog.init().open()
 
     after ->
-      @dialog.destroy(true)
+      @dialog.destroy()
 
     it 'is opened', ->
       expect( @dialog.is('opened') ).to.be.true
@@ -71,7 +71,7 @@ describe 'Admin Image Dialog', ->
     context 'fail', ->
 
       before (done) ->
-        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1337
+        @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1337
         @dialog.init()
 
         @dialog.on 'load', ->
@@ -80,7 +80,7 @@ describe 'Admin Image Dialog', ->
         @dialog.open()
 
       after ->
-        @dialog.destroy(true)
+        @dialog.destroy()
 
       it 'contain info about load fail', ->
         expect( @dialog.holder.text() ).to.have.string 'Dialog content load fail'
@@ -91,7 +91,7 @@ describe 'Admin Image Dialog', ->
 
     context 'success', ->
       before (done) ->
-        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+        @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
         @dialog.options.url = '/test/fixtures/image_dialog.json'
         @dialog.init()
 
@@ -101,7 +101,7 @@ describe 'Admin Image Dialog', ->
         @dialog.open()
 
       after ->
-        @dialog.destroy(true)
+        @dialog.destroy()
 
       it 'is loaded', ->
         expect( @dialog.is('loaded') ).to.be.true
@@ -129,7 +129,7 @@ describe 'Admin Image Dialog', ->
             "large":"/test/fixtures/500x350.jpg",
             "grid":"/test/fixtures/500x350.jpg"
 
-        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+        @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
         @dialog.options.url = '/test/fixtures/image_dialog.json'
         @dialog.init()
 
@@ -145,7 +145,7 @@ describe 'Admin Image Dialog', ->
 
       after ->
         @dialog.close()
-        @dialog.destroy(true)
+        @dialog.destroy()
 
       it 'fires insert event', ->
         expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true
@@ -170,7 +170,7 @@ describe 'Admin Image Dialog', ->
             "large":"/test/fixtures/500x350.jpg",
             "grid":"/test/fixtures/500x350.jpg"
 
-        @dialog = dialog = new refinery.admin.ImageDialog image_id: 1
+        @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
         @dialog.options.url = '/test/fixtures/image_dialog.json'
         @dialog.init()
 
@@ -186,7 +186,7 @@ describe 'Admin Image Dialog', ->
         @dialog.open()
 
       after ->
-        @dialog.destroy(true)
+        @dialog.destroy()
 
       it 'fires insert event', ->
         expect( @insertSpy.called, 'Event insert did not fire.' ).to.be.true

@@ -17,20 +17,15 @@
         /**
          * Initialize Resources Dialog
          */
-        init_dialog: function () {
+        bind_dialog: function (dialog) {
             var that = this;
 
-            /**
-             * refinery.admin.ResourcesDialog
-             */
-            that.dialog = refinery('admin.ResourcesDialog')
-                .init()
-                .on('insert', function (record) {
-                    that.insert(record);
-                    that.dialog.close();
-                });
+            dialog.on('insert', function (record) {
+                that.insert(record);
+                dialog.close();
+            });
 
-            return that.dialog;
+            return dialog;
         },
 
         /**
@@ -41,9 +36,7 @@
          * @return {Object} self
          */
         insert: function (file) {
-            var html;
-
-            html = $('<span/>', {
+            var html = $('<span/>', {
                 'text': file.name + ' - ' + file.size,
                 'class': 'title' + ( ' ' + file.ext || '')
             });
@@ -74,7 +67,12 @@
      */
     refinery.admin.ui.resourcePicker = function (holder, ui) {
         holder.find('.resource-picker').each(function () {
-            ui.addObject( refinery('admin.ResourcePicker').init($(this)) );
+            ui.addObject(
+                refinery('admin.ResourcePicker').init(
+                    $(this),
+                    refinery('admin.ResourcesDialog')
+                )
+            );
         });
     };
 

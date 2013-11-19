@@ -14,7 +14,10 @@
       this.ui = ui;
       return this.container = container;
     });
-    after(function() {});
+    after(function() {
+      this.ui.destroy();
+      return this.container.empty();
+    });
     describe('activate part', function() {
       before(function() {
         $('#page-parts-options').click();

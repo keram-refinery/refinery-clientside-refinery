@@ -75,14 +75,6 @@
                 'autoResize': true
             },
 
-            /**
-             * User Interface component
-             *
-             * @expose
-             * @type {?refinery.Object}
-             */
-            ui: null,
-
             State: DialogState,
 
             /**
@@ -208,11 +200,13 @@
                     });
 
                     xhr.done(function (response, status, xhr) {
+                        var ui_holder;
+
                         if (status === 'success') {
                             holder.empty();
-                            that.ui_holder = $('<div/>').appendTo(holder);
-                            refinery.xhr.success(response, status, xhr, that.ui_holder);
-                            that.ui_change();
+                            ui_holder = $('<div/>').appendTo(holder);
+                            refinery.xhr.success(response, status, xhr, ui_holder);
+                            that.ui_init(ui_holder);
                             that.is('loaded', true);
                         }
                     });
@@ -227,22 +221,24 @@
                 return this;
             },
 
-            ui_change: function () {
-                var that = this;
+            ui_init: function (ui_holder) {
+                var that = this,
+                    ui;
 
-                function ui_change () {
-                    if (that.ui) {
-                        that.ui.destroy();
-                    }
-
-                    that.ui = refinery('admin.UserInterface', {
+                (function ui_change () {
+                    ui = refinery('admin.UserInterface', {
                         'main_content_selector': '.dialog-content-wrapper'
-                    }).init(that.ui_holder);
+                    }).init(ui_holder);
 
-                    that.ui.subscribe('ui:change', ui_change);
-                }
+                    ui.subscribe('ui:change', function () {
+                        ui.destroy();
+                        ui_change();
+                    });
 
-                ui_change();
+                    that.on('destroy', function () {
+                        ui.destroy();
+                    });
+                }());
             },
 
             bind_events: function () {
@@ -331,13 +327,10 @@
              * @return {Object} self
              */
             destroy: function () {
-                if (this.ui) {
-                    this.ui.destroy();
-                    this.ui = null;
-                }
-
-                if (this.holder && this.holder.parent().hasClass('ui-dialog')) {
-                    this.holder.dialog('destroy');
+                if (this.is('initialised')) {
+                    if (this.holder.parent().hasClass('ui-dialog')) {
+                        this.holder.dialog('destroy');
+                    }
                 }
 
                 return this._destroy();
@@ -362,6 +355,7 @@
                     });
 
                     holder.dialog(this.options);
+
                     this.holder = holder;
 
                     this.bind_events();

@@ -14,13 +14,13 @@
     describe('Instance', function() {
       before(function() {
         var dialog;
-        this.dialog = dialog = new refinery.admin.ImageDialog({
+        this.dialog = dialog = refinery('admin.ImageDialog', {
           image_id: 1
         });
         return this.dialog.options.url = '/test/fixtures/image_dialog.json';
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('is instance of refinery.Object', function() {
         return expect(this.dialog).to.be.an["instanceof"](refinery.Object);
@@ -32,14 +32,14 @@
     describe('initialised', function() {
       before(function() {
         var dialog;
-        this.dialog = dialog = new refinery.admin.ImageDialog({
+        this.dialog = dialog = refinery('admin.ImageDialog', {
           image_id: 1
         });
         this.dialog.options.url = '/test/fixtures/image_dialog.json';
         return this.dialog.init();
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('is initialised', function() {
         expect(this.dialog.is('initialised')).to.be["true"];
@@ -52,14 +52,14 @@
     describe('open', function() {
       before(function() {
         var dialog;
-        this.dialog = dialog = new refinery.admin.ImageDialog({
+        this.dialog = dialog = refinery('admin.ImageDialog', {
           image_id: 1
         });
         this.dialog.options.url = '/test/fixtures/image_dialog.json';
         return this.dialog.init().open();
       });
       after(function() {
-        return this.dialog.destroy(true);
+        return this.dialog.destroy();
       });
       it('is opened', function() {
         expect(this.dialog.is('opened')).to.be["true"];
@@ -77,7 +77,7 @@
       context('fail', function() {
         before(function(done) {
           var dialog;
-          this.dialog = dialog = new refinery.admin.ImageDialog({
+          this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1337
           });
           this.dialog.init();
@@ -87,7 +87,7 @@
           return this.dialog.open();
         });
         after(function() {
-          return this.dialog.destroy(true);
+          return this.dialog.destroy();
         });
         it('contain info about load fail', function() {
           return expect(this.dialog.holder.text()).to.have.string('Dialog content load fail');
@@ -99,7 +99,7 @@
       return context('success', function() {
         before(function(done) {
           var dialog;
-          this.dialog = dialog = new refinery.admin.ImageDialog({
+          this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1
           });
           this.dialog.options.url = '/test/fixtures/image_dialog.json';
@@ -110,7 +110,7 @@
           return this.dialog.open();
         });
         after(function() {
-          return this.dialog.destroy(true);
+          return this.dialog.destroy();
         });
         it('is loaded', function() {
           return expect(this.dialog.is('loaded')).to.be["true"];
@@ -141,7 +141,7 @@
               "grid": "/test/fixtures/500x350.jpg"
             }
           };
-          this.dialog = dialog = new refinery.admin.ImageDialog({
+          this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1
           });
           this.dialog.options.url = '/test/fixtures/image_dialog.json';
@@ -158,7 +158,7 @@
         });
         after(function() {
           this.dialog.close();
-          return this.dialog.destroy(true);
+          return this.dialog.destroy();
         });
         it('fires insert event', function() {
           expect(this.insertSpy.called, 'Event insert did not fire.').to.be["true"];
@@ -185,7 +185,7 @@
               "grid": "/test/fixtures/500x350.jpg"
             }
           };
-          this.dialog = dialog = new refinery.admin.ImageDialog({
+          this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1
           });
           this.dialog.options.url = '/test/fixtures/image_dialog.json';
@@ -202,7 +202,7 @@
           return this.dialog.open();
         });
         after(function() {
-          return this.dialog.destroy(true);
+          return this.dialog.destroy();
         });
         it('fires insert event', function() {
           expect(this.insertSpy.called, 'Event insert did not fire.').to.be["true"];

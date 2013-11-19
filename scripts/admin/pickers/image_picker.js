@@ -17,29 +17,27 @@
         /**
          * Initialize Images Dialog
          */
-        init_dialog: function () {
+        bind_dialog: function (dialog) {
             var that = this;
 
             /**
              * refinery.admin.ImagesDialog
              */
-            that.dialog = refinery('admin.ImagesDialog')
-                .init()
-                .on('load', function () {
+            dialog.on('load', function () {
                     /**
                      * Hide url tab as we can insert in picker only images from our library.
                      * When it will be implemented functionality upload external image to server
                      * then this can disappear
                      *
                      */
-                    that.dialog.holder.find('li[aria-controls="external-image-area"]').hide();
+                    dialog.holder.find('li[aria-controls="external-image-area"]').hide();
                 })
                 .on('insert', function (record) {
                     that.insert(record);
-                    that.dialog.close();
+                    dialog.close();
                 });
 
-            return that.dialog;
+            return dialog;
         },
 
         /**
@@ -74,7 +72,12 @@
      */
     refinery.admin.ui.imagePicker = function (holder, ui) {
         holder.find('.image-picker').each(function () {
-            ui.addObject( refinery('admin.ImagePicker').init($(this)) );
+            ui.addObject(
+                refinery('admin.ImagePicker').init(
+                    $(this),
+                    refinery('admin.ImagesDialog')
+                )
+            );
         });
     };
 

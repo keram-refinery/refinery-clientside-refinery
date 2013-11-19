@@ -54,7 +54,8 @@
          * @return {Object} self
          */
         open: function () {
-            this.getDialog().open();
+            this.dialog.init().open();
+
             return this;
         },
 
@@ -66,7 +67,8 @@
          * @return {Object} self
          */
         close: function () {
-            this.getDialog().close();
+            this.dialog.close();
+
             return this;
         },
 
@@ -79,7 +81,6 @@
          * @return {Object} self
          */
         insert: function (record) {
-            refinery.log(record);
             return this;
         },
 
@@ -89,9 +90,7 @@
          * @return {Object} self
          */
         destroy: function () {
-            if (this.dialog) {
-                this.dialog.destroy();
-            }
+            this.dialog.destroy();
 
             return this._destroy();
         },
@@ -126,32 +125,26 @@
         /**
          * Abstract method
          *
-         * abstract
          * @expose
          */
-        init_dialog: function () { },
-
-        /**
-         * Returns dialog, if it doesn't exists yet, create one.
-         *
-         * @expose
-         * @return {refinery.admin.Dialog}
-         */
-        getDialog: function () {
-            return (this.dialog ? this.dialog : this.init_dialog());
+        bind_dialog: function (dialog) {
+            return dialog;
         },
 
         /**
          * Initialization and binding
          *
          * @param {!jQuery} holder
+         * @param {Object} dialog
          *
          * @return {refinery.Object} self
          */
-        init: function (holder) {
+        init: function (holder, dialog) {
             if (this.is('initialisable')) {
                 this.is('initialising', true);
                 this.holder = holder;
+                this.dialog = this.bind_dialog(dialog);
+
                 this.elm_current_record_id = holder.find('.current-record-id');
                 this.elm_record_holder = holder.find('.record-holder');
                 this.elm_no_picked_record = holder.find('.no-picked-record-selected');
