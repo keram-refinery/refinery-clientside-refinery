@@ -13,7 +13,7 @@
   <![endif]-->
 
   <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
   <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
@@ -26,8 +26,8 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
+    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
       </li>
@@ -43,31 +43,31 @@
 
 <div class="container aggregate-stats">
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">64.48</p>
+      <p class="stat">65.25</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">198</p>
+      <p class="stat">192</p>
     </div>
   </div>
   <div class="row historical">
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_maint" class="chart"></p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_sloc" class="chart"></p>
     </div>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">23.33</p>
+      <p class="stat">24.98</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.31</p>
+      <p class="stat">1.27</p>
     </div>
   </div>
 </div>
@@ -77,11 +77,11 @@
     <h2 class="header">Function weight</h2>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
@@ -90,7 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global $, refinery */
+    <textarea id="file-source" class="col-md-12">/*global $, refinery */
 
 (function (refinery) {
 
@@ -113,7 +113,7 @@
          * @return {string} dialog content
          */
         get_dialog_content: function () {
-            var data = this.holder.find(&#039;#page-parts-options&#039;).data(&#039;page-parts&#039;),
+            var data = this.holder.find(&#039;#page_parts-options&#039;).data(&#039;page-parts&#039;),
                 list,
                 part;
 
@@ -144,17 +144,15 @@
         init_configuration_dialog: function () {
             var that = this,
                 holder = that.holder,
-                nav = that.nav,
-                dialog_holder,
-                dialog_buttons = {},
-                parts_tabs = nav.find(&#039;li&#039;);
+                nav = holder.find(&#039;.ui-tabs-nav&#039;),
+                parts_tabs = nav.find(&#039;li&#039;),
+                dialog_holder = $(&#039;&lt;div/&gt;&#039;),
+                dialog_buttons;
 
-            dialog_holder = $(&#039;&lt;div/&gt;&#039;, {
-                html: that.get_dialog_content()
-            });
+            dialog_holder.html( that.get_dialog_content() );
 
             function update_parts () {
-                var list = [], i, l, active_tab;
+                var list = [], i;
 
                 dialog_holder.find(&#039;li&#039;).each(function (j) {
                     var li = $(this),
@@ -188,8 +186,8 @@
                  * Reordeting tabs by parts position
                  *
                  */
-                for (i = 0, l = list.length; i &lt; l; i++) {
-                    nav.append(list[i]);
+                for (i = list.length; i &gt;= 0; i--) {
+                    nav.prepend(list[i]);
                 }
 
                 /**
@@ -197,10 +195,8 @@
                  * will be activated other, first visible tab.
                  */
                 if (nav.find(&#039;.ui-tabs-active&#039;).length === 0) {
-                    active_tab = /** @type {number} */(parts_tabs.index(nav.find(&#039;li:visible&#039;).first()));
-
                     holder.tabs({
-                        &#039;active&#039;: active_tab
+                        &#039;active&#039;: /** @type {number} */(parts_tabs.index(nav.find(&#039;li:visible&#039;).first()))
                     });
                 }
             }
@@ -229,7 +225,7 @@
                 &#039;buttons&#039;: dialog_buttons
             });
 
-            holder.on(&#039;click&#039;, &#039;#page-parts-options&#039;, function (e) {
+            holder.on(&#039;click&#039;, &#039;#page_parts-options&#039;, function (e) {
                 e.preventDefault();
                 dialog_holder.dialog(&#039;open&#039;);
             });
@@ -243,8 +239,6 @@
          */
         destroy: function () {
             if (this.is(&#039;initialised&#039;)) {
-                this.nav = null;
-
                 if (this.dialog_holder) {
                     this.dialog_holder.dialog(&#039;destroy&#039;);
                     this.dialog_holder.off();
@@ -265,8 +259,7 @@
         init: function (holder) {
             if (this.is(&#039;initialisable&#039;)) {
                 this.is(&#039;initialising&#039;, true);
-                this.attach_holder(holder);
-                this.nav = holder.find(&#039;.ui-tabs-nav&#039;);
+                this.holder = holder;
                 this.init_configuration_dialog();
                 this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
                 this.trigger(&#039;init&#039;);
@@ -281,11 +274,12 @@
      *
      * @expose
      * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
      * @return {undefined}
      */
-    refinery.admin.ui.formPageParts = function (holder) {
-        holder.find(&#039;#page-parts&#039;).each(function () {
-            refinery(&#039;admin.FormPageParts&#039;).init($(this));
+    refinery.admin.ui.formPageParts = function (holder, ui) {
+        holder.find(&#039;#page_parts&#039;).each(function () {
+            ui.addObject( refinery(&#039;admin.FormPageParts&#039;).init($(this)) );
         });
     };
 

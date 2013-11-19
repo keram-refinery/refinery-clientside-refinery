@@ -13,7 +13,7 @@
   <![endif]-->
 
   <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
   <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
@@ -26,8 +26,8 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
+    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
       </li>
@@ -43,31 +43,31 @@
 
 <div class="container aggregate-stats">
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">68.41</p>
+      <p class="stat">68.05</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">477</p>
+      <p class="stat">465</p>
     </div>
   </div>
   <div class="row historical">
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_maint" class="chart"></p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_sloc" class="chart"></p>
     </div>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">32.14</p>
+      <p class="stat">33.59</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">3.26</p>
+      <p class="stat">3.17</p>
     </div>
   </div>
 </div>
@@ -77,11 +77,11 @@
     <h2 class="header">Function weight</h2>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
@@ -90,7 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global $, refinery */
+    <textarea id="file-source" class="col-md-12">/*global $, refinery */
 
 (function (refinery) {
 
@@ -240,30 +240,16 @@
             });
         },
 
-        init_pickers: function () {
+        init_locale_picker: function () {
             var that = this,
                 form = that.holder;
 
-            form.find(&#039;.image-picker&#039;).each(function () {
-                var picker = refinery(&#039;admin.ImagePicker&#039;);
-                picker.init($(this));
-            });
-
-            form.find(&#039;.resource-picker&#039;).each(function () {
-                var picker = refinery(&#039;admin.ResourcePicker&#039;);
-                picker.init($(this));
-            });
-
             form.on(&#039;click&#039;, &#039;.locale-picker a&#039;, function (e) {
-                var a = $(this);
-                if (that.initial_values === form.serialize()) {
-                    return true;
+                if (that.initial_values !== form.serialize()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    that.switch_frontend_locale($(this));
                 }
-
-                e.preventDefault();
-                e.stopPropagation();
-                that.switch_frontend_locale(a);
-                return false;
             });
         },
 
@@ -431,10 +417,6 @@
                 return val.split( /,\s*/ );
             }
 
-            function extractLast( term ) {
-                return split( term ).pop();
-            }
-
             /**
              * @todo support for remote source
              * @return {undefined}
@@ -450,7 +432,7 @@
                     options = input.data(&#039;autocomplete&#039;);
 
                 if (options.multiple) {
-                    data = options.source;
+                    data = /** Array */(options.source);
 
                     input.bind( &#039;keydown&#039;, function( event ) {
                         if ( event.keyCode === $.ui.keyCode.TAB &amp;&amp;
@@ -479,8 +461,13 @@
                          * @param {Function} response
                          */
                         source: function ( request, response ) {
-                            response( $.ui.autocomplete.filter(
-                                data, extractLast( request.term ) ) );
+                            var terms = split(request.term),
+                                term = terms.pop(),
+                                filtered_data = data.filter(function (term) {
+                                    return terms.indexOf(term) === -1;
+                                });
+
+                            response( $.ui.autocomplete.filter( filtered_data, term ) );
                         },
 
                         focus: function () {
@@ -539,8 +526,8 @@
 
             if (that.is(&#039;initialisable&#039;)) {
                 that.is(&#039;initialising&#039;, true);
-                that.attach_holder(holder);
-                that.init_pickers();
+                that.holder = holder;
+                that.init_locale_picker();
                 that.init_inputs();
                 that.init_upload();
                 that.init_preview();
@@ -560,11 +547,12 @@
      *
      * @expose
      * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
      * @return {undefined}
      */
-    refinery.admin.ui.form = function (holder) {
+    refinery.admin.ui.form = function (holder, ui) {
         holder.find(&#039;form&#039;).each(function () {
-            refinery(&#039;admin.Form&#039;).init($(this));
+            ui.addObject( refinery(&#039;admin.Form&#039;).init($(this)) );
         });
     };
 

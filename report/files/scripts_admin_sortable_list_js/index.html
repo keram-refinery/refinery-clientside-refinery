@@ -13,7 +13,7 @@
   <![endif]-->
 
   <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
   <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
@@ -26,8 +26,8 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
+    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
       </li>
@@ -43,31 +43,31 @@
 
 <div class="container aggregate-stats">
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">67.45</p>
+      <p class="stat">68.70</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">259</p>
+      <p class="stat">185</p>
     </div>
   </div>
   <div class="row historical">
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_maint" class="chart"></p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_sloc" class="chart"></p>
     </div>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">23.29</p>
+      <p class="stat">19.42</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.50</p>
+      <p class="stat">1.04</p>
     </div>
   </div>
 </div>
@@ -77,11 +77,11 @@
     <h2 class="header">Function weight</h2>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
@@ -90,7 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global $, refinery */
+    <textarea id="file-source" class="col-md-12">/*global $, refinery */
 
 (function (refinery) {
 
@@ -110,7 +110,7 @@
         /**
          * Configurable options
          *
-         * @param {{update_url: ?string, redraw: Boolean, nested_sortable: Object}} options
+         * @param {{nested_sortable: Object}} options
          */
         objectConstructor: function (options, is_prototype) {
             var that = this;
@@ -128,9 +128,7 @@
                  * @return {undefined}
                  */
                 that.options.nested_sortable.stop = function (event, ui) {
-                    if (that.options.update_url) {
-                        that.update(ui.item);
-                    }
+                    that.update(ui.item);
                 };
             }
         },
@@ -145,19 +143,6 @@
          * @type {Object}
          */
         options: {
-
-            /**
-             * @expose
-             * @type {?string}
-             */
-            update_url: null,
-
-            /**
-             * @expose
-             * @type {?boolean}
-             */
-            redraw: true,
-
             /**
              * @expose
              * @type {{items: string, listType: string, maxLevels: number}}
@@ -209,6 +194,7 @@
         update: function (item) {
             var that = this,
                 list = that.holder,
+                update_url = list.data(&#039;update_positions_url&#039;),
                 set = list.nestedSortable(&#039;toArray&#039;),
                 post_data = {
                     &#039;item&#039;: {
@@ -224,7 +210,7 @@
                 list.nestedSortable(&#039;disable&#039;);
                 refinery.spinner.on();
 
-                $.post(that.options.update_url, post_data, function (response, status, xhr) {
+                $.post(update_url, post_data, function (response, status, xhr) {
                     if (status === &#039;error&#039;) {
                         list.html(that.html);
                     } else {
@@ -235,7 +221,7 @@
                     refinery.xhr.success(response, status, xhr, list);
                     that.is(&#039;updated&#039;, true);
                     that.trigger(&#039;update&#039;);
-                }, that.options.redraw ? &#039;JSON&#039; : &#039;HTML&#039;)
+                }, &#039;JSON&#039;)
                     .fail(function (response) {
                         list.html(that.html);
                         refinery.xhr.error(response);
@@ -260,8 +246,9 @@
         init: function (holder) {
             if (this.is(&#039;initialisable&#039;)) {
                 this.is(&#039;initialising&#039;, true);
+
                 holder.nestedSortable(this.options.nested_sortable);
-                this.attach_holder(holder);
+                this.holder = holder;
                 this.set = holder.nestedSortable(&#039;toArray&#039;);
                 this.html = holder.html();
                 this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
@@ -274,81 +261,20 @@
 
 
     /**
-     * Sortable Tree
+     * Sortable list initialization
      *
-     * @constructor
      * @expose
-     * @extends {refinery.admin.SortableList}
-     * @param {Object=} options
-     * @param {boolean=} is_prototype
+     * @param  {jQuery} holder
+     * @param  {refinery.UserInterface} ui
+     * @return {undefined}
      */
-    refinery.Object.create({
-
-        objectConstructor:  function (options, is_prototype) {
-            var that = this;
-
-            refinery.Object.apply(that, arguments);
-
-            if (!is_prototype) {
-
-                /**
-                 *
-                 * @expose
-                 * @param {*} event
-                 * @param {*} ui
-                 *
-                 * @return {undefined}
-                 */
-                that.options.nested_sortable.stop = function (event, ui) {
-                    that.update_tree(ui.item);
-                    if (that.options.update_url) {
-                        that.update(ui.item);
-                    }
-                };
-            }
-        },
-
-        objectPrototype: refinery(&#039;admin.SortableList&#039;, {
-
-            /**
-             * @expose
-             * @type {{items: string, listType: string, maxLevels: number}}
-             */
-            nested_sortable: {
-                &#039;listType&#039;: &#039;ul&#039;,
-                &#039;handle&#039;: &#039;.move&#039;,
-                &#039;items&#039;: &#039;li&#039;,
-                &#039;isAllowed&#039;: function (placeholder, placeholderParent, currentItem) {
-                    if (placeholderParent) {
-                        if (placeholderParent.text() === currentItem.parent().text()) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                },
-                &#039;maxLevels&#039;: 0
-            }
-        }, true),
-
-        name: &#039;SortableTree&#039;,
-
-        update_tree: function (item) {
-            var ul = item.parent();
-
-            this.holder.find(&#039;.toggle&#039;).each(function () {
-                var elm = $(this);
-                if (elm.parent().parent().find(&#039;li&#039;).length === 0) {
-                    elm.removeClass(&#039;toggle expanded&#039;);
-                }
-            });
-
-            if (ul.attr(&#039;id&#039;) !== this.holder.attr(&#039;id&#039;)) {
-                ul.addClass(&#039;nested data-loaded&#039;);
-                ul.parent().find(&#039;.icon&#039;).first().addClass(&#039;toggle expanded&#039;);
-            }
-        }
-    });
+    refinery.admin.ui.sortableList = function (holder, ui) {
+        holder.find(&#039;.sortable-list&#039;).each(function () {
+            ui.addObject(
+                refinery(&#039;admin.SortableList&#039;).init($(this))
+            );
+        });
+    };
 
 }(refinery));</textarea>
   </div>

@@ -13,7 +13,7 @@
   <![endif]-->
 
   <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
   <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
@@ -26,8 +26,8 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
+    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
       </li>
@@ -43,31 +43,31 @@
 
 <div class="container aggregate-stats">
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">70.57</p>
+      <p class="stat">71.49</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">378</p>
+      <p class="stat">370</p>
     </div>
   </div>
   <div class="row historical">
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_maint" class="chart"></p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_sloc" class="chart"></p>
     </div>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">34.44</p>
+      <p class="stat">33.45</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.29</p>
+      <p class="stat">2.21</p>
     </div>
   </div>
 </div>
@@ -77,11 +77,11 @@
     <h2 class="header">Function weight</h2>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
@@ -90,7 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global $, refinery */
+    <textarea id="file-source" class="col-md-12">/*global $, refinery */
 
 (function (refinery) {
 
@@ -166,14 +166,6 @@
                 &#039;autoOpen&#039;: false,
                 &#039;autoResize&#039;: true
             },
-
-            /**
-             * User Interface component
-             *
-             * @expose
-             * @type {?refinery.Object}
-             */
-            ui: null,
 
             State: DialogState,
 
@@ -300,11 +292,13 @@
                     });
 
                     xhr.done(function (response, status, xhr) {
+                        var ui_holder;
+
                         if (status === &#039;success&#039;) {
                             holder.empty();
-                            that.ui_holder = $(&#039;&lt;div/&gt;&#039;).appendTo(holder);
-                            refinery.xhr.success(response, status, xhr, that.ui_holder);
-                            that.ui_change();
+                            ui_holder = $(&#039;&lt;div/&gt;&#039;).appendTo(holder);
+                            refinery.xhr.success(response, status, xhr, ui_holder);
+                            that.ui_init(ui_holder);
                             that.is(&#039;loaded&#039;, true);
                         }
                     });
@@ -319,23 +313,24 @@
                 return this;
             },
 
-            ui_change: function () {
-                var that = this;
+            ui_init: function (ui_holder) {
+                var that = this,
+                    ui;
 
-                function ui_change () {
-                    if (that.ui) {
-                        that.ui.destroy();
-                        that.ui.unsubscribe(&#039;ui:change&#039;, ui_change);
-                    }
-
-                    that.ui = refinery(&#039;admin.UserInterface&#039;, {
+                (function ui_change () {
+                    ui = refinery(&#039;admin.UserInterface&#039;, {
                         &#039;main_content_selector&#039;: &#039;.dialog-content-wrapper&#039;
-                    }).init(that.ui_holder);
+                    }).init(ui_holder);
 
-                    that.ui.subscribe(&#039;ui:change&#039;, ui_change);
-                }
+                    ui.subscribe(&#039;ui:change&#039;, function () {
+                        ui.destroy();
+                        ui_change();
+                    });
 
-                ui_change();
+                    that.on(&#039;destroy&#039;, function () {
+                        ui.destroy();
+                    });
+                }());
             },
 
             bind_events: function () {
@@ -424,14 +419,10 @@
              * @return {Object} self
              */
             destroy: function () {
-                if (this.ui) {
-                    this.ui.destroy();
-                    this.ui.unsubscribe(&#039;ui:change&#039;, this.ui_change);
-                    this.ui = null;
-                }
-
-                if (this.holder &amp;&amp; this.holder.parent().hasClass(&#039;ui-dialog&#039;)) {
-                    this.holder.dialog(&#039;destroy&#039;);
+                if (this.is(&#039;initialised&#039;)) {
+                    if (this.holder.parent().hasClass(&#039;ui-dialog&#039;)) {
+                        this.holder.dialog(&#039;destroy&#039;);
+                    }
                 }
 
                 return this._destroy();
@@ -456,7 +447,8 @@
                     });
 
                     holder.dialog(this.options);
-                    this.attach_holder(holder);
+
+                    this.holder = holder;
 
                     this.bind_events();
                     this.init_buttons();

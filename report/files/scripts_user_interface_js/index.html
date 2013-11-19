@@ -13,7 +13,7 @@
   <![endif]-->
 
   <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
-  <link href="../../assets/css/vendor/bootstrap-3.0.0-wip.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
   <link href="../../assets/css/vendor/font-awesome-ie7.css" rel="stylesheet">
   <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
@@ -26,8 +26,8 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
-    <ul class="nav">
+    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
       </li>
@@ -43,31 +43,31 @@
 
 <div class="container aggregate-stats">
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">67.06</p>
+      <p class="stat">69.62</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">152</p>
+      <p class="stat">282</p>
     </div>
   </div>
   <div class="row historical">
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_maint" class="chart"></p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <p id="chart_historical_sloc" class="chart"></p>
     </div>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">26.22</p>
+      <p class="stat">31.64</p>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">0.75</p>
+      <p class="stat">2.03</p>
     </div>
   </div>
 </div>
@@ -77,11 +77,11 @@
     <h2 class="header">Function weight</h2>
   </div>
   <div class="row">
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
-    <div class="span6">
+    <div class="col-md-6">
       <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
@@ -90,7 +90,7 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="span12">/*global $, refinery */
+    <textarea id="file-source" class="col-md-12">/*global $, refinery */
 
 (function (refinery) {
 
@@ -102,146 +102,276 @@
      * @param {Object=} options
      * @return {refinery.UserInterface}
      */
-    refinery.Object.create({
-
-        name: &#039;UserInterface&#039;,
-
-        options: {
-            /**
-             * When Ajax request receive partial without id,
-             * content of holder.find(main_content_selector) will be replaced.
-             *
-             * @expose
-             * @type {!string}
-             */
-            main_content_selector: &#039;#content&#039;
-        },
-
+    refinery.Object.create(
         /**
-         * Register standard ui events on holder
-         *     - flash message close button
-         *     - ajax response processing
-         *
-         * @return {undefined}
+         * @extends {refinery.Object.prototype}
          */
-        bind_events: function () {
-            var that = this,
-                holder = that.holder;
+        {
+            name: &#039;UserInterface&#039;,
 
-            holder.on(&#039;click&#039;, &#039;.flash-close&#039;, function (e) {
-                e.preventDefault();
-                $(this).parent().fadeOut();
-                return false;
-            });
+            options: {
+
+                /**
+                 * @expose
+                 * @type {Object}
+                 */
+                ui_modules: refinery.ui,
+
+                /**
+                 * When Ajax request receive partial without id,
+                 * content of holder.find(main_content_selector) will be replaced.
+                 *
+                 * @expose
+                 * @type {!string}
+                 */
+                main_content_selector: &#039;#content&#039;
+            },
 
             /**
-             * Process ajax response
+             * @expose
+             * @param  {refinery.Object} object
+             * @return {Object} self
+             */
+            addObject: function (object) {
+                this.objects.push(object);
+
+                return this;
+            },
+
+            /**
+             * Register standard ui events on holder
+             *     - flash message close button
+             *     - ajax response processing
              *
-             * @param  {jQuery.event} event
-             * @param  {json_response} response
-             * @param  {string} status
-             * @param  {jQuery.jqXHR} xhr
              * @return {undefined}
              */
-            function ajax_success (event, response, status, xhr) {
-                var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;),
-                    replace_target = true,
-                    target = event.target;
+            bind_events: function () {
+                var that = this,
+                    holder = that.holder;
 
-                if (response.redirect_to) {
-                    Turbolinks.visit(response.redirect_to);
-                } else {
-                    if (redirected_to || target.tagName.toLowerCase() === &#039;a&#039;) {
-                        target = holder.find(that.options.main_content_selector);
-                        replace_target = false;
-                    } else {
-                        target = $(target);
-                    }
+                holder.on(&#039;click&#039;, &#039;.flash-close&#039;, function (e) {
+                    e.preventDefault();
+                    $(this).parent().fadeOut();
+                    return false;
+                });
 
-                    that.destroy();
-                    refinery.xhr.success(response, status, xhr, target, replace_target);
-                    that.trigger(&#039;ui:change&#039;);
-                }
-            }
-
-            holder.on(&#039;ajax:success&#039;, ajax_success);
-
-            holder.on(&#039;ajax:error&#039;,
                 /**
-                 * @param {jQuery.event} event
-                 * @param {jQuery.jqXHR} xhr
-                 * @param {string} status
+                 * Process ajax response
+                 *
+                 * @param  {jQuery.event} event
+                 * @param  {json_response} response
+                 * @param  {string} status
+                 * @param  {jQuery.jqXHR} xhr
                  * @return {undefined}
                  */
-                function (event, xhr, status) {
-                    refinery.xhr.error(xhr, status);
-                });
-        },
+                function ajax_success (event, response, status, xhr) {
+                    var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;),
+                        replace_target = true,
+                        target = event.target;
 
-        /**
-         * Iterate through refinery.ui namespace
-         * and if found function, call with passed ui holder and self
-         *
-         * @return {undefined}
-         */
-        initialize_elements: function () {
-            var that = this,
-                holder = that.holder,
-                ui = refinery.ui,
-                fnc;
+                    if (response.redirect_to) {
+                        Turbolinks.visit(response.redirect_to);
+                    } else {
+                        if (redirected_to || target.tagName.toLowerCase() === &#039;a&#039;) {
+                            target = holder.find(that.options.main_content_selector);
+                            replace_target = false;
+                        } else {
+                            target = $(target);
+                        }
 
-            for (fnc in ui) {
-                if (ui.hasOwnProperty(fnc) &amp;&amp; typeof ui[fnc] === &#039;function&#039;) {
-                    ui[fnc](holder, that);
+                        that.destroy();
+                        refinery.xhr.success(response, status, xhr, target, replace_target);
+                        that.trigger(&#039;ui:change&#039;);
+                    }
                 }
-            }
-        },
 
-        /**
-         * Destroy self and also all refinery, jquery ui instances under holder
-         *
-         * @return {Object} self
-         */
-        destroy: function () {
-            var holder = this.holder,
-                holders;
+                holder.on(&#039;ajax:success&#039;, ajax_success);
 
-            if (holder) {
-                holders = /** array */(holder.find(&#039;.refinery-instance&#039;));
+                holder.on(&#039;ajax:error&#039;,
+                    /**
+                     * @param {jQuery.event} event
+                     * @param {jQuery.jqXHR} xhr
+                     * @param {string} status
+                     * @return {undefined}
+                     */
+                    function (event, xhr, status) {
+                        refinery.xhr.error(xhr, status);
+                    });
 
-                try {
-                    holders.each(function () {
-                        var instances = $(this).data(&#039;refinery-instances&#039;),
-                            instance;
+                holder.on(&#039;click&#039;, &#039;.tree .toggle&#039;, function (e) {
+                    e.preventDefault();
+                    that.toggle_tree_branch($(this).parents(&#039;li:first&#039;));
+                });
+            },
 
-                        for (var i = instances.length - 1; i &gt;= 0; i--) {
-                            instance = refinery.Object.instances.get(instances[i]);
-                            instance.destroy();
+            toggle_tree_branch: function (li) {
+                var elm = li.find(&#039;.toggle&#039;).first(),
+                    nested = li.find(&#039;.nested&#039;).first();
+
+                if (elm.hasClass(&#039;expanded&#039;)) {
+                    elm.removeClass(&#039;expanded&#039;);
+                    nested.slideUp();
+                } else {
+
+                    if (nested.hasClass(&#039;data-loaded&#039;)) {
+                        elm.addClass(&#039;expanded&#039;);
+                        nested.slideDown();
+                    } else {
+                        li.addClass(&#039;loading&#039;);
+                        nested.load(nested.data(&#039;ajax-content&#039;), function () {
+                            elm.addClass(&#039;expanded&#039;);
+                            nested.slideDown();
+                            li.removeClass(&#039;loading&#039;);
+
+                            if (nested.hasClass(&#039;data-cache&#039;)) {
+                                nested.addClass(&#039;data-loaded&#039;);
+                            }
+                        });
+                    }
+                }
+            },
+
+            /**
+             * Iterate through ui namespace and if found function,
+             * call it with passed ui holder and self
+             *
+             * @expose
+             * @return {undefined}
+             */
+            initialize_modules: function () {
+                var holder = this.holder,
+                    ui = this.options.ui_modules,
+                    fnc;
+
+                for (fnc in ui) {
+                    if (ui.hasOwnProperty(fnc)) {
+                        ui[fnc](holder, this);
+                    }
+                }
+            },
+
+            /**
+             * @return {undefined}
+             */
+            init_jquery_ui_tabs: function () {
+                this.holder.find(&#039;.ui-tabs&#039;).each(function () {
+                    var elm = $(this),
+                        nav_li = elm.find(&#039;.ui-tabs-nav li&#039;),
+                        index_stored = $.cookie(&#039;tab_&#039; + elm.attr(&#039;id&#039;)),
+                        index = elm.find(&#039;.ui-tabs-nav .ui-state-active&#039;).index();
+
+                    if (index_stored &amp;&amp; $(nav_li.get(index_stored)).is(&#039;:visible&#039;)) {
+                        index = index_stored;
+                    } else if (index === -1) {
+                        index = elm.find(&#039;.ui-tabs-nav li:visible&#039;).first().index();
+                    }
+
+                    elm.tabs({
+                        &#039;active&#039;: index,
+                        &#039;activate&#039;: function (event, ui) {
+                            $.cookie(&#039;tab_&#039; + elm.attr(&#039;id&#039;), ui.newTab.index(), {&#039;path&#039;: &#039;/&#039;});
+
+                            ui.newPanel.find(&#039;input.text, textarea&#039;).first().focus();
                         }
                     });
-                } catch (e) {
-                    refinery.log(e);
+                });
+            },
+
+            /**
+             * @return {undefined}
+             */
+            init_jquery_ui_widgets: function () {
+                var holder = this.holder;
+
+                $.each([&#039;selectable&#039;, &#039;sortable&#039;, &#039;accordion&#039;], function (key, val) {
+                    holder.find(&#039;.ui-&#039; + val).each(function () {
+                        var list = $(this);
+
+                        list[val](list.data(&#039;ui-&#039; + val + &#039;-options&#039;));
+                    });
+                });
+
+                this.init_jquery_ui_tabs();
+            },
+
+            init_checkboxes: function () {
+                this.holder.find(&#039;div.checkboxes&#039;).each(function () {
+                    var holder = $(this),
+                        chboxs = holder.find(&#039;input:checkbox&#039;).not(&#039;[readonly]&#039;);
+
+                    if (chboxs.length &gt; 1) {
+                        holder.find(&#039;.checkboxes-cmd.&#039; +
+                                ((chboxs.length === chboxs.filter(&#039;:checked&#039;).length) ? &#039;none&#039; : &#039;all&#039;)
+                        ).removeClass(&#039;hide&#039;);
+                    }
+                });
+
+                this.holder.on(&#039;click&#039;, &#039;.checkboxes-cmd&#039;, function (e) {
+                    e.preventDefault();
+                    var a = $(this),
+                        parent = a.parent(),
+                        checkboxes = parent.find(&#039;input:checkbox&#039;),
+                        checked = a.hasClass(&#039;all&#039;);
+
+                    checkboxes.prop(&#039;checked&#039;, checked);
+                    parent.find(&#039;.checkboxes-cmd&#039;).toggleClass(&#039;hide&#039;);
+                });
+            },
+
+            /**
+             * @return {undefined}
+             */
+            init_toggle_hide: function () {
+                this.holder.on(&#039;click&#039;, &#039;.toggle-hide&#039;, function () {
+                    var elm = $(this);
+                    $(elm.attr(&#039;href&#039;)).toggleClass(&#039;js-hide&#039;);
+                    elm.toggleClass(&#039;toggle-on&#039;);
+                });
+            },
+
+            /**
+             * Destroy self and also all refinery, jquery ui instances under holder
+             *
+             * @return {Object} self
+             */
+            destroy: function () {
+                if (this.is(&#039;initialised&#039;)) {
+                    var o = this.objects.pop();
+
+                    try {
+                        while ( o ) {
+                            o.destroy();
+                            o = this.objects.pop();
+                        }
+                    } catch (e) {
+                        refinery.log(e);
+                        refinery.log(o, this.objects);
+                    }
                 }
+
+                return this._destroy();
+            },
+
+            init: function (holder) {
+                var that = this;
+
+                if (that.is(&#039;initialisable&#039;)) {
+                    that.is(&#039;initialising&#039;, true);
+                    that.holder = holder;
+                    this.objects = [];
+                    that.bind_events();
+                    that.init_jquery_ui_widgets();
+                    that.init_checkboxes();
+                    that.init_toggle_hide();
+
+                    that.initialize_modules();
+                    that.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                    that.trigger(&#039;init&#039;);
+                }
+
+                return that;
             }
-
-            return this._destroy();
-        },
-
-        init: function (holder) {
-            var that = this;
-
-            if (that.is(&#039;initialisable&#039;)) {
-                that.is(&#039;initialising&#039;, true);
-                that.attach_holder(holder);
-                that.bind_events();
-                that.initialize_elements();
-                that.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
-                that.trigger(&#039;init&#039;);
-            }
-
-            return that;
-        }
-    });
+        });
 
 }(refinery));</textarea>
   </div>
