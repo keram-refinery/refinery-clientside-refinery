@@ -14,7 +14,7 @@
          * @param {image_dialog_options} options
          */
         objectConstructor: function (options) {
-            options.url = refinery.admin.backend_path + '/dialogs/image/' + options.image_id;
+            options.url_path = '/dialogs/image/' + options.image_id;
 
             refinery.Object.apply(this, arguments);
         },

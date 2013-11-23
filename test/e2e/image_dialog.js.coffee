@@ -17,7 +17,7 @@ describe 'Admin Image Dialog', ->
   describe 'Instance', ->
     before ->
       @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
-      @dialog.options.url = '/test/fixtures/image_dialog.json'
+      @dialog.options.url_path = '/fixtures/image_dialog.json'
 
     after ->
       @dialog.destroy()
@@ -33,7 +33,7 @@ describe 'Admin Image Dialog', ->
 
     before ->
       @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
-      @dialog.options.url = '/test/fixtures/image_dialog.json'
+      @dialog.options.url_path = '/fixtures/image_dialog.json'
       @dialog.init()
 
     after ->
@@ -50,7 +50,7 @@ describe 'Admin Image Dialog', ->
 
     before ->
       @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
-      @dialog.options.url = '/test/fixtures/image_dialog.json'
+      @dialog.options.url_path = '/fixtures/image_dialog.json'
       @dialog.init().open()
 
     after ->
@@ -92,7 +92,7 @@ describe 'Admin Image Dialog', ->
     context 'success', ->
       before (done) ->
         @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
-        @dialog.options.url = '/test/fixtures/image_dialog.json'
+        @dialog.options.url_path = '/fixtures/image_dialog.json'
         @dialog.init()
 
         @dialog.on 'load', ->
@@ -130,7 +130,7 @@ describe 'Admin Image Dialog', ->
             "grid":"/test/fixtures/500x350.jpg"
 
         @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
-        @dialog.options.url = '/test/fixtures/image_dialog.json'
+        @dialog.options.url_path = '/fixtures/image_dialog.json'
         @dialog.init()
 
         @dialog.on 'load', ->
@@ -171,7 +171,7 @@ describe 'Admin Image Dialog', ->
             "grid":"/test/fixtures/500x350.jpg"
 
         @dialog = dialog = refinery 'admin.ImageDialog', image_id: 1
-        @dialog.options.url = '/test/fixtures/image_dialog.json'
+        @dialog.options.url_path = '/fixtures/image_dialog.json'
         @dialog.init()
 
         @insertSpy = insertSpy = sinon.spy()

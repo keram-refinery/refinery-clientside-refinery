@@ -17,7 +17,7 @@
         this.dialog = dialog = refinery('admin.ImageDialog', {
           image_id: 1
         });
-        return this.dialog.options.url = '/test/fixtures/image_dialog.json';
+        return this.dialog.options.url_path = '/fixtures/image_dialog.json';
       });
       after(function() {
         return this.dialog.destroy();
@@ -35,7 +35,7 @@
         this.dialog = dialog = refinery('admin.ImageDialog', {
           image_id: 1
         });
-        this.dialog.options.url = '/test/fixtures/image_dialog.json';
+        this.dialog.options.url_path = '/fixtures/image_dialog.json';
         return this.dialog.init();
       });
       after(function() {
@@ -55,7 +55,7 @@
         this.dialog = dialog = refinery('admin.ImageDialog', {
           image_id: 1
         });
-        this.dialog.options.url = '/test/fixtures/image_dialog.json';
+        this.dialog.options.url_path = '/fixtures/image_dialog.json';
         return this.dialog.init().open();
       });
       after(function() {
@@ -102,7 +102,7 @@
           this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1
           });
-          this.dialog.options.url = '/test/fixtures/image_dialog.json';
+          this.dialog.options.url_path = '/fixtures/image_dialog.json';
           this.dialog.init();
           this.dialog.on('load', function() {
             return done();
@@ -144,7 +144,7 @@
           this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1
           });
-          this.dialog.options.url = '/test/fixtures/image_dialog.json';
+          this.dialog.options.url_path = '/fixtures/image_dialog.json';
           this.dialog.init();
           this.dialog.on('load', function() {
             dialog.insert(dialog.holder.find('form'));
@@ -188,7 +188,7 @@
           this.dialog = dialog = refinery('admin.ImageDialog', {
             image_id: 1
           });
-          this.dialog.options.url = '/test/fixtures/image_dialog.json';
+          this.dialog.options.url_path = '/fixtures/image_dialog.json';
           this.dialog.init();
           this.insertSpy = insertSpy = sinon.spy();
           this.dialog.on('insert', function(img) {

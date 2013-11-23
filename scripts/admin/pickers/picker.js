@@ -81,7 +81,7 @@
          * @return {Object} self
          */
         insert: function (record) {
-            return this;
+            return record;
         },
 
         /**

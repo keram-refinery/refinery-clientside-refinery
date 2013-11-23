@@ -1,4 +1,4 @@
-refinery.admin.ImagesDialog.prototype.options.url = '/test/fixtures/images_dialog.json'
+refinery.admin.ImagesDialog.prototype.options.url_path = '/fixtures/images_dialog.json'
 
 describe 'Admin Images Dialog', ->
 
@@ -72,7 +72,7 @@ describe 'Admin Images Dialog', ->
 
       before (done) ->
         @dialog = refinery('admin.ImagesDialog', {
-          url: '/some/nonexistant/url'
+          url_path: '/some/nonexistant/url'
         }).init()
 
         @dialog.on 'load', ->
@@ -113,7 +113,7 @@ describe 'Admin Images Dialog', ->
 
       it 'contain images', ->
         expect( @dialog.holder.text() ).to.have.string 'Library'
-        expect( @dialog.holder.text() ).to.have.string 'There are no images yet.'
+        expect( @dialog.holder.find('.image img') ).to.have.length.above 0
 
 
   describe 'tabs', ->

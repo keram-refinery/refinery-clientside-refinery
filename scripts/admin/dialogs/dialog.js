@@ -49,7 +49,7 @@
     /**
      * @constructor
      * @extends {refinery.Object}
-     * @param {{title: string, url: string}=} options
+     * @param {{title: string, url_path: string}=} options
      * @return {refinery.admin.Dialog}
      */
     refinery.Object.create(
@@ -66,9 +66,10 @@
 
                 /**
                  * Url which from will be loaded dialog content via xhr or iframe
+                 * @expose
                  * @type {?string}
                  */
-                'url': null,
+                'url_path': null,
                 'width': 710,
                 'modal': true,
                 'autoOpen': false,
@@ -173,13 +174,9 @@
             load: function () {
                 var that = this,
                     holder = that.holder,
-                    url = that.options.url,
+                    url = refinery.admin.backend_path() + that.options.url_path,
                     locale_input = $('#frontend_locale'),
                     params, xhr;
-
-                if (!url) {
-                    throw new Error('Url isn\'t defined. (' + that.uid + ')');
-                }
 
                 if (that.is('loadable')) {
                     that.is('loading', true);

@@ -11,7 +11,7 @@
     refinery.Object.create({
         objectPrototype: refinery('admin.Dialog', {
             title: t('refinery.admin.images_dialog_title'),
-            url: refinery.admin.backend_path + '/dialogs/images'
+            url_path: '/dialogs/images'
         }, true),
 
         name: 'ImagesDialog',

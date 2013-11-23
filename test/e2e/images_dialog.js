@@ -1,5 +1,5 @@
 (function() {
-  refinery.admin.ImagesDialog.prototype.options.url = '/test/fixtures/images_dialog.json';
+  refinery.admin.ImagesDialog.prototype.options.url_path = '/fixtures/images_dialog.json';
 
   describe('Admin Images Dialog', function() {
     before(function() {
@@ -67,7 +67,7 @@
       context('fail', function() {
         before(function(done) {
           this.dialog = refinery('admin.ImagesDialog', {
-            url: '/some/nonexistant/url'
+            url_path: '/some/nonexistant/url'
           }).init();
           this.dialog.on('load', function() {
             return done();
@@ -105,7 +105,7 @@
         });
         return it('contain images', function() {
           expect(this.dialog.holder.text()).to.have.string('Library');
-          return expect(this.dialog.holder.text()).to.have.string('There are no images yet.');
+          return expect(this.dialog.holder.find('.image img')).to.have.length.above(0);
         });
       });
     });

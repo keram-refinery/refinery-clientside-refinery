@@ -20,12 +20,10 @@
          *
          * @return {string} dialog content
          */
-        get_dialog_content: function () {
-            var data = this.holder.find('#page_parts-options').data('page-parts'),
-                list,
-                part;
+        get_dialog_content: function (data) {
+            var part,
+                list = '<ul class="records">';
 
-            list = '<ul class="records">';
             for (var i = 0, l = data.length; i < l; i++) {
                 part = /** @type {page_part} */(data[i]);
                 list += '<li data-part="' + part.name + '" ' +
@@ -57,7 +55,11 @@
                 dialog_holder = $('<div/>'),
                 dialog_buttons;
 
-            dialog_holder.html( that.get_dialog_content() );
+            dialog_holder.html(
+                that.get_dialog_content(
+                    holder.find('#page_parts-options').data('page-parts')
+                )
+            );
 
             function update_parts () {
                 var list = [], i;
@@ -138,23 +140,10 @@
                 dialog_holder.dialog('open');
             });
 
-            that.dialog_holder = dialog_holder;
-        },
-
-        /**
-         *
-         * @return {Object} self
-         */
-        destroy: function () {
-            if (this.is('initialised')) {
-                if (this.dialog_holder) {
-                    this.dialog_holder.dialog('destroy');
-                    this.dialog_holder.off();
-                    this.dialog_holder = null;
-                }
-            }
-
-            return this._destroy();
+            that.on('destroy', function () {
+                dialog_holder.dialog('destroy');
+                dialog_holder.off();
+            });
         },
 
         /**

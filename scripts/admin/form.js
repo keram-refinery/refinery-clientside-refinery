@@ -16,6 +16,46 @@
 
         module: 'admin',
 
+        absolutize_url: function (url) {
+            var loc = window.location;
+
+            if (/^http(s)?:/.test(url)) {
+                return url;
+            }
+
+            return loc.protocol + '//' + loc.host + url;
+        },
+
+        get_right_url: function(url, redirected_to) {
+            var locale_param, locale_param_re,
+                redirected_url_parts, redirected_locale_param;
+
+            url = this.absolutize_url(url);
+
+            if (redirected_to) {
+                locale_param_re = /^[a-z]{2}(-[a-zA-Z]{2,3})?$/;
+                locale_param = url.split('/')[3];
+                redirected_url_parts = redirected_to.split('/');
+                redirected_locale_param = redirected_url_parts[3];
+
+                if (locale_param_re.test(redirected_locale_param)) {
+                    if (locale_param_re.test(locale_param)) {
+                        redirected_url_parts.splice(3, 1, locale_param);
+                    } else {
+                        redirected_url_parts.splice(3, 1);
+                    }
+                } else {
+                    redirected_url_parts = [].concat(
+                        redirected_url_parts.splice(0, 3), locale_param, redirected_url_parts
+                    );
+                }
+
+                return redirected_url_parts.join('/');
+            }
+
+            return url;
+        },
+
         /**
          * Switch locale
          *
@@ -31,27 +71,14 @@
                 /** @type {jquery_ui_button} */
                 continue_btn,
                 /** @type {jquery_ui_button} */
-                cancel_btn;
+                cancel_btn,
+                dialog;
 
             save_and_continue_btn = {
                 text: t('refinery.admin.form_unsaved_save_and_continue'),
                 'class': 'submit-button',
                 click: function () {
-                    var form = that.holder,
-                        dialog = $(this),
-
-                        /**
-                         * Regexp for test if url contain question mark,
-                         * Example: /something/with?a=1
-                         *
-                         * @type {RegExp}
-                         */
-                        params_re = /\?[^\?]+$/,
-
-                        /**
-                         * @type {string}
-                         */
-                        param = params_re.test(url) ? url.match(params_re)[0] : '';
+                    var form = that.holder;
 
                     /**
                      * Process ajax response
@@ -62,54 +89,14 @@
                      * @return {undefined}
                      */
                     function save_success (response, status, xhr) {
-                        var redirected = xhr.getResponseHeader('X-XHR-Redirected-To'),
-
-                            /**
-                             * @type {RegExp}
-                             */
-                            frontend_locale_param_re = /frontend_locale=[\w\-]+/,
-
-                            url_amendment = frontend_locale_param_re.test(param) ?
-                                                param.match(frontend_locale_param_re)[0] :
-                                                '';
-
                         dialog.dialog('destroy');
 
-                        if (redirected) {
-                            url = redirected;
-
-                            /**
-                             * This is requried in case that user has defined other locale than default.
-                             * In that case this scenario is happen:
-                             *
-                             * POST /refinery/pages/12 // Save request
-                             * 302 Found
-                             *
-                             * GET /refinery/pages/12/edit?frontend_locale=cs // Ok, redirect after save
-                             * 200 OK
-                             *
-                             * GET /refinery/pages/12/edit?frontend_locale=sk // Locale switch request
-                             * 200 OK
-                             */
-                            if (frontend_locale_param_re.test(url)) {
-                                // replace frontend_locale
-                                url = url.replace(
-                                    frontend_locale_param_re,
-                                    url_amendment
-                                );
-                            } else if (params_re.test(url) && url_amendment !== '') {
-                                // append frontend_locale
-                                url = url + '&' + url_amendment;
-                            } else if (url_amendment !== '') {
-                                // include frontend_locale
-                                url = url + '?' + url_amendment;
-                            }
-
-                            Turbolinks.visit(url);
-                        } else if (status === 'error') {
+                        if (status === 'error') {
                             refinery.xhr.success(response, status, xhr, form, true);
                         } else {
-                            Turbolinks.visit(url);
+                            Turbolinks.visit(
+                                that.get_right_url(url, xhr.getResponseHeader('X-XHR-Redirected-To'))
+                            );
                         }
                     }
 
@@ -127,7 +114,7 @@
             continue_btn = {
                 text: t('refinery.admin.form_unsaved_continue'),
                 click: function () {
-                    $(this).dialog('destroy');
+                    dialog.dialog('destroy');
                     Turbolinks.visit(url);
                 }
             };
@@ -135,16 +122,20 @@
             cancel_btn = {
                 text: t('refinery.admin.form_unsaved_cancel'),
                 click: function () {
-                    $(this).dialog('destroy');
+                    dialog.dialog('destroy');
                 }
             };
 
-            $('<div/>', { html: t('refinery.admin.form_unsaved_html')} ).dialog({
+            dialog = $('<div/>', { html: t('refinery.admin.form_unsaved_html')} ).dialog({
                 'resizable': false,
                 'height': 140,
                 'modal': true,
                 'title': t('refinery.admin.form_unsaved_title'),
                 'buttons': [save_and_continue_btn, continue_btn, cancel_btn]
+            });
+
+            that.on('destroy', function () {
+                dialog.dialog('destroy');
             });
         },
 
