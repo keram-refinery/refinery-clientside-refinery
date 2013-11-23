@@ -5,9 +5,9 @@ refinery.admin = {
      * Backend path defined by Refinery::Core.backend_route
      * Default: '/refinery'
      *
-     * @type {string}
+     * @return {string}
      */
-    backend_path: ''
+    backend_path: function () {}
 };
 
 /**

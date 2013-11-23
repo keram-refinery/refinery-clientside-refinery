@@ -1,15 +1,4 @@
 
-/** @typedef {Object} */
-var console = {
-
-  /**
-   * @param  {...*} args
-   */
-  log: function(args) {
-
-  }
-};
-
 var ui;
 
 ui.newPanel = null;
