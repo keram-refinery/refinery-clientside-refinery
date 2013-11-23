@@ -9,8 +9,7 @@ var mountFolder = function (connect, dir) {
 
 // var fs = require('fs');
 var src_path = __dirname;
-var compiler_path = '/home/keram/tools/web/closure-compiler/compiler.jar';
-
+var compiler_path = process.env.CLOSURE_COMPILER_JAR || 'tools/closure-compiler/compiler.jar';
 var build_dir = __dirname + '/lib/assets';
 
 module.exports = function (grunt) {
@@ -108,7 +107,8 @@ module.exports = function (grunt) {
             },
             all: [
                 'Gruntfile.js',
-                'scripts/*/*.js'
+                'scripts/*/*.js',
+                'scripts/**/*.js'
             ]
         },
 
