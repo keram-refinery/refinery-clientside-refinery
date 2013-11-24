@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">65.25</p>
+      <p class="stat">66.12</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">192</p>
+      <p class="stat">181</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">24.98</p>
+      <p class="stat">24.30</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.27</p>
+      <p class="stat">1.19</p>
     </div>
   </div>
 </div>
@@ -112,12 +112,10 @@
          *
          * @return {string} dialog content
          */
-        get_dialog_content: function () {
-            var data = this.holder.find(&#039;#page_parts-options&#039;).data(&#039;page-parts&#039;),
-                list,
-                part;
+        get_dialog_content: function (data) {
+            var part,
+                list = &#039;&lt;ul class=&quot;records&quot;&gt;&#039;;
 
-            list = &#039;&lt;ul class=&quot;records&quot;&gt;&#039;;
             for (var i = 0, l = data.length; i &lt; l; i++) {
                 part = /** @type {page_part} */(data[i]);
                 list += &#039;&lt;li data-part=&quot;&#039; + part.name + &#039;&quot; &#039; +
@@ -149,7 +147,11 @@
                 dialog_holder = $(&#039;&lt;div/&gt;&#039;),
                 dialog_buttons;
 
-            dialog_holder.html( that.get_dialog_content() );
+            dialog_holder.html(
+                that.get_dialog_content(
+                    holder.find(&#039;#page_parts-options&#039;).data(&#039;page-parts&#039;)
+                )
+            );
 
             function update_parts () {
                 var list = [], i;
@@ -230,23 +232,10 @@
                 dialog_holder.dialog(&#039;open&#039;);
             });
 
-            that.dialog_holder = dialog_holder;
-        },
-
-        /**
-         *
-         * @return {Object} self
-         */
-        destroy: function () {
-            if (this.is(&#039;initialised&#039;)) {
-                if (this.dialog_holder) {
-                    this.dialog_holder.dialog(&#039;destroy&#039;);
-                    this.dialog_holder.off();
-                    this.dialog_holder = null;
-                }
-            }
-
-            return this._destroy();
+            that.on(&#039;destroy&#039;, function () {
+                dialog_holder.dialog(&#039;destroy&#039;);
+                dialog_holder.off();
+            });
         },
 
         /**

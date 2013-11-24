@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">71.49</p>
+      <p class="stat">71.81</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">370</p>
+      <p class="stat">367</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">33.45</p>
+      <p class="stat">30.28</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.21</p>
+      <p class="stat">2.19</p>
     </div>
   </div>
 </div>
@@ -141,7 +141,7 @@
     /**
      * @constructor
      * @extends {refinery.Object}
-     * @param {{title: string, url: string}=} options
+     * @param {{title: string, url_path: string}=} options
      * @return {refinery.admin.Dialog}
      */
     refinery.Object.create(
@@ -158,9 +158,10 @@
 
                 /**
                  * Url which from will be loaded dialog content via xhr or iframe
+                 * @expose
                  * @type {?string}
                  */
-                &#039;url&#039;: null,
+                &#039;url_path&#039;: null,
                 &#039;width&#039;: 710,
                 &#039;modal&#039;: true,
                 &#039;autoOpen&#039;: false,
@@ -265,13 +266,9 @@
             load: function () {
                 var that = this,
                     holder = that.holder,
-                    url = that.options.url,
+                    url = refinery.admin.backend_path() + that.options.url_path,
                     locale_input = $(&#039;#frontend_locale&#039;),
                     params, xhr;
-
-                if (!url) {
-                    throw new Error(&#039;Url isn\&#039;t defined. (&#039; + that.uid + &#039;)&#039;);
-                }
 
                 if (that.is(&#039;loadable&#039;)) {
                     that.is(&#039;loading&#039;, true);

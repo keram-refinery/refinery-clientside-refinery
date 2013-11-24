@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">68.05</p>
+      <p class="stat">69.62</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">465</p>
+      <p class="stat">396</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">33.59</p>
+      <p class="stat">30.66</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">3.17</p>
+      <p class="stat">2.79</p>
     </div>
   </div>
 </div>
@@ -117,126 +117,57 @@
          */
         switch_frontend_locale: function (anchor) {
             var that = this,
-                url = anchor.attr(&#039;href&#039;),
                 /** @type {jquery_ui_button} */
                 save_and_continue_btn,
                 /** @type {jquery_ui_button} */
                 continue_btn,
                 /** @type {jquery_ui_button} */
-                cancel_btn;
+                cancel_btn,
+                dialog;
 
             save_and_continue_btn = {
                 text: t(&#039;refinery.admin.form_unsaved_save_and_continue&#039;),
                 &#039;class&#039;: &#039;submit-button&#039;,
                 click: function () {
                     var form = that.holder,
-                        dialog = $(this),
+                        locale = anchor.attr(&#039;class&#039;)
+                                .match(/flag-([a-z]{2}(?:-[a-zA-Z]{2,3})?)?$/)[1];
 
-                        /**
-                         * Regexp for test if url contain question mark,
-                         * Example: /something/with?a=1
-                         *
-                         * @type {RegExp}
-                         */
-                        params_re = /\?[^\?]+$/,
-
-                        /**
-                         * @type {string}
-                         */
-                        param = params_re.test(url) ? url.match(params_re)[0] : &#039;&#039;;
-
-                    /**
-                     * Process ajax response
-                     *
-                     * @param  {json_response} response
-                     * @param  {string} status
-                     * @param  {jQuery.jqXHR} xhr
-                     * @return {undefined}
-                     */
-                    function save_success (response, status, xhr) {
-                        var redirected = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;),
-
-                            /**
-                             * @type {RegExp}
-                             */
-                            frontend_locale_param_re = /frontend_locale=[\w\-]+/,
-
-                            url_amendment = frontend_locale_param_re.test(param) ?
-                                                param.match(frontend_locale_param_re)[0] :
-                                                &#039;&#039;;
-
-                        dialog.dialog(&#039;destroy&#039;);
-
-                        if (redirected) {
-                            url = redirected;
-
-                            /**
-                             * This is requried in case that user has defined other locale than default.
-                             * In that case this scenario is happen:
-                             *
-                             * POST /refinery/pages/12 // Save request
-                             * 302 Found
-                             *
-                             * GET /refinery/pages/12/edit?frontend_locale=cs // Ok, redirect after save
-                             * 200 OK
-                             *
-                             * GET /refinery/pages/12/edit?frontend_locale=sk // Locale switch request
-                             * 200 OK
-                             */
-                            if (frontend_locale_param_re.test(url)) {
-                                // replace frontend_locale
-                                url = url.replace(
-                                    frontend_locale_param_re,
-                                    url_amendment
-                                );
-                            } else if (params_re.test(url) &amp;&amp; url_amendment !== &#039;&#039;) {
-                                // append frontend_locale
-                                url = url + &#039;&amp;&#039; + url_amendment;
-                            } else if (url_amendment !== &#039;&#039;) {
-                                // include frontend_locale
-                                url = url + &#039;?&#039; + url_amendment;
-                            }
-
-                            Turbolinks.visit(url);
-                        } else if (status === &#039;error&#039;) {
-                            refinery.xhr.success(response, status, xhr, form, true);
-                        } else {
-                            Turbolinks.visit(url);
-                        }
-                    }
+                    $(&#039;&lt;input/&gt;&#039;, {
+                        &#039;type&#039;: &#039;hidden&#039;,
+                        &#039;name&#039;: &#039;switch_frontend_locale&#039;,
+                        &#039;value&#039;: locale
+                    }).appendTo(form);
 
                     form.trigger(&#039;before-submit&#039;);
-
-                    $.ajax({
-                        url: form.attr(&#039;action&#039;),
-                        method: form.attr(&#039;method&#039;),
-                        data: form.serialize(),
-                        dataType: &#039;JSON&#039;
-                    }).done(save_success);
+                    form.submit();
                 }
             };
 
             continue_btn = {
                 text: t(&#039;refinery.admin.form_unsaved_continue&#039;),
                 click: function () {
-                    $(this).dialog(&#039;destroy&#039;);
-                    Turbolinks.visit(url);
+                    Turbolinks.visit(anchor.attr(&#039;href&#039;));
                 }
             };
 
             cancel_btn = {
                 text: t(&#039;refinery.admin.form_unsaved_cancel&#039;),
                 click: function () {
-                    $(this).dialog(&#039;destroy&#039;);
+                    dialog.dialog(&#039;close&#039;);
                 }
             };
 
-            $(&#039;&lt;div/&gt;&#039;, { html: t(&#039;refinery.admin.form_unsaved_html&#039;)} ).dialog({
+            dialog = $(&#039;&lt;div/&gt;&#039;, { html: t(&#039;refinery.admin.form_unsaved_html&#039;)} ).dialog({
                 &#039;resizable&#039;: false,
                 &#039;height&#039;: 140,
                 &#039;modal&#039;: true,
                 &#039;title&#039;: t(&#039;refinery.admin.form_unsaved_title&#039;),
                 &#039;buttons&#039;: [save_and_continue_btn, continue_btn, cancel_btn]
+            });
+
+            that.on(&#039;destroy&#039;, function () {
+                dialog.dialog(&#039;destroy&#039;);
             });
         },
 
