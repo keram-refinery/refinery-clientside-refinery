@@ -244,7 +244,6 @@
              */
             destroy: function () {
                 if (this.is('initialised')) {
-
                     try {
                         for (var i = this.objects.length - 1; i >= 0; i--) {
                             this.objects[i].destroy();
@@ -258,23 +257,20 @@
             },
 
             init: function (holder) {
-                var that = this;
-
-                if (that.is('initialisable')) {
-                    that.is('initialising', true);
-                    that.holder = holder;
+                if (this.is('initialisable')) {
+                    this.is('initialising', true);
+                    this.holder = holder;
                     this.objects = [];
-                    that.bind_events();
-                    that.init_jquery_ui_widgets();
-                    that.init_checkboxes();
-                    that.init_toggle_hide();
-
-                    that.initialize_modules();
-                    that.is({'initialised': true, 'initialising': false});
-                    that.trigger('init');
+                    this.bind_events();
+                    this.init_jquery_ui_widgets();
+                    this.init_checkboxes();
+                    this.init_toggle_hide();
+                    this.initialize_modules();
+                    this.is({'initialised': true, 'initialising': false});
+                    this.trigger('init');
                 }
 
-                return that;
+                return this;
             }
         });
 
