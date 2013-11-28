@@ -12,8 +12,6 @@ form {
 }
 
 .form-title {
-    float: left;
-    max-width: 70%;
 }
 
 .form-title h1 {
@@ -54,6 +52,11 @@ form {
 
 .form-actions .button:first-child {
     margin-left: 0px;
+}
+
+.form-title .meta-informations {
+    float: right;
+    text-align: right;
 }
 
 .field {
