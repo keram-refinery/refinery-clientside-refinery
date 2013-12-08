@@ -131,7 +131,7 @@ module.exports = function (grunt) {
         },
 
         assetUrl: {
-            css: {
+            styles: {
                 files: [{
                     expand: true,
                     dot: true,
