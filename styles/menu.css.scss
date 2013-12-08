@@ -1,4 +1,4 @@
-#menu a {
+#menu > a {
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGAQMAAADaAn0LAAAAA1BMVEX///+nxBvIAAAAAXRSTlMz/za5cAAAAAtJREFUCJljYEAAAAAMAAFkR911AAAAAElFTkSuQmCC);
     color: #fff;
     display: block;
@@ -17,19 +17,19 @@
     border-radius: 5px 5px 0 0;
 }
 
-#menu a:hover,
-#menu a:focus {
+#menu > a:hover,
+#menu > a:focus {
     background-color: #fff;
     color: #41403C;
 }
 
-#menu a.selected {
+#menu > a.selected {
     margin-top: 0;
     padding: 9px 13px;
 }
 
-#menu a.selected,
-#menu a:active {
+#menu > a.selected,
+#menu > a:active {
     background-color: #fff;
     color: #FF5500;
 }

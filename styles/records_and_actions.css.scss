@@ -52,10 +52,6 @@
     background-color: #22A7F2;
 }
 
-.actions .move {
-
-}
-
 a.move:active {
     cursor: move;
     background: none;
@@ -67,7 +63,7 @@ a.move:active {
     top: -1px;
 }
 
-.tree li ul {
+.tree li > ul {
     margin-left: 15px;
 }
 
@@ -116,7 +112,7 @@ a.move:active {
     margin: 0px;
 }
 
-.image-grid li {
+.image-grid > li {
     float: left;
     padding: 0px;
     margin: 0 4px 8px;
@@ -131,16 +127,16 @@ a.move:active {
     padding-bottom: 3px;
 }
 
-#records .image-grid li {
+#records .image-grid > li {
     margin: 0 6px 12px 6px;
 }
 
-.image-grid .image img {
+.image-grid .image > img {
     max-width: 100%;
 }
 
 .image-grid .image,
-.image img {
+.image > img {
     display: block;
     margin: auto;
     border: none;
@@ -191,7 +187,7 @@ a.move:active {
     margin-bottom: 10px;
 }
 
-#actions a {
+#actions li a {
     background-color: #DBEDFF;
     background-position: 12px center;
     border: 1px solid #65C3F7;
@@ -200,7 +196,7 @@ a.move:active {
     padding: 9px 12px 9px 12px;
 }
 
-#actions .active a {
+#actions .active > a {
     font-weight: bold;
 }
 

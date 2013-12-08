@@ -4,8 +4,8 @@
     margin-bottom: 10px;
 }
 
-.pagination a,
-.pagination em,
+.pagination > a,
+.pagination > em,
 .pagination .current,
 .pagination .disabled {
     text-decoration: none;
@@ -13,9 +13,9 @@
     display: inline-block;
 }
 
-.pagination a:hover,
-.pagination a:focus,
-.pagination em,
+.pagination > a:hover,
+.pagination > a:focus,
+.pagination > em,
 .pagination .current {
     background: #A8B9C1;
 }
