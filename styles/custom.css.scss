@@ -9,14 +9,13 @@
 }
 
 #image-size {
-
     margin: 2em 0;
 
     li {
         float: left;
         list-style: none;
-        margin: 0px 18px 0px 0px;
-        text-align:center;
+        margin: 0 18px 0 0;
+        text-align: center;
     }
 
     a {
@@ -26,8 +25,8 @@
     }
 
     .ui-selected a {
-        border-color: #22A7F2;
-        background: #22A7F2;
+        border-color: #22a7f2;
+        background: #22a7f2;
         color: #fff;
         font-weight: bold;
     }
@@ -37,10 +36,10 @@
     padding-right: 2em;
 }
 
-#image-dialog-size-0 a { height: 70px; width: 70px; line-height: 70px; margin-top:-10px; border-style: dashed;}
-#image-dialog-size-1 a { height: 50px; width: 50px; line-height: 50px; margin-top:  0px; }
-#image-dialog-size-2 a { height: 70px; width: 70px; line-height: 70px; margin-top:-10px; }
-#image-dialog-size-3 a { height: 90px; width: 90px; line-height: 90px; margin-top:-20px; }
+#image-dialog-size-0 a { height: 70px; width: 70px; line-height: 70px; margin-top: -10px; border-style: dashed;}
+#image-dialog-size-1 a { height: 50px; width: 50px; line-height: 50px; margin-top: 0; }
+#image-dialog-size-2 a { height: 70px; width: 70px; line-height: 70px; margin-top: -10px; }
+#image-dialog-size-3 a { height: 90px; width: 90px; line-height: 90px; margin-top: -20px; }
 
 #refinery-cms-logo {
     height: 29px;
@@ -60,24 +59,24 @@
     opacity: 1;
 }
 
-#refinery-cms-logo:active  {
+#refinery-cms-logo:active {
     background-position: 50% -29px;
 }
 
 .wysiwyg-editor-holder,
 .wysiwyg-editor-on textarea {
-  display: none;
+    display: none;
 }
 
 .wysiwyg-editor-on .wysiwyg-editor-holder {
-  display: block;
-  min-height: 400px;
+    display: block;
+    min-height: 400px;
 }
 
 .wysiwyg-toggle-button {
-  float: right;
-  position: relative;
-  top: 5px;
+    float: right;
+    position: relative;
+    top: 5px;
 }
 
 .translation_missing {
@@ -89,7 +88,7 @@
  * and we want to know about that
  */
 [title="<span class="]:before {
-    content: 'I18n:'
+    content: 'I18n:';
 }
 
 [title="<span class="] {

@@ -16,7 +16,7 @@
 }
 
 .records:not(.tree) li:nth-child(2n - 1) {
-    background-color: #EAEAEA;
+    background-color: #eaeaea;
 }
 
 .records .detail,
@@ -45,11 +45,11 @@
 
 .actions a:hover,
 .actions a:focus {
-    background-color: #65C3F7;
+    background-color: #65c3f7;
 }
 
 .actions a:active {
-    background-color: #22A7F2;
+    background-color: #22a7f2;
 }
 
 a.move:active {
@@ -90,12 +90,12 @@ a.move:active {
 }
 
 .tree .row:hover {
-    background-color: #C9DAE2;
+    background-color: #c9dae2;
 }
 
 .title.icon-small {
     background-image: asset-url('refinery/icons/page.png');
-    background-position: 0px 50%;
+    background-position: 0 50%;
     text-indent: 20px;
 
     &.toggle {
@@ -109,18 +109,18 @@ a.move:active {
 }
 
 .image-grid {
-    margin: 0px;
+    margin: 0;
 }
 
 .image-grid > li {
     float: left;
-    padding: 0px;
+    padding: 0;
     margin: 0 4px 8px;
     max-height: 165px;
     overflow: hidden;
     position: relative;
     text-align: center;
-    background: #f7f7f7
+    background: #f7f7f7;
 }
 
 .image-grid .actions {
@@ -128,7 +128,7 @@ a.move:active {
 }
 
 #records .image-grid > li {
-    margin: 0 6px 12px 6px;
+    margin: 0 6px 12px;
 }
 
 .image-grid .image > img {
@@ -149,7 +149,7 @@ a.move:active {
 
 .image-grid .image:hover,
 .image-grid .image:focus {
-    border-color: #22A7F2;
+    border-color: #22a7f2;
 }
 
 .image-grid li:active .image {
@@ -158,23 +158,23 @@ a.move:active {
 
 .image-grid .ui-selected,
 .image-grid .ui-selected:hover {
-    outline: solid 2px #22A7F2;
+    outline: solid 2px #22a7f2;
 }
 
 .image-grid .ui-selected .image {
-    border-color: #22A7F2;
+    border-color: #22a7f2;
 }
 
 .records:not(.tree) li:hover {
-    background-color: #C9DAE2;
+    background-color: #c9dae2;
 }
 
 .records:not(.image-grid) .ui-selected,
 .records:not(.image-grid) .ui-selected:hover,
 .records:not(.tree) .ui-selected:nth-child(2n-1) {
-    background-color: #E0F5E0;
-    outline: solid 1px #00A017;
-    color: #00A017;
+    background-color: #e0f5e0;
+    outline: solid 1px #00a017;
+    color: #00a017;
 }
 
 #actions {
@@ -188,12 +188,12 @@ a.move:active {
 }
 
 #actions li a {
-    background-color: #DBEDFF;
+    background-color: #dbedff;
     background-position: 12px center;
-    border: 1px solid #65C3F7;
+    border: 1px solid #65c3f7;
     display: block;
     height: 100%;
-    padding: 9px 12px 9px 12px;
+    padding: 9px 12px;
 }
 
 #actions .active > a {
@@ -205,7 +205,7 @@ a.move:active {
 }
 
 #actions a:active {
-    background-color: #22A7F2;
+    background-color: #22a7f2;
     color: #fff;
 }
 

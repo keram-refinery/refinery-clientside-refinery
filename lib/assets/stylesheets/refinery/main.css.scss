@@ -14,8 +14,8 @@
 
 /* semantic classes */
 .label {
-    background-color: #BFBFBF;
-    border-radius: 3px 3px 3px 3px;
+    background-color: #bfbfbf;
+    border-radius: 3px;
     color: #fff;
     font-size: 9.75px;
     font-weight: bold;
@@ -27,19 +27,19 @@
 }
 
 .label.important {
-  background-color: #c43c35;
+    background-color: #c43c35;
 }
 
 .label.warning {
-  background-color: #f89406;
+    background-color: #f89406;
 }
 
 .label.success {
-  background-color: #46a546;
+    background-color: #46a546;
 }
 
 .label.notice {
-  background-color: #62cffc;
+    background-color: #62cffc;
 }
 
 .hide,
@@ -61,7 +61,7 @@
 }
 
 .preview {
-    color: #A3A093;
+    color: #a3a093;
 }
 
 .note {
@@ -76,25 +76,24 @@
     position: relative;
     background-repeat: no-repeat;
     background-position: 7px 10px;
-    background-color: #C7E9FC;
-    border: 1px solid #738F9C;
+    background-color: #c7e9fc;
+    border: 1px solid #738f9c;
     background-image: asset-url('refinery/icons/information.png');
     clear: both;
 }
 
 .flash-success,
 .flash-message {
-    border-color: #00A017;
-    color: #00A017;
-    background-color: #E0F5E0;
-    background-image: asset-url('refinery/icons/accept.png') ;
+    border-color: #00a017;
+    color: #00a017;
+    background-color: #e0f5e0;
+    background-image: asset-url('refinery/icons/accept.png');
 }
 
 .error-explanation {
-    background: 7px 12px no-repeat asset-url('refinery/icons/cancel.png') #FFB1B1;
+    background: 7px 12px no-repeat asset-url('refinery/icons/cancel.png') #ffb1b1;
     padding: 10px 5px 5px 30px;
     font-weight: bold;
-    margin-bottom: 5px;
     border: 1px solid #f00;
     border-top-width: 3px;
     margin-bottom: 20px;
@@ -106,10 +105,10 @@
 
 .flash-error,
 .flash-alert {
-    border-color: #A00027;
-    color: #A00027;
+    border-color: #a00027;
+    color: #a00027;
     background-image: asset-url('refinery/icons/cancel.png');
-    background-color: #FFBEBE;
+    background-color: #ffbebe;
 }
 
 .flash-close {
@@ -148,8 +147,8 @@ article, nav, header, footer, aside, section {
 }
 
 body, h1, h2, h3, h4, ul, ol, li, p {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 ul {
@@ -173,7 +172,7 @@ body {
     font-family: Arial, sans-serif;
     font-size: 14px;
     line-height: 150%;
-    color: #41403C;
+    color: #41403c;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpJREFUeNpiFBFlY0ACv3//RuaysrLikWVioACMah7VPKp5VDPlmgECDADXyAZIrAp8FwAAAABJRU5ErkJggg==);
     background-color: #303030;
 }
@@ -183,7 +182,7 @@ p, ol, ul {
 }
 
 li ul {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 acronym {
@@ -206,7 +205,7 @@ h3 {
 }
 
 li a {
-    color: #41403C;
+    color: #41403c;
     text-decoration: none;
 }
 
@@ -220,7 +219,7 @@ th {
 
 /* basic layout */
 #header-wrapper {
-    padding: 15px 20px 0px;
+    padding: 15px 20px 0;
     position: relative;
 }
 
@@ -248,10 +247,10 @@ span.help {
     padding: 6px 8px;
     position: absolute;
     bottom: 16px;
-    left: 0px;
+    left: 0;
     width: 260px;
     min-height: 20px;
-    text-indent: 0px;
+    text-indent: 0;
     background: #22a7f2;
     border: solid 1px #1b82bd;
     color: #fff;
@@ -260,8 +259,8 @@ span.help {
 }
 
 .help:hover .text {
-  display: block;
-  z-index: 1001;
+    display: block;
+    z-index: 1001;
 }
 
 .spinner {
@@ -280,7 +279,7 @@ span.help {
         background-position: 50% center;
         background-repeat: no-repeat;
         border: 1px solid #fafafa;
-        border-radius: 3px 3px 3px 3px;
+        border-radius: 3px;
         box-shadow: 0 0 5px #ccc;
         height: 42px;
         left: 40%;
