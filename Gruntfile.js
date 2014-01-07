@@ -81,6 +81,18 @@ module.exports = function (grunt) {
                     }
                 }
             },
+            test: {
+                options: {
+                    //keepalive: false,
+                    middleware: function (connect, options) {
+                        return [
+                            mountFolder(connect, '.'),
+                            mountFolder(connect, '.tmp'),
+                            connect.directory(options.base)
+                        ];
+                    }
+                }
+            },
             rails: {
                 options: {
                     keepalive: false,
@@ -113,9 +125,15 @@ module.exports = function (grunt) {
         },
 
         mocha: {
-            options: {
-                run: true,
-                ignoreLeaks: false
+            all: {
+                options: {
+                    run: true,
+                    urls: [
+                        'http://localhost:<%= connect.options.port %>/test/unit/devel.html',
+                        'http://localhost:<%= connect.options.port %>/test/unit/minified.html',
+                        'http://localhost:<%= connect.options.port %>/test/e2e/minified.html'
+                    ]
+                }
             }
         },
 
@@ -309,6 +327,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'jshint',
+        'concurrent:test',
+        'connect:test',
         'mocha'
     ]);
 
