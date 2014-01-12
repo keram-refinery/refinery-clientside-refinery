@@ -12,6 +12,11 @@
      *
      */
     if (typeof Turbolinks === 'undefined') {
+       /**
+        * Turbolinks
+        * @expose
+        * @type {Object}
+        */
         window.Turbolinks = {
             /**
              * Change document.location.href to passed url
