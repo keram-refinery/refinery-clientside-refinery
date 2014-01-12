@@ -1,5 +1,3 @@
-require 'jquery-ui-rails'
-
 module Refinery
   module Clientside
     class Engine < ::Rails::Engine
@@ -37,10 +35,6 @@ module Refinery
             Refinery::Core.config.register_admin_I18n_javascript locale, "refinery/i18n/admin/admin-#{locale}.js"
           end
         end
-      end
-
-      initializer 'register stylesheets' do
-        # Refinery::Core.config.register_admin_stylesheet 'vendor/jquery-ui.min'
       end
 
     end

@@ -13,6 +13,4 @@ Gem::Specification.new do |s|
 
   s.files             = `git ls-files -- lib/*`.split("\n")
   s.require_paths     = %w(lib)
-
-  s.add_dependency 'jquery-ui-rails', '~> 4.1.0'
 end

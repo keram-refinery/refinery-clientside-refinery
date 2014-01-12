@@ -30,19 +30,12 @@
                 recipient = /** @type {string} */(email_input.val()),
                 subject = /** @type {string} */(subject_input.val()),
                 body = /** @type {string} */(body_input.val()),
-                modifier = '?',
-                additional = '';
+                url = '';
 
             if (recipient) {
-                if (subject.length > 0) {
-                    additional += modifier + 'subject=' + encodeURIComponent(subject);
-                    modifier = '&';
-                }
-
-                if (body.length > 0) {
-                    additional += modifier + 'body=' + encodeURIComponent(body);
-                    modifier = '&';
-                }
+                url = 'mailto:' + encodeURIComponent(recipient) +
+                        '?subject=' + encodeURIComponent(subject) +
+                        '&body=' + encodeURIComponent(body)
 
                 email_input.val('');
                 subject_input.val('');
@@ -51,7 +44,7 @@
                 return {
                     type: 'email',
                     title: recipient,
-                    url: 'mailto:' + encodeURIComponent(recipient) + additional
+                    url: url
                 };
             }
         },

@@ -196,16 +196,14 @@
                         }));
                     });
 
-                    xhr.done(function (response, status, xhr) {
-                        var ui_holder;
+                    xhr.done(function (response) {
+                        var ui_holder = $('<div/>');
 
-                        if (status === 'success') {
-                            holder.empty();
-                            ui_holder = $('<div/>').appendTo(holder);
-                            refinery.xhr.success(response, status, xhr, ui_holder);
-                            that.ui_init(ui_holder);
-                            that.is('loaded', true);
-                        }
+                        holder.empty();
+                        ui_holder.appendTo(holder);
+                        refinery.xhr.success(response, ui_holder);
+                        that.ui_init(ui_holder);
+                        that.is('loaded', true);
                     });
 
                     xhr.always(function () {

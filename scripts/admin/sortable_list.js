@@ -126,7 +126,10 @@
                         that.html = list.html();
                     }
 
-                    refinery.xhr.success(response, status, xhr, list);
+                    refinery.xhr.success(
+                        response,
+                        list,
+                        xhr.getResponseHeader('X-XHR-Redirected-To'));
                     that.is('updated', true);
                     that.trigger('update');
                 }, 'JSON')

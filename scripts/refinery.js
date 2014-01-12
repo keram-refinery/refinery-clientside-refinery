@@ -12,11 +12,11 @@
      *
      */
     if (typeof Turbolinks === 'undefined') {
-       /**
-        * Turbolinks
-        * @expose
-        * @type {Object}
-        */
+        /**
+         * Turbolinks
+         * @expose
+         * @type {Object}
+         */
         window.Turbolinks = {
             /**
              * Change document.location.href to passed url
@@ -245,14 +245,14 @@
          *
          * @expose
          * @param {Object|string} html
-         * @param {jQuery=} holder
+         * @param {jQuery} holder
          * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
         processHtml: function (html, holder, replaceHolder) {
             for (var i = html.length - 1; i >= 0; i--) {
-                if (typeof html[i] === 'string' && holder.length > 0) {
+                if (typeof html[i] === 'string') {
                     if (replaceHolder) {
                         holder.replaceWith(html[i]);
                     } else {
@@ -322,16 +322,13 @@
         /**
          *
          * @param {json_response} response
-         * @param {string} status
-         * @param {jQuery.jqXHR} xhr
-         * @param {jQuery=} holder
+         * @param {jQuery} holder
+         * @param {string=} redirectedTo
          * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
-        success: function (response, status, xhr, holder, replaceHolder) {
-            var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To');
-
+        success: function (response, holder, redirectedTo, replaceHolder) {
             if (response.html) {
                 refinery.xhr.processHtml(response.html, holder, replaceHolder);
             }
@@ -340,12 +337,12 @@
                 refinery.xhr.processMessage(response.message);
             }
 
-            if (redirected_to) {
+            if (redirectedTo) {
                 window.history.pushState({
                     'refinery': true,
-                    'url': redirected_to,
+                    'url': redirectedTo,
                     'prev_url': document.location.href
-                }, '', redirected_to);
+                }, '', redirectedTo);
             }
         }
     };
