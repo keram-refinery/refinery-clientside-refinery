@@ -37,11 +37,15 @@
 .image-edit-icon { background-image: asset-url('refinery/icons/image_edit.png'); }
 .image-delete-icon { background-image: asset-url('refinery/icons/image_delete.png'); }
 .file-add-icon { background-image: asset-url('refinery/icons/page_white_add.png'); }
+.toggle-icon { background-image: asset-url('refinery/icons/arrow_down.png'); }
+.toggle-icon.toggle-on { background-image: asset-url('refinery/icons/arrow_up.png'); }
+.search-icon { background-image: asset-url('refinery/icons/zoom.png'); }
+.reset-icon { background-image: asset-url('refinery/icons/bullet_cross.png'); }
 
 .icon-small {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     overflow: hidden;
     white-space: nowrap;
     text-indent: 200%;
