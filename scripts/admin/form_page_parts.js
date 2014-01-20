@@ -64,7 +64,7 @@
             function update_parts () {
                 var list = [], i;
 
-                dialog_holder.find('li').each(function (j) {
+                dialog_holder.find('li').each(function (index) {
                     var li = $(this),
                         part = /** @type string */(li.data('part')),
                         active = li.find('input').is(':checked'),
@@ -81,7 +81,7 @@
                     }
 
                     panel.find('input.part-active').prop('checked', active);
-                    panel.find('input.part-position').val(j);
+                    panel.find('input.part-position').val(index + '');
 
                     /**
                      * If title part exist is not showed in tabs, but
