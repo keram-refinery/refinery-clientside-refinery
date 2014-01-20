@@ -66,6 +66,13 @@ function $(arg1, arg2) {}
 jQuery.prototype.add = function(arg1, context) {};
 
 /**
+ * @param {(jQuerySelector|Array.<Element>|string|jQuery)} arg1
+ * @return {!jQuery}
+ * @nosideeffects
+ */
+jQuery.prototype.addBack = function(arg1) {};
+
+/**
  * @param {(string|function(number,String))} arg1
  * @return {!jQuery}
  */
@@ -269,7 +276,7 @@ jQuery.prototype.appendTo = function(target) {};
 
 /**
  * @param {(string|Object.<string,*>)} arg1
- * @param {(string|number|function(number,string))=} arg2
+ * @param {(string|number|boolean|function(number,string))=} arg2
  * @return {(string|!jQuery)}
  */
 jQuery.prototype.attr = function(arg1, arg2) {};
@@ -896,7 +903,7 @@ $.fx.off;
  * @param {string} url
  * @param {(Object.<string,*>|string|
  *     function(string,string,jQuery.jqXHR))=} data
- * @param {(function(string,string,jQuery.jqXHR)|string)=} success
+ * @param {(function((string|Object),string,jQuery.jqXHR)|null)=} success
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
@@ -913,7 +920,7 @@ jQuery.prototype.get = function(index) {};
  * @param {string} url
  * @param {(Object.<string,*>|string|
  *     function(string,string,jQuery.jqXHR))=} data
- * @param {(function(string,string,jQuery.jqXHR)|string)=} success
+ * @param {(function((string|Object),string,jQuery.jqXHR)|null)=} success
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
@@ -1240,6 +1247,7 @@ jQuery.jqXHR.prototype.fail = function(failCallbacks) {};
 jQuery.jqXHR.prototype.onreadystatechange = function (callback) {};
 
 /**
+ * @override
  * @param {function()=} doneFilter
  * @param {function()=} failFilter
  * @param {function()=} progressFilter
@@ -1599,7 +1607,7 @@ jQuery.prototype.position = function() {};
  * @param {string} url
  * @param {(Object.<string,*>|string|
  *     function(string,string,jQuery.jqXHR))=} data
- * @param {(function(string,string,jQuery.jqXHR)|string)=} success
+ * @param {(function((string|Object),string,jQuery.jqXHR)|null)=} success
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
@@ -1609,7 +1617,7 @@ jQuery.post = function(url, data, success, dataType) {};
  * @param {string} url
  * @param {(Object.<string,*>|string|
  *     function(string,string,jQuery.jqXHR))=} data
- * @param {(function(string,string,jQuery.jqXHR)|string)=} success
+ * @param {(function((string|Object),string,jQuery.jqXHR)|null)=} success
  * @param {string=} dataType
  * @return {jQuery.jqXHR}
  */
@@ -1889,28 +1897,31 @@ jQuery.prototype.size = function() {};
 jQuery.prototype.slice = function(start, end) {};
 
 /**
- * @param {(string|number|function())=} duration
- * @param {(function()|string)=} arg2
- * @param {function()=} callback
+ * @param {(Object.<string,*>|string|number)=} optionsOrDuration
+ * @param {(function()|string)=} completeOrEasing
+ * @param {function()=} complete
  * @return {!jQuery}
  */
-jQuery.prototype.slideDown = function(duration, arg2, callback) {};
+jQuery.prototype.slideDown =
+    function(optionsOrDuration, completeOrEasing, complete) {};
 
 /**
- * @param {(string|number|function())=} duration
- * @param {(function()|string)=} arg2
- * @param {function()=} callback
+ * @param {(Object.<string,*>|string|number)=} optionsOrDuration
+ * @param {(function()|string)=} completeOrEasing
+ * @param {function()=} complete
  * @return {!jQuery}
  */
-jQuery.prototype.slideToggle = function(duration, arg2, callback) {};
+jQuery.prototype.slideToggle =
+    function(optionsOrDuration, completeOrEasing, complete) {};
 
 /**
- * @param {(string|number|function())=} duration
- * @param {(function()|string)=} arg2
- * @param {function()=} callback
+ * @param {(Object.<string,*>|string|number)=} optionsOrDuration
+ * @param {(function()|string)=} completeOrEasing
+ * @param {function()=} complete
  * @return {!jQuery}
  */
-jQuery.prototype.slideUp = function(duration, arg2, callback) {};
+jQuery.prototype.slideUp =
+    function(optionsOrDuration, completeOrEasing, complete) {};
 
 /**
  * @param {(boolean|string)=} arg1
@@ -1944,6 +1955,12 @@ jQuery.support.changeBubbles;
 
 /** @type {boolean} */
 $.support.changeBubbles;
+
+/** @type {boolean} */
+jQuery.support.cors;
+
+/** @type {boolean} */
+$.support.cors;
 
 /** @type {boolean} */
 jQuery.support.cssFloat;
@@ -2048,7 +2065,7 @@ jQuery.prototype.toggleClass = function(arg1, flag) {};
 jQuery.prototype.trigger = function(arg1, var_args) {};
 
 /**
- * @param {string} eventType
+ * @param {string|jQuery.event} eventType
  * @param {Array.<*>=} extraParameters
  * @return {*}
  */
@@ -2121,7 +2138,7 @@ jQuery.prototype.unload = function(arg1, handler) {};
 jQuery.prototype.unwrap = function() {};
 
 /**
- * @param {(string|number|Array.<string>|function(number,*))=} arg1
+ * @param {(string|Array.<string>|function(number,*))=} arg1
  * @return {(string|number|Array.<string>|!jQuery)}
  */
 jQuery.prototype.val = function(arg1) {};
