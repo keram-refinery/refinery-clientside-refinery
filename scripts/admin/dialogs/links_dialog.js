@@ -35,7 +35,7 @@
             if (recipient) {
                 url = 'mailto:' + encodeURIComponent(recipient) +
                         '?subject=' + encodeURIComponent(subject) +
-                        '&body=' + encodeURIComponent(body)
+                        '&body=' + encodeURIComponent(body);
 
                 email_input.val('');
                 subject_input.val('');
