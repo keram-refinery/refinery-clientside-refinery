@@ -118,21 +118,22 @@
                 list.nestedSortable('disable');
                 refinery.spinner.on();
 
-                $.post(update_url, post_data, function (response, status, xhr) {
-                    if (status === 'error') {
-                        list.html(that.html);
-                    } else {
-                        that.set = set;
-                        that.html = list.html();
-                    }
+                $.post(update_url, post_data, null, 'JSON')
+                    .done(function (response, status, xhr) {
+                        if (status === 'error') {
+                            list.html(that.html);
+                        } else {
+                            that.set = set;
+                            that.html = list.html();
+                        }
 
-                    refinery.xhr.success(
-                        response,
-                        list,
-                        xhr.getResponseHeader('X-XHR-Redirected-To'));
-                    that.is('updated', true);
-                    that.trigger('update');
-                }, 'JSON')
+                        refinery.xhr.success(
+                            response,
+                            list,
+                            xhr.getResponseHeader('X-XHR-Redirected-To'));
+                        that.is('updated', true);
+                        that.trigger('update');
+                    })
                     .fail(function (response) {
                         list.html(that.html);
                         refinery.xhr.error(response);
