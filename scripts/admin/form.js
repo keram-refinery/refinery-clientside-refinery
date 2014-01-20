@@ -274,7 +274,7 @@
                     data = /** Array */(options.source);
 
                     input.bind( 'keydown', function( event ) {
-                        if ( event.keyCode === $.ui.keyCode.TAB &&
+                        if ( event.which === $.ui.keyCode.TAB &&
                                 $( this ).data('ui-autocomplete').menu.active ) {
                             event.preventDefault();
                         }
