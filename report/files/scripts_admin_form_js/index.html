@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">69.62</p>
+      <p class="stat">69.71</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">396</p>
+      <p class="stat">394</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">30.66</p>
+      <p class="stat">30.41</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.79</p>
+      <p class="stat">2.78</p>
     </div>
   </div>
 </div>
@@ -366,7 +366,7 @@
                     data = /** Array */(options.source);
 
                     input.bind( &#039;keydown&#039;, function( event ) {
-                        if ( event.keyCode === $.ui.keyCode.TAB &amp;&amp;
+                        if ( event.which === $.ui.keyCode.TAB &amp;&amp;
                                 $( this ).data(&#039;ui-autocomplete&#039;).menu.active ) {
                             event.preventDefault();
                         }
@@ -453,23 +453,21 @@
          * @return {Object} self
          */
         init: function (holder) {
-            var that = this;
+            if (this.is(&#039;initialisable&#039;)) {
+                this.is(&#039;initialising&#039;, true);
+                this.holder = holder;
+                this.init_locale_picker();
+                this.init_inputs();
+                this.init_upload();
+                this.init_preview();
+                this.initial_values = holder.serialize();
+                this.init_fly_form_actions();
 
-            if (that.is(&#039;initialisable&#039;)) {
-                that.is(&#039;initialising&#039;, true);
-                that.holder = holder;
-                that.init_locale_picker();
-                that.init_inputs();
-                that.init_upload();
-                that.init_preview();
-                that.initial_values = holder.serialize();
-                that.init_fly_form_actions();
-
-                that.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
-                that.trigger(&#039;init&#039;);
+                this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                this.trigger(&#039;init&#039;);
             }
 
-            return that;
+            return this;
         }
     });
 

@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">68.99</p>
+      <p class="stat">69.23</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">444</p>
+      <p class="stat">446</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">38.26</p>
+      <p class="stat">36.66</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.80</p>
+      <p class="stat">1.76</p>
     </div>
   </div>
 </div>
@@ -104,6 +104,11 @@
      *
      */
     if (typeof Turbolinks === &#039;undefined&#039;) {
+        /**
+         * Turbolinks
+         * @expose
+         * @type {Object}
+         */
         window.Turbolinks = {
             /**
              * Change document.location.href to passed url
@@ -332,14 +337,14 @@
          *
          * @expose
          * @param {Object|string} html
-         * @param {jQuery=} holder
+         * @param {jQuery} holder
          * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
         processHtml: function (html, holder, replaceHolder) {
             for (var i = html.length - 1; i &gt;= 0; i--) {
-                if (typeof html[i] === &#039;string&#039; &amp;&amp; holder.length &gt; 0) {
+                if (typeof html[i] === &#039;string&#039;) {
                     if (replaceHolder) {
                         holder.replaceWith(html[i]);
                     } else {
@@ -409,16 +414,13 @@
         /**
          *
          * @param {json_response} response
-         * @param {string} status
-         * @param {jQuery.jqXHR} xhr
-         * @param {jQuery=} holder
+         * @param {jQuery} holder
+         * @param {string=} redirectedTo
          * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
-        success: function (response, status, xhr, holder, replaceHolder) {
-            var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
-
+        success: function (response, holder, redirectedTo, replaceHolder) {
             if (response.html) {
                 refinery.xhr.processHtml(response.html, holder, replaceHolder);
             }
@@ -427,12 +429,12 @@
                 refinery.xhr.processMessage(response.message);
             }
 
-            if (redirected_to) {
+            if (redirectedTo) {
                 window.history.pushState({
                     &#039;refinery&#039;: true,
-                    &#039;url&#039;: redirected_to,
+                    &#039;url&#039;: redirectedTo,
                     &#039;prev_url&#039;: document.location.href
-                }, &#039;&#039;, redirected_to);
+                }, &#039;&#039;, redirectedTo);
             }
         }
     };

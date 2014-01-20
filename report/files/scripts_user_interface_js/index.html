@@ -45,11 +45,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">69.75</p>
+      <p class="stat">70.61</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">279</p>
+      <p class="stat">271</p>
     </div>
   </div>
   <div class="row historical">
@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">36.08</p>
+      <p class="stat">34.26</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">2.02</p>
+      <p class="stat">1.93</p>
     </div>
   </div>
 </div>
@@ -147,7 +147,9 @@
              */
             bind_events: function () {
                 var that = this,
-                    holder = that.holder;
+                    holder = that.holder,
+                    target = holder.find(that.options.main_content_selector);
+
 
                 holder.on(&#039;click&#039;, &#039;.flash-close&#039;, function (e) {
                     e.preventDefault();
@@ -165,22 +167,16 @@
                  * @return {undefined}
                  */
                 function ajax_success (event, response, status, xhr) {
-                    var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;),
-                        replace_target = true,
-                        target = event.target;
-
                     if (response.redirect_to) {
                         Turbolinks.visit(response.redirect_to);
                     } else {
-                        if (redirected_to || target.tagName.toLowerCase() === &#039;a&#039;) {
-                            target = holder.find(that.options.main_content_selector);
-                            replace_target = false;
-                        } else {
-                            target = $(target);
-                        }
-
                         that.destroy();
-                        refinery.xhr.success(response, status, xhr, target, replace_target);
+
+                        refinery.xhr.success(
+                            response,
+                            target,
+                            xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;));
+
                         that.trigger(&#039;ui:change&#039;);
                     }
                 }
@@ -310,7 +306,7 @@
                     e.preventDefault();
                     var a = $(this),
                         parent = a.parent(),
-                        checkboxes = parent.find(&#039;input:checkbox&#039;),
+                        checkboxes = parent.find(&#039;input:checkbox&#039;).not(&#039;[readonly]&#039;),
                         checked = a.hasClass(&#039;all&#039;);
 
                     checkboxes.prop(&#039;checked&#039;, checked);
@@ -336,7 +332,6 @@
              */
             destroy: function () {
                 if (this.is(&#039;initialised&#039;)) {
-
                     try {
                         for (var i = this.objects.length - 1; i &gt;= 0; i--) {
                             this.objects[i].destroy();
@@ -350,23 +345,20 @@
             },
 
             init: function (holder) {
-                var that = this;
-
-                if (that.is(&#039;initialisable&#039;)) {
-                    that.is(&#039;initialising&#039;, true);
-                    that.holder = holder;
+                if (this.is(&#039;initialisable&#039;)) {
+                    this.is(&#039;initialising&#039;, true);
+                    this.holder = holder;
                     this.objects = [];
-                    that.bind_events();
-                    that.init_jquery_ui_widgets();
-                    that.init_checkboxes();
-                    that.init_toggle_hide();
-
-                    that.initialize_modules();
-                    that.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
-                    that.trigger(&#039;init&#039;);
+                    this.bind_events();
+                    this.init_jquery_ui_widgets();
+                    this.init_checkboxes();
+                    this.init_toggle_hide();
+                    this.initialize_modules();
+                    this.is({&#039;initialised&#039;: true, &#039;initialising&#039;: false});
+                    this.trigger(&#039;init&#039;);
                 }
 
-                return that;
+                return this;
             }
         });
 
