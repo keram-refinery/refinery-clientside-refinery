@@ -1,30 +1,46 @@
 (function() {
   describe('PageParts', function() {
     before(function(done) {
-      var container, ui;
+      var container, page_parts;
       container = $('#container');
-      ui = new refinery.UserInterface({
-        ui_modules: refinery.admin.ui
-      });
+      page_parts = refinery('admin.FormPageParts');
       $.get('/test/fixtures/page_new_parts_default.html', function(response) {
         container.html(response);
-        ui.init(container);
+        page_parts.init($('#page_parts'));
         return done();
       });
-      this.ui = ui;
+      this.page_parts = page_parts;
       return this.container = container;
     });
     after(function() {
-      this.ui.destroy();
+      this.page_parts.destroy();
       return this.container.empty();
     });
+    describe('open close dialog', function() {
+      it('has openable dialog', function() {
+        $('#page_parts-options').click();
+        return expect($('.ui-dialog').is(':visible')).to.be["true"];
+      });
+      it('has openable dialog', function() {
+        $('#page_parts-options').click();
+        $('.ui-dialog-titlebar-close').click();
+        return expect($('.ui-dialog').is(':visible')).to.be["false"];
+      });
+      return after(function() {
+        return $('.ui-dialog-titlebar-close').click();
+      });
+    });
     describe('activate part', function() {
-      before(function() {
-        $('#page-parts-options').click();
-        $('.ui-dialog li[data-part="perex"] label').first().click();
-        return $('.ui-dialog .ui-dialog-buttonset button').click();
+      before(function(done) {
+        $('#page_parts-options').click();
+        $('.ui-dialog li[data-part="perex"] input').prop('checked', true);
+        $('.ui-dialog .ui-dialog-buttonset button').click();
+        return done();
       });
       after(function(done) {
+        $('#page_parts-options').click();
+        $('.ui-dialog li[data-part="perex"] input').prop('checked', false);
+        $('.ui-dialog .ui-dialog-buttonset button').click();
         return done();
       });
       return it('show perex tab', function() {
@@ -32,14 +48,17 @@
       });
     });
     describe('deactivate part', function() {
-      before(function() {
+      before(function(done) {
         $('#page-parts-options').click();
-        $('.ui-dialog li[data-part="body"] label').first().click();
-        return $('.ui-dialog .ui-dialog-buttonset button').click();
+        $('.ui-dialog li[data-part="body"] input').prop('checked', false);
+        $('.ui-dialog li[data-part="perex"] input').prop('checked', true);
+        $('.ui-dialog .ui-dialog-buttonset button').click();
+        return done();
       });
       after(function() {
         $('#page-parts-options').click();
-        $('.ui-dialog li label').get(1).click();
+        $('.ui-dialog li[data-part="body"] input').prop('checked', true);
+        $('.ui-dialog li[data-part="perex"] input').prop('checked', false);
         return $('.ui-dialog .ui-dialog-buttonset button').click();
       });
       it('hide body tab', function() {
@@ -55,11 +74,6 @@
         $('#page-parts-options').click();
         body_li = $($('.ui-dialog li[data-part="body"]')).detach();
         $('.ui-dialog .records').append(body_li);
-        return $('.ui-dialog .ui-dialog-buttonset button').click();
-      });
-      after(function() {
-        $('#page-parts-options').click();
-        $('.ui-dialog li label').get(1).click();
         return $('.ui-dialog .ui-dialog-buttonset button').click();
       });
       return it('move body tab to end of list', function() {

@@ -1,45 +1,60 @@
 describe 'PageParts', ->
-
   before (done) ->
     container = $('#container')
-    ui = new refinery.UserInterface({ ui_modules: refinery.admin.ui });
-    $.get('/test/fixtures/page_new_parts_default.html', (response) ->
+    page_parts = refinery('admin.FormPageParts')
+    $.get '/test/fixtures/page_new_parts_default.html', (response) ->
       container.html(response)
-      ui.init(container)
+      page_parts.init($('#page_parts'))
       done()
-    )
 
-    @ui = ui
+    @page_parts = page_parts
     @container = container
 
   after ->
-    @ui.destroy()
+    @page_parts.destroy()
     @container.empty()
 
+  describe 'open close dialog', ->
+    it 'has openable dialog', ->
+      $('#page_parts-options').click()
+      expect( $('.ui-dialog').is(':visible') ).to.be.true
+
+    it 'has openable dialog', ->
+      $('#page_parts-options').click()
+      $('.ui-dialog-titlebar-close').click()
+      expect( $('.ui-dialog').is(':visible') ).to.be.false
+
+    after ->
+      $('.ui-dialog-titlebar-close').click()
+
   describe 'activate part', ->
-    before ->
-      $('#page-parts-options').click()
-      $('.ui-dialog li[data-part="perex"] label').first().click()
+    before (done) ->
+      $('#page_parts-options').click()
+      $('.ui-dialog li[data-part="perex"] input').prop('checked', true)
       $('.ui-dialog .ui-dialog-buttonset button').click()
+      done()
 
     after (done) ->
-      #$('#page-parts-options').click()
-      #$('.ui-dialog li[data-part="perex"] label').first().click()
-      #$('.ui-dialog .ui-dialog-buttonset button').click()
+      $('#page_parts-options').click()
+      $('.ui-dialog li[data-part="perex"] input').prop('checked', false)
+      $('.ui-dialog .ui-dialog-buttonset button').click()
       done()
 
     it 'show perex tab', ->
       expect( $('.ui-tabs-nav li[aria-controls="page_part_perex"]').hasClass('js-hide') ).to.be.false
 
   describe 'deactivate part', ->
-    before ->
+    before (done) ->
       $('#page-parts-options').click()
-      $('.ui-dialog li[data-part="body"] label').first().click()
+      $('.ui-dialog li[data-part="body"] input').prop('checked', false)
+      $('.ui-dialog li[data-part="perex"] input').prop('checked', true)
       $('.ui-dialog .ui-dialog-buttonset button').click()
+      done()
 
     after ->
       $('#page-parts-options').click()
-      $('.ui-dialog li label').get(1).click()
+      $('.ui-dialog li[data-part="body"] input').prop('checked', true)
+      $('.ui-dialog li[data-part="perex"] input').prop('checked', false)
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     it 'hide body tab', ->
@@ -53,11 +68,6 @@ describe 'PageParts', ->
       $('#page-parts-options').click()
       body_li = $($('.ui-dialog li[data-part="body"]')).detach()
       $('.ui-dialog .records').append(body_li)
-      $('.ui-dialog .ui-dialog-buttonset button').click()
-
-    after ->
-      $('#page-parts-options').click()
-      $('.ui-dialog li label').get(1).click()
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     it 'move body tab to end of list', ->
