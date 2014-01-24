@@ -83,6 +83,7 @@ module.exports = function (grunt) {
             },
             test: {
                 options: {
+                    port: 9001,
                     //keepalive: false,
                     middleware: function (connect, options) {
                         return [
@@ -129,9 +130,9 @@ module.exports = function (grunt) {
                 options: {
                     run: true,
                     urls: [
-                        'http://localhost:<%= connect.options.port %>/test/unit/devel.html',
-                        'http://localhost:<%= connect.options.port %>/test/unit/minified.html',
-                        'http://localhost:<%= connect.options.port %>/test/e2e/minified.html'
+                        'http://localhost:9001/test/unit/devel.html',
+                        'http://localhost:9001/test/unit/minified.html',
+                        'http://localhost:9001/test/e2e/minified.html'
                     ]
                 }
             }
