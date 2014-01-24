@@ -1,0 +1,10 @@
+linters:
+  Indentation:
+    enabled: true
+    width: 4
+  SortedProperties:
+    enabled: false
+  LeadingZero:
+    enabled: false
+  BorderZero:
+    enabled: false
