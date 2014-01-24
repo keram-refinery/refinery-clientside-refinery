@@ -44,7 +44,7 @@
         return done();
       });
       return it('show perex tab', function() {
-        return expect($('.ui-tabs-nav li[aria-controls="page_part_perex"]').hasClass('js-hide')).to.be["false"];
+        return expect(this.container.find('.ui-tabs-nav li[aria-controls="page_part_perex"]').hasClass('js-hide')).to.be["false"];
       });
     });
     describe('deactivate part', function() {
@@ -62,10 +62,10 @@
         return $('.ui-dialog .ui-dialog-buttonset button').click();
       });
       it('hide body tab', function() {
-        return expect($('.ui-tabs-nav li[aria-controls="page_part_body"]').hasClass('js-hide')).to.be["true"];
+        return expect(this.container.find('.ui-tabs-nav li[aria-controls="page_part_body"]').hasClass('js-hide')).to.be["true"];
       });
       return it('activate another tab', function() {
-        return expect($('.ui-tabs-nav .ui-tabs-active').hasClass('js-hide')).to.be["false"];
+        return expect(this.container.find('.ui-tabs-nav .ui-tabs-active').hasClass('js-hide')).to.be["false"];
       });
     });
     return describe('reorder parts', function() {
@@ -77,7 +77,7 @@
         return $('.ui-dialog .ui-dialog-buttonset button').click();
       });
       return it('move body tab to end of list', function() {
-        return expect($('.ui-tabs-nav a').last().attr('href')).to.be.eq($('.ui-tabs-nav a[href="#page_part_body"]').attr('href'));
+        return expect(this.container.find('.ui-tabs-nav a').last().attr('href')).to.be.eq(this.container.find('.ui-tabs-nav a[href="#page_part_body"]').attr('href'));
       });
     });
   });

@@ -3,7 +3,9 @@
     before(function() {
       return this.container = $('#container');
     });
-    after(function() {});
+    after(function() {
+      return this.container.empty();
+    });
     describe('Class', function() {
       after(function() {});
       return it('is instantiable object (with constructor)', function() {
@@ -70,7 +72,7 @@
         return expect(this.dialog.is('closable')).to.be["true"];
       });
       return it('has title Image', function() {
-        return expect($('.ui-dialog-title').text()).to.be.equal('Image');
+        return expect($('.ui-dialog-title').first().text()).to.be.equal('Image');
       });
     });
     describe('load', function() {

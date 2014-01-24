@@ -4,7 +4,7 @@ describe 'Admin Image Dialog', ->
     @container = $('#container')
 
   after ->
-    # @container.empty()
+    @container.empty()
 
   describe 'Class', ->
     after ->
@@ -65,7 +65,7 @@ describe 'Admin Image Dialog', ->
       expect( @dialog.is('closable') ).to.be.true
 
     it 'has title Image', ->
-      expect( $('.ui-dialog-title').text() ).to.be.equal 'Image'
+      expect( $('.ui-dialog-title').first().text() ).to.be.equal 'Image'
 
   describe 'load', ->
     context 'fail', ->

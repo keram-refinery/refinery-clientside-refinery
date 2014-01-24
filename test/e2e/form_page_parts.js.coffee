@@ -41,7 +41,7 @@ describe 'PageParts', ->
       done()
 
     it 'show perex tab', ->
-      expect( $('.ui-tabs-nav li[aria-controls="page_part_perex"]').hasClass('js-hide') ).to.be.false
+      expect( @container.find('.ui-tabs-nav li[aria-controls="page_part_perex"]').hasClass('js-hide') ).to.be.false
 
   describe 'deactivate part', ->
     before (done) ->
@@ -58,10 +58,10 @@ describe 'PageParts', ->
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     it 'hide body tab', ->
-      expect( $('.ui-tabs-nav li[aria-controls="page_part_body"]').hasClass('js-hide') ).to.be.true
+      expect( @container.find('.ui-tabs-nav li[aria-controls="page_part_body"]').hasClass('js-hide') ).to.be.true
 
     it 'activate another tab', ->
-      expect( $('.ui-tabs-nav .ui-tabs-active').hasClass('js-hide') ).to.be.false
+      expect( @container.find('.ui-tabs-nav .ui-tabs-active').hasClass('js-hide') ).to.be.false
 
   describe 'reorder parts', ->
     before ->
@@ -71,6 +71,6 @@ describe 'PageParts', ->
       $('.ui-dialog .ui-dialog-buttonset button').click()
 
     it 'move body tab to end of list', ->
-      expect( $('.ui-tabs-nav a').last().attr('href') ).to.be.eq(
-        $('.ui-tabs-nav a[href="#page_part_body"]').attr('href')
+      expect( @container.find('.ui-tabs-nav a').last().attr('href') ).to.be.eq(
+        @container.find('.ui-tabs-nav a[href="#page_part_body"]').attr('href')
       )
