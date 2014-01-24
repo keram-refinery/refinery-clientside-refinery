@@ -323,9 +323,7 @@
              */
             destroy: function () {
                 if (this.is('initialised')) {
-                    if (this.holder.parent().hasClass('ui-dialog')) {
-                        this.holder.dialog('destroy');
-                    }
+                    this.holder.dialog('destroy');
                 }
 
                 return this._destroy();
