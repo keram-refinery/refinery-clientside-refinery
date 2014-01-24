@@ -1,7 +1,7 @@
 .clearfix:before,
 .clearfix:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+    content: ' ';
+    display: table;
 }
 
 .clearfix:after {
@@ -12,7 +12,7 @@
     *zoom: 1;
 }
 
-/* semantic classes */
+// semantic classes */
 .label {
     background-color: #bfbfbf;
     border-radius: 3px;
@@ -69,7 +69,7 @@
     font-size: small;
 }
 
-/* flash messages */
+// flash messages */
 .flash {
     padding: 8px 8px 8px 30px;
     margin-bottom: 20px;
@@ -141,7 +141,7 @@
     width: 37%;
 }
 
-/* content formatting and layout */
+// content formatting and layout */
 article, nav, header, footer, aside, section {
     display: block;
 }
@@ -173,11 +173,13 @@ body {
     font-size: 14px;
     line-height: 150%;
     color: #41403c;
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpJREFUeNpiFBFlY0ACv3//RuaysrLikWVioACMah7VPKp5VDPlmgECDADXyAZIrAp8FwAAAABJRU5ErkJggg==);
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpJREFUeNpiFBFlY0ACv3//RuaysrLikWVioACMah7VPKp5VDPlmgECDADXyAZIrAp8FwAAAABJRU5ErkJggg==');
     background-color: #303030;
 }
 
-p, ol, ul {
+p,
+ol,
+ul {
     margin-bottom: 20px;
 }
 
@@ -217,7 +219,7 @@ th {
     text-align: left;
 }
 
-/* basic layout */
+// basic layout */
 #header-wrapper {
     padding: 10px 20px 0;
     position: relative;

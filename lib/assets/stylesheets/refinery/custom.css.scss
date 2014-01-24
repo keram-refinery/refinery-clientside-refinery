@@ -83,10 +83,9 @@
     color: #f00;
 }
 
-/**
- * If is missing translation in html attribute it may broke dom,
- * and we want to know about that
- */
+
+// If is missing translation in html attribute it may broke dom,
+// and we want to know about that
 [title="<span class="]:before {
     content: 'I18n:';
 }
