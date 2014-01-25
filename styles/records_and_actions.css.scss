@@ -165,6 +165,16 @@ a.move:active {
     border-color: #22a7f2;
 }
 
+.detail .image {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 6px 0 0;
+}
+
+.detail .image > img {
+    vertical-align: middle;
+}
+
 .records:not(.tree) li:hover {
     background-color: #c9dae2;
 }
