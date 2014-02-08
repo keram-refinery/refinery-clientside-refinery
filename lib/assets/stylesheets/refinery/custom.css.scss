@@ -83,7 +83,6 @@
     color: #f00;
 }
 
-
 // If is missing translation in html attribute it may broke dom,
 // and we want to know about that
 [title="<span class="]:before {
@@ -92,4 +91,8 @@
 
 [title="<span class="] {
     outline: dashed 1px #f00 !important;
+}
+
+.ui-tabs .page-tab {
+    border-top: solid 10px #808080;
 }
