@@ -199,7 +199,7 @@
                     xhr.done(function (response, status, xhr) {
                         var ui_holder = $('<div/>');
                         holder.html(ui_holder);
-                        refinery.xhr.process(response, xhr, ui_holder);
+                        refinery.xhr.success(response, xhr, ui_holder);
                         that.ui_init(ui_holder);
                         that.is('loaded', true);
                     });

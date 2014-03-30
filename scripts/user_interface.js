@@ -83,7 +83,7 @@
                      */
                     function (event, response, status, xhr) {
                         that.destroy();
-                        rxhr.process(response, xhr, target);
+                        rxhr.success(response, xhr, target);
                         that.trigger('ui:change');
                     });
 

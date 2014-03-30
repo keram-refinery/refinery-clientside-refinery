@@ -151,13 +151,12 @@ refinery.xhr = {
     /**
      *
      * @param {json_response} response
+     * @param {jQuery.jqXHR} xhr
      * @param {jQuery} holder
-     * @param {string=} redirectedTo
-     * @param {boolean=} replaceHolder
      *
      * @return {undefined}
      */
-    success: function (response, holder, redirectedTo, replaceHolder) { }
+    success: function (response, xhr, holder) { }
 };
 
 /**

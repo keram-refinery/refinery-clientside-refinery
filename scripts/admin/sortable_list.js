@@ -127,7 +127,7 @@
                             that.store_list(set);
                         }
 
-                        refinery.xhr.process(response, xhr, list);
+                        refinery.xhr.success(response, xhr, list);
 
                         that.is('updated', true);
                         that.trigger('update');
