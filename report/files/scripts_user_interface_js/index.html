@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Plato - scripts/user_interface.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -26,7 +26,7 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
     <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
@@ -44,12 +44,12 @@
 <div class="container aggregate-stats">
   <div class="row">
     <div class="col-md-6">
-      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">70.61</p>
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">70.74</p>
     </div>
     <div class="col-md-6">
-      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">271</p>
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">273</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,12 +62,12 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">34.26</p>
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">34.74</p>
     </div>
     <div class="col-md-6">
-      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.93</p>
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.90</p>
     </div>
   </div>
 </div>
@@ -78,11 +78,11 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
     <div class="col-md-6">
-      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
   </div>
@@ -147,41 +147,37 @@
              */
             bind_events: function () {
                 var that = this,
+                    rxhr = refinery.xhr,
                     holder = that.holder,
                     target = holder.find(that.options.main_content_selector);
 
 
-                holder.on(&#039;click&#039;, &#039;.flash-close&#039;, function (e) {
-                    e.preventDefault();
-                    $(this).parent().fadeOut();
-                    return false;
-                });
+                holder.on(&#039;click&#039;, &#039;.flash-close&#039;,
+                    /**
+                     * @param  {jQuery.event} event
+                     * @return {boolean} false
+                     */
+                    function (event) {
+                        event.preventDefault();
+                        $(this).parent().fadeOut();
+                        return false;
+                    });
 
-                /**
-                 * Process ajax response
-                 *
-                 * @param  {jQuery.event} event
-                 * @param  {json_response} response
-                 * @param  {string} status
-                 * @param  {jQuery.jqXHR} xhr
-                 * @return {undefined}
-                 */
-                function ajax_success (event, response, status, xhr) {
-                    if (response.redirect_to) {
-                        Turbolinks.visit(response.redirect_to);
-                    } else {
+                holder.on(&#039;ajax:success&#039;,
+                    /**
+                     * Process ajax response
+                     *
+                     * @param  {jQuery.event} event
+                     * @param  {json_response} response
+                     * @param  {string} status
+                     * @param  {jQuery.jqXHR} xhr
+                     * @return {undefined}
+                     */
+                    function (event, response, status, xhr) {
                         that.destroy();
-
-                        refinery.xhr.success(
-                            response,
-                            target,
-                            xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;));
-
+                        rxhr.process(response, xhr, target);
                         that.trigger(&#039;ui:change&#039;);
-                    }
-                }
-
-                holder.on(&#039;ajax:success&#039;, ajax_success);
+                    });
 
                 holder.on(&#039;ajax:error&#039;,
                     /**
@@ -191,13 +187,18 @@
                      * @return {undefined}
                      */
                     function (event, xhr, status) {
-                        refinery.xhr.error(xhr, status);
+                        rxhr.error(xhr, status);
                     });
 
-                holder.on(&#039;click&#039;, &#039;.tree .toggle&#039;, function (e) {
-                    e.preventDefault();
-                    that.toggle_tree_branch($(this).parents(&#039;li:first&#039;));
-                });
+                holder.on(&#039;click&#039;, &#039;.tree .toggle&#039;,
+                    /**
+                     * @param  {jQuery.event} event
+                     * @return {undefined}
+                     */
+                    function (event) {
+                        event.preventDefault();
+                        that.toggle_tree_branch($(this).parents(&#039;li:first&#039;));
+                    });
             },
 
             toggle_tree_branch: function (li) {
@@ -252,20 +253,21 @@
             init_jquery_ui_tabs: function () {
                 this.holder.find(&#039;.ui-tabs&#039;).each(function () {
                     var elm = $(this),
-                        nav_li = elm.find(&#039;.ui-tabs-nav li&#039;),
+                        nav = elm.find(&#039;&gt; ul&#039;),
+                        nav_li = nav.find(&#039;li&#039;),
                         index_stored = $.cookie(&#039;tab_&#039; + elm.attr(&#039;id&#039;)),
-                        index = elm.find(&#039;.ui-tabs-nav .ui-state-active&#039;).index();
+                        index = nav.find(&#039;.ui-state-active&#039;).index();
 
                     if (index_stored &amp;&amp; $(nav_li.get(index_stored)).is(&#039;:visible&#039;)) {
                         index = index_stored;
                     } else if (index === -1) {
-                        index = elm.find(&#039;.ui-tabs-nav li:visible&#039;).first().index();
+                        index = nav.find(&#039;li:visible&#039;).first().index();
                     }
 
                     elm.tabs({
                         &#039;active&#039;: index,
                         &#039;activate&#039;: function (event, ui) {
-                            $.cookie(&#039;tab_&#039; + elm.attr(&#039;id&#039;), ui.newTab.index(), {&#039;path&#039;: &#039;/&#039;});
+                            $.cookie(&#039;tab_&#039; + elm.attr(&#039;id&#039;), ui.newTab.index() - 1, {&#039;path&#039;: &#039;/&#039;});
 
                             ui.newPanel.find(&#039;input.text, textarea&#039;).first().focus();
                         }

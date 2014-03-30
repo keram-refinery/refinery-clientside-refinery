@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Plato - scripts/refinery.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -26,7 +26,7 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
     <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
@@ -44,12 +44,12 @@
 <div class="container aggregate-stats">
   <div class="row">
     <div class="col-md-6">
-      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">69.23</p>
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">69.80</p>
     </div>
     <div class="col-md-6">
-      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">446</p>
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">458</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,12 +62,12 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">36.66</p>
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">36.54</p>
     </div>
     <div class="col-md-6">
-      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.76</p>
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.84</p>
     </div>
   </div>
 </div>
@@ -78,11 +78,11 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
     <div class="col-md-6">
-      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
   </div>
@@ -338,18 +338,13 @@
          * @expose
          * @param {Object|string} html
          * @param {jQuery} holder
-         * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
-        processHtml: function (html, holder, replaceHolder) {
+        processHtml: function (html, holder) {
             for (var i = html.length - 1; i &gt;= 0; i--) {
                 if (typeof html[i] === &#039;string&#039;) {
-                    if (replaceHolder) {
-                        holder.replaceWith(html[i]);
-                    } else {
-                        holder.html(html[i]);
-                    }
+                    holder.html(html[i]);
                 } else {
                     for (var partial_id in html[i]) {
                         if (html[i].hasOwnProperty(partial_id)) {
@@ -411,31 +406,48 @@
             refinery.flash(&#039;error&#039;, flash);
         },
 
+        redirected: function (xhr) {
+            var redirected_to = xhr.getResponseHeader(&#039;X-XHR-Redirected-To&#039;);
+
+            if (redirected_to) {
+                window.history.pushState({
+                    &#039;refinery&#039;: true,
+                    &#039;url&#039;: redirected_to,
+                    &#039;prev_url&#039;: document.location.href
+                }, &#039;&#039;, redirected_to);
+            }
+        },
+
+        processRedirect: function (to) {
+            Turbolinks.visit(to);
+        },
+
         /**
          *
+         * @expose
+         *
          * @param {json_response} response
+         * @param {jQuery.jqXHR} xhr
          * @param {jQuery} holder
-         * @param {string=} redirectedTo
-         * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
-        success: function (response, holder, redirectedTo, replaceHolder) {
+        process: function (response, xhr, holder) {
+            var rxhr = refinery.xhr;
+
+            if (response.redirect_to) {
+                rxhr.processRedirect(response.redirect_to);
+            }
+
             if (response.html) {
-                refinery.xhr.processHtml(response.html, holder, replaceHolder);
+                rxhr.processHtml(response.html, holder);
             }
 
             if (response.message) {
-                refinery.xhr.processMessage(response.message);
+                rxhr.processMessage(response.message);
             }
 
-            if (redirectedTo) {
-                window.history.pushState({
-                    &#039;refinery&#039;: true,
-                    &#039;url&#039;: redirectedTo,
-                    &#039;prev_url&#039;: document.location.href
-                }, &#039;&#039;, redirectedTo);
-            }
+            rxhr.redirected(xhr);
         }
     };
 

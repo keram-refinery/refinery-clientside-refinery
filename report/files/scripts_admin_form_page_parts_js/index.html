@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Plato - scripts/admin/form_page_parts.js</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
@@ -26,7 +26,7 @@
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="http://github.com/jsoverson/plato">Plato on Github</a>
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
     <ul class="nav navbar-nav">
       <li>
         <a href="../../index.html">Report Home</a>
@@ -44,12 +44,12 @@
 <div class="container aggregate-stats">
   <div class="row">
     <div class="col-md-6">
-      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"></i></a></h2>
-      <p class="stat">66.11</p>
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">66.64</p>
     </div>
     <div class="col-md-6">
-      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h2>
-      <p class="stat">181</p>
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">172</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,12 +62,12 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty"></i></a></h2>
-      <p class="stat">24.59</p>
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">23.28</p>
     </div>
     <div class="col-md-6">
-      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs"></i></a></h2>
-      <p class="stat">1.19</p>
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.15</p>
     </div>
   </div>
 </div>
@@ -78,11 +78,11 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity"></i></a></h3>
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
       <div id="fn-by-complexity" class="stat"></div>
     </div>
     <div class="col-md-6">
-      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC"></i></h3>
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
       <div id="fn-by-sloc" class="stat"></div>
     </div>
   </div>
@@ -121,12 +121,13 @@
                 list += &#039;&lt;li data-part=&quot;&#039; + part.name + &#039;&quot; &#039; +
                             &#039;class=&quot;clearfix&quot; &gt;&#039; +
                             &#039;&lt;label class=&quot;stripped&quot;&gt;&#039; +
-                            &#039;&lt;input type=&quot;checkbox&quot;&#039; + (part.active ? &#039; checked=&quot;1&quot;&#039; : &#039;&#039;) + &#039;&quot;&gt; &#039; +
+                            &#039;&lt;input type=&quot;checkbox&quot;&#039; + (part.active ? &#039; checked=&quot;1&quot;&#039; : &#039;&#039;) + &#039;&gt; &#039; +
                              part.title +
                             &#039;&lt;/label&gt;&#039; +
                             &#039; &lt;span class=&quot;actions&quot;&gt;&lt;span class=&quot;icon-small move-icon&quot;&gt;&#039; +
                             t(&#039;refinery.admin.button_move&#039;) + &#039;&lt;/span&gt;&lt;/span&gt;&#039; +
                             &#039;&lt;/li&gt;&#039;;
+
             }
 
             list += &#039;&lt;/ul&gt;&#039;;
@@ -142,7 +143,7 @@
         init_configuration_dialog: function () {
             var that = this,
                 holder = that.holder,
-                nav = holder.find(&#039;.ui-tabs-nav&#039;),
+                nav = holder.find(&#039;&gt; .ui-tabs-nav&#039;),
                 parts_tabs = nav.find(&#039;li&#039;),
                 dialog_holder = $(&#039;&lt;div/&gt;&#039;),
                 dialog_buttons;
@@ -160,7 +161,7 @@
                     var li = $(this),
                         part = /** @type string */(li.data(&#039;part&#039;)),
                         active = li.find(&#039;input&#039;).is(&#039;:checked&#039;),
-                        tab = nav.find(&#039;li[aria-controls=&quot;page_part_&#039; + part + &#039;&quot;]&#039;).detach(),
+                        tab = nav.find(&#039;li a[href=&quot;#page_part_&#039; + part + &#039;&quot;]&#039;).parent().detach(),
                         panel = $(&#039;#page_part_&#039; + part);
 
                     if (active) {
@@ -175,17 +176,13 @@
                     panel.find(&#039;input.part-active&#039;).prop(&#039;checked&#039;, active);
                     panel.find(&#039;input.part-position&#039;).val(index + &#039;&#039;);
 
-                    /**
-                     * If title part exist is not showed in tabs, but
-                     * as field &quot;Custom content title&quot; in Advanced options
-                     */
-                    if (part !== &#039;title&#039;) {
+                    if (tab.length) {
                         list[list.length] = tab;
                     }
                 });
 
                 /**
-                 * Reordeting tabs by parts position
+                 * Reordering tabs by parts position
                  *
                  */
                 for (i = list.length; i &gt;= 0; i--) {
@@ -202,12 +199,6 @@
                     });
                 }
             }
-
-            dialog_holder.on(&#039;change&#039;, &#039;li input&#039;, update_parts);
-
-            dialog_holder.find(&#039;ul&#039;).sortable({
-                &#039;stop&#039;: update_parts
-            });
 
             dialog_buttons = [{
                 &#039;text&#039;: t(&#039;refinery.admin.button_done&#039;),
