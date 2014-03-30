@@ -196,12 +196,10 @@
                         }));
                     });
 
-                    xhr.done(function (response) {
+                    xhr.done(function (response, status, xhr) {
                         var ui_holder = $('<div/>');
-
-                        holder.empty();
-                        ui_holder.appendTo(holder);
-                        refinery.xhr.success(response, ui_holder);
+                        holder.html(ui_holder);
+                        refinery.xhr.process(response, xhr, ui_holder);
                         that.ui_init(ui_holder);
                         that.is('loaded', true);
                     });

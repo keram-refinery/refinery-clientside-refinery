@@ -55,41 +55,37 @@
              */
             bind_events: function () {
                 var that = this,
+                    rxhr = refinery.xhr,
                     holder = that.holder,
                     target = holder.find(that.options.main_content_selector);
 
 
-                holder.on('click', '.flash-close', function (e) {
-                    e.preventDefault();
-                    $(this).parent().fadeOut();
-                    return false;
-                });
+                holder.on('click', '.flash-close',
+                    /**
+                     * @param  {jQuery.event} event
+                     * @return {boolean} false
+                     */
+                    function (event) {
+                        event.preventDefault();
+                        $(this).parent().fadeOut();
+                        return false;
+                    });
 
-                /**
-                 * Process ajax response
-                 *
-                 * @param  {jQuery.event} event
-                 * @param  {json_response} response
-                 * @param  {string} status
-                 * @param  {jQuery.jqXHR} xhr
-                 * @return {undefined}
-                 */
-                function ajax_success (event, response, status, xhr) {
-                    if (response.redirect_to) {
-                        Turbolinks.visit(response.redirect_to);
-                    } else {
+                holder.on('ajax:success',
+                    /**
+                     * Process ajax response
+                     *
+                     * @param  {jQuery.event} event
+                     * @param  {json_response} response
+                     * @param  {string} status
+                     * @param  {jQuery.jqXHR} xhr
+                     * @return {undefined}
+                     */
+                    function (event, response, status, xhr) {
                         that.destroy();
-
-                        refinery.xhr.success(
-                            response,
-                            target,
-                            xhr.getResponseHeader('X-XHR-Redirected-To'));
-
+                        rxhr.process(response, xhr, target);
                         that.trigger('ui:change');
-                    }
-                }
-
-                holder.on('ajax:success', ajax_success);
+                    });
 
                 holder.on('ajax:error',
                     /**
@@ -99,13 +95,18 @@
                      * @return {undefined}
                      */
                     function (event, xhr, status) {
-                        refinery.xhr.error(xhr, status);
+                        rxhr.error(xhr, status);
                     });
 
-                holder.on('click', '.tree .toggle', function (e) {
-                    e.preventDefault();
-                    that.toggle_tree_branch($(this).parents('li:first'));
-                });
+                holder.on('click', '.tree .toggle',
+                    /**
+                     * @param  {jQuery.event} event
+                     * @return {undefined}
+                     */
+                    function (event) {
+                        event.preventDefault();
+                        that.toggle_tree_branch($(this).parents('li:first'));
+                    });
             },
 
             toggle_tree_branch: function (li) {

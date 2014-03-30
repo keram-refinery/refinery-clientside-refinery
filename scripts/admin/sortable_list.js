@@ -102,18 +102,19 @@
         update: function (item) {
             var that = this,
                 list = that.holder,
+                getId = that.getId,
                 update_url = list.data('update_positions_url'),
                 set = list.nestedSortable('toArray'),
                 post_data = {
                     'item': {
-                        'id': that.getId(item),
-                        'prev_id': that.getId(item.prev()),
-                        'next_id': that.getId(item.next()),
-                        'parent_id': that.getId(item.parent().parent())
+                        'id': getId(item),
+                        'prev_id': getId(item.prev()),
+                        'next_id': getId(item.next()),
+                        'parent_id': getId(item.parent().parent())
                     }
                 };
 
-            if (!that.is('updating') && JSON.stringify(set) !== JSON.stringify(that.set)) {
+            if (!that.is('updating') && that.serialize_set(set) !== that.serialized_set) {
                 that.is({'updating': true, 'updated': false});
                 list.nestedSortable('disable');
                 refinery.spinner.on();
@@ -121,16 +122,13 @@
                 $.post(update_url, post_data, null, 'JSON')
                     .done(function (response, status, xhr) {
                         if (status === 'error') {
-                            list.html(that.html);
+                            that.restore_list();
                         } else {
-                            that.set = set;
-                            that.html = list.html();
+                            that.store_list(set);
                         }
 
-                        refinery.xhr.success(
-                            response,
-                            list,
-                            xhr.getResponseHeader('X-XHR-Redirected-To'));
+                        refinery.xhr.process(response, xhr, list);
+
                         that.is('updated', true);
                         that.trigger('update');
                     })
@@ -148,9 +146,22 @@
             return that;
         },
 
+        serialize_set: function (set) {
+            return JSON.stringify(set);
+        },
+
+        restore_list: function () {
+            this.list.html(this.html);
+        },
+
+        store_list: function (set) {
+            this.serialized_set = this.serialize_set(set);
+            this.html = this.holder.html();
+        },
+
         destroy: function () {
             this.holder.nestedSortable('destroy');
-            this.set = null;
+            this.serialized_set = null;
 
             return this._destroy();
         },
@@ -161,8 +172,7 @@
 
                 holder.nestedSortable(this.options.nested_sortable);
                 this.holder = holder;
-                this.set = holder.nestedSortable('toArray');
-                this.html = holder.html();
+                this.store_list(holder.nestedSortable('toArray'));
                 this.is({'initialised': true, 'initialising': false});
                 this.trigger('init');
             }

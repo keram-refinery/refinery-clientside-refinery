@@ -246,18 +246,13 @@
          * @expose
          * @param {Object|string} html
          * @param {jQuery} holder
-         * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
-        processHtml: function (html, holder, replaceHolder) {
+        processHtml: function (html, holder) {
             for (var i = html.length - 1; i >= 0; i--) {
                 if (typeof html[i] === 'string') {
-                    if (replaceHolder) {
-                        holder.replaceWith(html[i]);
-                    } else {
-                        holder.html(html[i]);
-                    }
+                    holder.html(html[i]);
                 } else {
                     for (var partial_id in html[i]) {
                         if (html[i].hasOwnProperty(partial_id)) {
@@ -319,31 +314,48 @@
             refinery.flash('error', flash);
         },
 
+        redirected: function (xhr) {
+            var redirected_to = xhr.getResponseHeader('X-XHR-Redirected-To');
+
+            if (redirected_to) {
+                window.history.pushState({
+                    'refinery': true,
+                    'url': redirected_to,
+                    'prev_url': document.location.href
+                }, '', redirected_to);
+            }
+        },
+
+        processRedirect: function (to) {
+            Turbolinks.visit(to);
+        },
+
         /**
          *
+         * @expose
+         *
          * @param {json_response} response
+         * @param {jQuery.jqXHR} xhr
          * @param {jQuery} holder
-         * @param {string=} redirectedTo
-         * @param {boolean=} replaceHolder
          *
          * @return {undefined}
          */
-        success: function (response, holder, redirectedTo, replaceHolder) {
+        process: function (response, xhr, holder) {
+            var rxhr = refinery.xhr;
+
+            if (response.redirect_to) {
+                rxhr.processRedirect(response.redirect_to);
+            }
+
             if (response.html) {
-                refinery.xhr.processHtml(response.html, holder, replaceHolder);
+                rxhr.processHtml(response.html, holder);
             }
 
             if (response.message) {
-                refinery.xhr.processMessage(response.message);
+                rxhr.processMessage(response.message);
             }
 
-            if (redirectedTo) {
-                window.history.pushState({
-                    'refinery': true,
-                    'url': redirectedTo,
-                    'prev_url': document.location.href
-                }, '', redirectedTo);
-            }
+            rxhr.redirected(xhr);
         }
     };
 
