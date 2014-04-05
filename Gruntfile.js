@@ -1,7 +1,6 @@
 /*jslint maxlen: 120 */
 
 'use strict';
-var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 var mountFolder = function (connect, dir) {
     return connect.static(require('path').resolve(dir));
@@ -32,18 +31,11 @@ module.exports = function (grunt) {
                 files: ['scripts/admin/{,*/}*.js'],
                 tasks: ['closureCompiler:admin_js',
                             'concat:admin_js',
-                            'copy:js',
-                            'livereload']
+                            'copy:js']
             },
             styles: {
                 files: ['styles/{,*/}*.css', 'styles/{,*/}*.css.scss'],
                 tasks: ['assetUrl:styles', 'copy:styles']
-            },
-            livereload: {
-                files: [
-                    '.tmp/*/test/{,*/}*.js', '.tmp/*/test/{,**/}*.js'
-                ],
-                tasks: ['livereload']
             }
         },
         concurrent: {
@@ -68,12 +60,11 @@ module.exports = function (grunt) {
                     changeOrigin: false
                 }
             ],
-            livereload: {
+            server: {
                 options: {
                     keepalive: false,
                     middleware: function (connect, options) {
                         return [
-                            lrSnippet,
                             mountFolder(connect, '.'),
                             mountFolder(connect, '.tmp'),
                             connect.directory(options.base)
@@ -99,7 +90,6 @@ module.exports = function (grunt) {
                     keepalive: false,
                     middleware: function (connect) {
                         return [
-                            lrSnippet,
                             proxySnippet,
                             mountFolder(connect, '.'),
                             mountFolder(connect, '.tmp')
@@ -301,15 +291,12 @@ module.exports = function (grunt) {
 
     grunt.initConfig(gruntConfig);
 
-    grunt.renameTask('regarde', 'watch');
-
     grunt.registerTask('server', function (target) {
         if (target === 'rails') {
             return grunt.task.run([
                 'build',
                 'concurrent:server',
                 'configureProxies',
-                'livereload-start',
                 'connect:rails',
                 'open:server',
                 'watch'
@@ -319,8 +306,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'build',
             'concurrent:server',
-            'livereload-start',
-            'connect:livereload',
+            'connect:server',
             'open:server',
             'watch'
         ]);

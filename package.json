@@ -27,9 +27,8 @@
   "readme": "",
   "readmeFilename": "README.md",
   "dependencies": {
-    "jquery": "~1.10.2",
-    "jquery.ui": "~1.10.3",
-    "modernizr": "~2.6.2"
+    "jquery": "~2.1.0",
+    "jquery-ui": "~1.10.5"
   },
   "devDependencies": {
     "grunt": "~0.4.4",
@@ -41,10 +40,9 @@
     "grunt-contrib-jshint": "~0.9.2",
     "grunt-contrib-connect": "~0.7.1",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-livereload": "~0.1.2",
+    "grunt-contrib-watch": "~0.6.1",
     "grunt-rev": "~0.1.0",
     "grunt-usemin": "~2.1.0",
-    "grunt-regarde": "~0.1.1",
     "grunt-mocha": "~0.4.10",
     "grunt-open": "~0.2.3",
     "grunt-concurrent": "~0.5.0",
