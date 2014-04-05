@@ -340,7 +340,7 @@
          *
          * @return {undefined}
          */
-        process: function (response, xhr, holder) {
+        success: function (response, xhr, holder) {
             var rxhr = refinery.xhr;
 
             if (response.redirect_to) {
