@@ -5,5 +5,4 @@ app
 src
 .tmp
 .sass-cache
-components/*
 tools/*
