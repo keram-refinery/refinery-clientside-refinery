@@ -26,10 +26,7 @@
   ],
   "readme": "",
   "readmeFilename": "README.md",
-  "dependencies": {
-    "jquery": "~2.1.0",
-    "jquery-ui": "~1.10.5"
-  },
+  "dependencies": { },
   "devDependencies": {
     "grunt": "~0.4.4",
     "grunt-contrib-copy": "~0.5.0",
