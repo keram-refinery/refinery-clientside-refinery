@@ -105,9 +105,7 @@ describe 'Admin Images Dialog', ->
     context 'success', ->
 
       before (done) ->
-        @dialog = refinery('admin.ImagesDialog', {
-          url: '/test/fixtures/empty_images_dialog.json'
-        }).init()
+        @dialog = refinery('admin.ImagesDialog').init()
 
         @dialog.on 'load', ->
           done()

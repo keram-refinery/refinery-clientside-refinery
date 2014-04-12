@@ -49,9 +49,11 @@
     <script src="form_page_parts.js"></script>
 
     <script>
-    mocha
-    .globals([ 'LiveReload', 'constructor', '0', 'top', 'confirm', 'alert', 'applyDrag'])
-    .run()
+    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+        mocha
+            .globals([ 'LiveReload', 'constructor', '0', 'top', 'confirm', 'alert', 'applyDrag'])
+            .run();
+    }
     </script>
 </body>
 </html>

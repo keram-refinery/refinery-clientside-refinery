@@ -108,9 +108,7 @@
       });
       return context('success', function() {
         before(function(done) {
-          this.dialog = refinery('admin.ImagesDialog', {
-            url: '/test/fixtures/empty_images_dialog.json'
-          }).init();
+          this.dialog = refinery('admin.ImagesDialog').init();
           this.dialog.on('load', function() {
             return done();
           });

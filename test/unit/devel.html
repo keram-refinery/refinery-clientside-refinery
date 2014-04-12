@@ -49,9 +49,11 @@
 
 
     <script>
-    mocha
-    .globals([ 'LiveReload', 'constructor', 'top' ])
-    .run()
+    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+        mocha
+        .globals([ 'LiveReload', 'constructor', 'top' ])
+        .run();
+    }
     </script>
 </body>
 </html>
