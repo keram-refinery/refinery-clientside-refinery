@@ -1,8 +1,12 @@
+exclude: 'styles/jquery-ui/*'
+
 linters:
   Indentation:
     enabled: true
     width: 4
   SortedProperties:
+    enabled: false
+  PropertySortOrder:
     enabled: false
   LeadingZero:
     enabled: false
