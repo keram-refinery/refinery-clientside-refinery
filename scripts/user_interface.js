@@ -230,7 +230,7 @@
             init_toggle_hide: function () {
                 this.holder.on('click', '.toggle-hide', function () {
                     var elm = $(this);
-                    $(elm.attr('href')).toggleClass('js-hide');
+                    $(elm.attr('href').replace(/.+#/, '#')).toggleClass('js-hide');
                     elm.toggleClass('toggle-on');
                 });
             },
