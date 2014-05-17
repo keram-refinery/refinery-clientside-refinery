@@ -2,38 +2,38 @@ form {
     .locale-picker {
         margin-left: 5px;
         float: right;
-    }
 
-    .locale-picker > li {
-        float: left;
-        margin: 0;
-        padding: 0;
-        width: 50px;
-        height: 3em;
-        line-height: 3em;
-     }
+        a {
+            margin: 0;
+            display: block;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+            color: transparent;
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            border-bottom: solid 2px transparent;
+        }
 
-    .locale-picker a {
-        margin: 0;
-        display: block;
-        background-repeat: no-repeat;
-        background-position: 50% 50%;
-        color: transparent;
-        text-indent: 100%;
-        white-space: nowrap;
-        overflow: hidden;
-        border-bottom: solid 2px transparent;
-    }
+        a:hover {
+            border-bottom-color: #ccc;
+        }
 
-    .locale-picker a:hover {
-        border-bottom-color: #ccc;
-    }
+        a:active {
+            border-bottom-color: #999;
+        }
 
-    .locale-picker a:active {
-        border-bottom-color: #999;
-    }
+        .selected a {
+            border-bottom-color: #22a7f2;
+        }
 
-    .locale-picker .selected a {
-        border-bottom-color: #22a7f2;
+        > li {
+            float: left;
+            margin: 0;
+            padding: 0;
+            width: 50px;
+            height: 3em;
+            line-height: 3em;
+        }
     }
 }

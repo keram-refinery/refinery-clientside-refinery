@@ -34,9 +34,12 @@
 
 #image-dialog-size-0 {
     padding-right: 2em;
+
+    a {
+        height: 70px; width: 70px; line-height: 70px; margin-top: -10px; border-style: dashed;
+    }
 }
 
-#image-dialog-size-0 a { height: 70px; width: 70px; line-height: 70px; margin-top: -10px; border-style: dashed;}
 #image-dialog-size-1 a { height: 50px; width: 50px; line-height: 50px; margin-top: 0; }
 #image-dialog-size-2 a { height: 70px; width: 70px; line-height: 70px; margin-top: -10px; }
 #image-dialog-size-3 a { height: 90px; width: 90px; line-height: 90px; margin-top: -20px; }

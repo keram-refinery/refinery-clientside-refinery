@@ -32,15 +32,19 @@
 .folder-edit-icon { background-image: url('/images/icons/folder_edit.png'); }
 .page-icon { background-image: url('/images/icons/page.png'); }
 .page-copy-icon { background-image: url('/images/icons/page_copy.png'); }
-.page-add-icon { background-image: url('/images/icons/page_add.png'); }
 .image-add-icon { background-image: url('/images/icons/image_add.png'); }
 .image-edit-icon { background-image: url('/images/icons/image_edit.png'); }
 .image-delete-icon { background-image: url('/images/icons/image_delete.png'); }
 .file-add-icon { background-image: url('/images/icons/page_white_add.png'); }
-.toggle-icon { background-image: url('/images/icons/arrow_down.png'); }
-.toggle-icon.toggle-on { background-image: url('/images/icons/arrow_up.png'); }
 .search-icon { background-image: url('/images/icons/zoom.png'); }
 .reset-icon { background-image: url('/images/icons/bullet_cross.png'); }
+.toggle-icon {
+    background-image: url('/images/icons/arrow_down.png');
+
+    &.toggle-on {
+        background-image: url('/images/icons/arrow_up.png');
+    }
+}
 
 .icon-small {
     display: inline-block;

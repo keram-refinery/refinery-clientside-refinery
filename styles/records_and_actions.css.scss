@@ -3,40 +3,44 @@
     width: 67%;
     max-width: 640px;
     margin-right: 20px;
+
+    .image-grid > li {
+        margin: 0 6px 12px;
+    }
 }
 
 .records {
     background-color: #fcfcfc;
-}
 
-.records li {
-    padding: 2px 6px;
-    padding-left: 10px;
-    line-height: 26px;
+    li {
+        padding: 2px 6px;
+        padding-left: 10px;
+        line-height: 26px;
+    }
+
+    .detail,
+    .title {
+        display: inline-block;
+        max-width: 80%;
+        white-space: nowrap;
+        vertical-align: middle;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .detail {
+        min-width: 50%;
+        max-width: 77%;
+    }
+
+    .actions {
+        float: right;
+        position: relative;
+    }
 }
 
 .records:not(.tree) li:nth-child(2n - 1) {
     background-color: #eaeaea;
-}
-
-.records .detail,
-.records .title {
-    display: inline-block;
-    max-width: 80%;
-    white-space: nowrap;
-    vertical-align: middle;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.records .detail {
-    min-width: 50%;
-    max-width: 77%;
-}
-
-.records .actions {
-    float: right;
-    position: relative;
 }
 
 .actions a:hover,
@@ -59,13 +63,13 @@ a.move:active {
     top: -1px;
 }
 
-.tree li > ul {
-    margin-left: 15px;
-}
-
 .tree li {
     background: url('/images/branch.gif') no-repeat scroll 0 0 transparent;
     padding: 0 0 0 15px;
+
+    & > ul {
+        margin-left: 15px;
+    }
 }
 
 .tree > li:first-child {
@@ -104,33 +108,6 @@ a.move:active {
     }
 }
 
-.image-grid {
-    margin: 0;
-}
-
-.image-grid > li {
-    float: left;
-    padding: 0;
-    margin: 0 4px 8px;
-    max-height: 165px;
-    overflow: hidden;
-    position: relative;
-    text-align: center;
-    background: #f7f7f7;
-}
-
-.image-grid .actions {
-    padding-bottom: 3px;
-}
-
-#records .image-grid > li {
-    margin: 0 6px 12px;
-}
-
-.image-grid .image > img {
-    max-width: 100%;
-}
-
 .image-grid .image,
 .image > img {
     display: block;
@@ -139,36 +116,60 @@ a.move:active {
     padding: 0;
 }
 
-.image-grid .image {
-    border: solid 2px transparent;
-}
+.image-grid {
+    margin: 0;
 
-.image-grid .image:hover,
-.image-grid .image:focus {
-    border-color: #22a7f2;
-}
+    & > li {
+        float: left;
+        padding: 0;
+        margin: 0 4px 8px;
+        max-height: 165px;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        background: #f7f7f7;
+    }
 
-.image-grid li:active .image {
-    border-color: #004a8f;
-}
+    & .actions {
+        padding-bottom: 3px;
+    }
 
-.image-grid .ui-selected,
-.image-grid .ui-selected:hover {
-    outline: solid 2px #22a7f2;
-}
+    .image {
+        border: solid 2px transparent;
 
-.image-grid .ui-selected .image {
-    border-color: #22a7f2;
+        & > img {
+            max-width: 100%;
+        }
+    }
+
+
+    .image:hover,
+    .image-grid .image:focus {
+        border-color: #22a7f2;
+    }
+
+    li:active .image {
+        border-color: #004a8f;
+    }
+
+    .ui-selected,
+    .ui-selected:hover {
+        outline: solid 2px #22a7f2;
+    }
+
+    .image-grid .ui-selected .image {
+        border-color: #22a7f2;
+    }
 }
 
 .detail .image {
     display: inline-block;
     vertical-align: top;
     margin: 0 6px 0 0;
-}
 
-.detail .image > img {
-    vertical-align: middle;
+    & > img {
+        vertical-align: middle;
+    }
 }
 
 .records:not(.tree) li:hover {
@@ -187,32 +188,32 @@ a.move:active {
     float: left;
     width: 30%;
     max-width: 300px;
-}
 
-#actions li {
-    margin-bottom: 10px;
-}
+    li {
+        margin-bottom: 10px;
 
-#actions li a {
-    background-color: #dbedff;
-    background-position: 12px center;
-    border: 1px solid #65c3f7;
-    display: block;
-    height: 100%;
-    padding: 9px 12px;
-}
+        a {
+            background-color: #dbedff;
+            background-position: 12px center;
+            border: 1px solid #65c3f7;
+            display: block;
+            height: 100%;
+            padding: 9px 12px;
+        }
+    }
 
-#actions .active > a {
-    font-weight: bold;
-}
+    .active > a {
+        font-weight: bold;
+    }
 
-#actions a:hover {
-    background-color: #cae7fb;
-}
+    a:hover {
+        background-color: #cae7fb;
+    }
 
-#actions a:active {
-    background-color: #22a7f2;
-    color: #fff;
+    a:active {
+        background-color: #22a7f2;
+        color: #fff;
+    }
 }
 
 li.child-1 {

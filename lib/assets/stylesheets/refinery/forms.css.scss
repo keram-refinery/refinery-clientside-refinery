@@ -25,6 +25,14 @@ form {
     max-height: 45px;
     padding: 10px 0;
     border-radius: 5px;
+
+    .button {
+        margin-left: 6px;
+    }
+
+    .button:first-child {
+        margin-left: 0;
+    }
 }
 
 .form-actions-left {
@@ -43,13 +51,6 @@ form {
     float: right;
 }
 
-.form-actions .button {
-    margin-left: 6px;
-}
-
-.form-actions .button:first-child {
-    margin-left: 0;
-}
 
 .form-title .meta-informations {
     float: right;
@@ -73,10 +74,10 @@ label {
 
 .label_with_help {
     margin-bottom: 5px;
-}
 
-.label_with_help label {
-    display: inline;
+    label {
+        display: inline;
+    }
 }
 
 .stripped {

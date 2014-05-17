@@ -11,22 +11,22 @@
 
 #site-bar {
     margin: 0 20px;
-}
 
-#site-bar a {
-    text-decoration: none;
-    display: inline-block;
-    padding: 0 14px;
-    white-space: nowrap;
-    color: #fff;
-}
+    a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 0 14px;
+        white-space: nowrap;
+        color: #fff;
+    }
 
-#site-bar a:hover {
-    background-color: #43b4f4;
-}
+    a:hover {
+        background-color: #43b4f4;
+    }
 
-#site-bar a:active {
-    background-color: #1f96d9;
+    a:active {
+        background-color: #1f96d9;
+    }
 }
 
 #editor-switch {

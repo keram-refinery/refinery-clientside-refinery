@@ -15,21 +15,21 @@
     white-space: nowrap;
     overflow: hidden;
     border-radius: 5px 5px 0 0;
-}
 
-#menu > a:hover,
-#menu > a:focus {
-    background-color: #fff;
-    color: #41403c;
-}
+    &:hover,
+    &:focus {
+        background-color: #fff;
+        color: #41403c;
+    }
 
-#menu > a.selected {
-    margin-top: 0;
-    padding: 9px 13px;
-}
+    &.selected {
+        margin-top: 0;
+        padding: 9px 13px;
+    }
 
-#menu > a.selected,
-#menu > a:active {
-    background-color: #fff;
-    color: #f50;
+    &.selected,
+    &:active {
+        background-color: #fff;
+        color: #f50;
+    }
 }
