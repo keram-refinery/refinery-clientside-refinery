@@ -11,19 +11,19 @@
         font-weight: bold;
     }
 
-    & > a,
-    & > em,
-    & .current,
-    & .disabled {
+    > a,
+    > em,
+    .current,
+    .disabled {
         text-decoration: none;
         padding: 5px 9px;
         display: inline-block;
     }
 
-    & > a:hover,
-    & > a:focus,
-    & > em,
-    & .current {
+    > a:focus,
+    > a:hover,
+    > em,
+    .current {
         background: #a8b9c1;
     }
 }

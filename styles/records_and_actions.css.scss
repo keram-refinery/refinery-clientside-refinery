@@ -67,7 +67,7 @@ a.move:active {
     background: url('/images/branch.gif') no-repeat scroll 0 0 transparent;
     padding: 0 0 0 15px;
 
-    & > ul {
+    > ul {
         margin-left: 15px;
     }
 }
@@ -119,7 +119,7 @@ a.move:active {
 .image-grid {
     margin: 0;
 
-    & > li {
+    > li {
         float: left;
         padding: 0;
         margin: 0 4px 8px;
@@ -130,18 +130,17 @@ a.move:active {
         background: #f7f7f7;
     }
 
-    & .actions {
+    .actions {
         padding-bottom: 3px;
     }
 
     .image {
         border: solid 2px transparent;
 
-        & > img {
+        > img {
             max-width: 100%;
         }
     }
-
 
     .image:hover,
     .image-grid .image:focus {
@@ -167,7 +166,7 @@ a.move:active {
     vertical-align: top;
     margin: 0 6px 0 0;
 
-    & > img {
+    > img {
         vertical-align: middle;
     }
 }
