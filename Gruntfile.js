@@ -24,14 +24,14 @@ module.exports = function (grunt) {
             base_js: {
                 files: ['scripts/*.js'],
                 tasks: ['closureCompiler:base_js',
-                            'concat:base_js',
-                            'copy:js']
+                        'concat:base_js',
+                        'copy:js']
             },
             admin_js: {
                 files: ['scripts/admin/{,*/}*.js'],
                 tasks: ['closureCompiler:admin_js',
-                            'concat:admin_js',
-                            'copy:js']
+                        'concat:admin_js',
+                        'copy:js']
             },
             styles: {
                 files: ['styles/{,*/}*.css', 'styles/{,*/}*.css.scss'],
@@ -165,6 +165,7 @@ module.exports = function (grunt) {
                     src = src.replace(/(^|\s+)'use strict';/, '');
                     src = src.replace(/^\n+/, '');
                     src = src.replace(/\n+$/, '');
+
                     return '\n// Source: ' + filepath.replace(src_path + '/', '') + '\n' + src;
                 }
             },
