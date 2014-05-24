@@ -103,7 +103,7 @@ a.move:active {
         background-image: asset-url('refinery/icons/folder.png');
     }
 
-    &.toggle.expanded {
+    &.expanded {
         background-image: asset-url('refinery/icons/folder_open.png');
     }
 }

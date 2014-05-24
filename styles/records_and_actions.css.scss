@@ -103,7 +103,7 @@ a.move:active {
         background-image: url('/images/icons/folder.png');
     }
 
-    &.toggle.expanded {
+    &.expanded {
         background-image: url('/images/icons/folder_open.png');
     }
 }

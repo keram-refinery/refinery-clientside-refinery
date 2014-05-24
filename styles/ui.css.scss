@@ -12,7 +12,6 @@
     border: none;
 }
 
-
 .ui-widget-header {
     background: #22a7f2;
     border: none;
@@ -94,13 +93,13 @@
     li {
         clear: left;
         width: 100%;
-    }
 
-    li a {
-        margin-top: 0;
-        margin-bottom: 5px;
-        border-radius: 5px 0 0 5px;
-        float: none;
+        a {
+            margin-top: 0;
+            margin-bottom: 5px;
+            border-radius: 5px 0 0 5px;
+            float: none;
+        }
     }
 
     .ui-state-active a {
@@ -134,10 +133,10 @@
 
     .ui-dialog-titlebar-close {
         background: none;
-    }
 
-    .ui-dialog-titlebar-close .ui-icon {
-        background: url('/images/cross.png') no-repeat;
+        .ui-icon {
+            background: url('/images/cross.png') no-repeat;
+        }
     }
 
     .ui-dialog-content {
@@ -147,35 +146,35 @@
         padding: 10px;
     }
 
-    .ui-dialog-buttonpane .ui-dialog-buttonset {
-        float: none;
-    }
 
     .ui-dialog-buttonpane {
         padding: 10px;
         background-color: #f2f2f2;
         border-top: solid 1px #ccc;
-    }
 
-    .ui-dialog-buttonpane button {
-        padding-top: 6px;
-        padding-bottom: 6px;
-        margin: 0;
-        margin-right: 7px;
-        background: #afafaf;
-        color: #fff;
-    }
+        .ui-dialog-buttonset {
+            float: none;
+        }
 
-    .ui-dialog-buttonpane button:hover,
-    .ui-dialog-buttonpane button:focus {
-        background: #bbb;
-    }
+        button {
+            padding-top: 6px;
+            padding-bottom: 6px;
+            margin: 0;
+            margin-right: 7px;
+            background: #afafaf;
+            color: #fff;
+        }
 
-    .ui-dialog-buttonpane button:active {
-        background: #999;
+        button:hover,
+        button:focus {
+            background: #bbb;
+        }
+
+        button:active {
+            background: #999;
+        }
     }
 }
-
 
 .ui-widget-overlay {
     background: #000;
@@ -224,20 +223,16 @@
 
 .ui-button {
     background: #bcbcbc;
-}
 
-.ui-button .ui-button-text {
-    line-height: 1em;
-    padding-top: 0;
-    padding-bottom: 0;
+    .ui-button-text {
+        line-height: 1em;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
 }
 
 .ui-accordion .ui-accordion-content {
     padding: 0.5em 0;
-}
-
-.ui-accordion .ui-accordion-header {
-    //* margin-top: 0; */
 }
 
 .ui-selectee {
