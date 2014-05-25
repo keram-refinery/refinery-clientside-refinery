@@ -29,3 +29,7 @@ function okResponse (data) {
 
     return d.promise();
 };
+
+function normaliseText (str) {
+    return str.replace(/\s/g, ' ')
+};
