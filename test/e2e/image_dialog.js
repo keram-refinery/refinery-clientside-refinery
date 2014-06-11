@@ -1,4 +1,8 @@
 (function() {
+  refinery.admin.backend_path = function() {
+    return '/test';
+  };
+
   describe('Admin Image Dialog', function() {
     before(function() {
       return this.container = $('#container');

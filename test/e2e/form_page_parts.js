@@ -1,4 +1,8 @@
 (function() {
+  refinery.admin.backend_path = function() {
+    return '/test';
+  };
+
   describe('PageParts', function() {
     before(function(done) {
       var container, page_parts;

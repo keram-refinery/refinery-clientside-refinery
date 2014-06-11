@@ -1,6 +1,10 @@
 (function() {
   refinery.admin.ImagesDialog.prototype.options.url_path = '/fixtures/images_dialog.json';
 
+  refinery.admin.backend_path = function() {
+    return '/test';
+  };
+
   describe('Admin Images Dialog', function() {
     before(function() {
       return this.container = $('#container');

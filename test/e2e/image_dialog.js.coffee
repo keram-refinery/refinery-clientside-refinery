@@ -1,3 +1,6 @@
+refinery.admin.backend_path = () ->
+  '/test'
+
 describe 'Admin Image Dialog', ->
 
   before ->

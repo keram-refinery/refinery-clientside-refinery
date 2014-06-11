@@ -1,4 +1,6 @@
 refinery.admin.ImagesDialog.prototype.options.url_path = '/fixtures/images_dialog.json'
+refinery.admin.backend_path = () ->
+  '/test'
 
 describe 'Admin Images Dialog', ->
 

@@ -1,3 +1,6 @@
+refinery.admin.backend_path = () ->
+  '/test'
+
 describe 'PageParts', ->
   before (done) ->
     container = $('#container')
